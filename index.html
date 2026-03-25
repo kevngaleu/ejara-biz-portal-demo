@@ -75,7 +75,7 @@
     .topbar-title { font-size: 16px; font-weight: 600; }
     .topbar-right { display: flex; align-items: center; gap: 16px; }
     .lang-btn { font-size: 13px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 4px; }
-    .content { padding: 32px; max-width: 1200px; margin: 0 auto; }
+    .content { padding: 32px; max-width: 1400px; margin: 0 auto; }
 
     /* ─── COMPONENTS ─── */
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
@@ -355,7 +355,7 @@
               <th>Date &amp; Time</th>
             </tr></thead>
             <tbody id="recent-tbody">
-              <tr>
+              <tr data-date="2026-03-21">
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-240000</td>
                 <td style="font-weight:600;white-space:nowrap;">Chukwudi Electronics</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
@@ -367,7 +367,7 @@
                 <td><span class="status-badge status-completed">Completed</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 21, 14:32</td>
               </tr>
-              <tr>
+              <tr data-date="2026-03-14">
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-230099</td>
                 <td style="font-weight:600;white-space:nowrap;">Adeola Suppliers Ltd</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
@@ -725,6 +725,13 @@
           <option>XAF → CNY</option>
           <option>XAF → AED</option>
         </select>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">From</span>
+          <input type="date" id="filter-date-from" class="form-input" style="max-width:150px;" onchange="filterByDate()">
+          <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">To</span>
+          <input type="date" id="filter-date-to" class="form-input" style="max-width:150px;" onchange="filterByDate()">
+          <button class="btn btn-secondary" onclick="clearDateFilter()" style="padding:8px 12px;font-size:12px;white-space:nowrap;">✕ Clear</button>
+        </div>
         <button class="btn btn-secondary" onclick="exportCSV()" style="margin-left:auto;white-space:nowrap;">↓ Export CSV</button>
       </div>
 
@@ -750,7 +757,7 @@
             <th></th>
           </tr></thead>
           <tbody id="history-tbody">
-            <tr>
+            <tr data-date="2026-03-21">
               <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-240000</td>
               <td style="font-weight:600;white-space:nowrap;">Chukwudi Electronics</td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
@@ -763,7 +770,7 @@
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 21, 14:32</td>
               <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;">Receipt</button></td>
             </tr>
-            <tr>
+            <tr data-date="2026-03-14">
               <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-230099</td>
               <td style="font-weight:600;white-space:nowrap;">Adeola Suppliers Ltd</td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
@@ -1308,7 +1315,9 @@
     const dateStr = now.toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
     const corridor = corridorLabel(p.currency);
 
+    const isoDate = now.toISOString().slice(0, 10);
     const histRow = document.createElement('tr');
+    histRow.dataset.date = isoDate;
     histRow.innerHTML = `
       <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-240001</td>
       <td style="font-weight:600;white-space:nowrap;">${b.name}</td>
@@ -1325,6 +1334,7 @@
     document.getElementById('history-tbody').insertBefore(histRow, document.getElementById('history-tbody').firstChild);
 
     const recentRow = document.createElement('tr');
+    recentRow.dataset.date = isoDate;
     recentRow.innerHTML = `
       <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-240001</td>
       <td style="font-weight:600;white-space:nowrap;">${b.name}</td>
@@ -1340,6 +1350,23 @@
     const recentTbody = document.getElementById('recent-tbody');
     recentTbody.insertBefore(recentRow, recentTbody.firstChild);
     while (recentTbody.rows.length > 5) recentTbody.deleteRow(recentTbody.rows.length - 1);
+  }
+
+  function filterByDate() {
+    const from = document.getElementById('filter-date-from').value;
+    const to = document.getElementById('filter-date-to').value;
+    document.querySelectorAll('#history-tbody tr').forEach(row => {
+      const d = row.dataset.date || '';
+      const afterFrom = !from || d >= from;
+      const beforeTo = !to || d <= to;
+      row.style.display = (afterFrom && beforeTo) ? '' : 'none';
+    });
+  }
+
+  function clearDateFilter() {
+    document.getElementById('filter-date-from').value = '';
+    document.getElementById('filter-date-to').value = '';
+    document.querySelectorAll('#history-tbody tr').forEach(row => row.style.display = '');
   }
 
   function exportCSV() {

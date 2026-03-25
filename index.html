@@ -326,17 +326,12 @@
         <div class="stat-card">
           <div class="stat-label" data-i18n="totalSent">Total Sent (This Month)</div>
           <div class="stat-value">14.2M XAF</div>
-          <div class="stat-sub">↑ 3 payments</div>
+          <div class="stat-sub">↑ 3 payments this month</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label" data-i18n="pendingApprovals">Pending Approvals</div>
+          <div class="stat-label">Pending Transactions</div>
           <div class="stat-value" id="dash-pending-count">0</div>
-          <div class="stat-sub" id="dash-pending-sub">No action needed</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label" data-i18n="avgDelivery">Avg. Delivery</div>
-          <div class="stat-value">1.4 days</div>
-          <div class="stat-sub">vs. 3+ days by bank</div>
+          <div class="stat-sub" id="dash-pending-sub">No payments in progress</div>
         </div>
       </div>
 
@@ -715,7 +710,7 @@
 
     <!-- ─── HISTORY ─── -->
     <div id="page-history" class="content" style="display:none">
-      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center;">
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center;flex-wrap:wrap;">
         <input class="form-input" data-i18n-ph="searchPlaceholder" placeholder="🔍 Search beneficiary..." style="max-width:240px;">
         <select class="form-input form-select" style="max-width:160px;">
           <option data-i18n="allStatuses">All statuses</option>
@@ -730,6 +725,7 @@
           <option>XAF → CNY</option>
           <option>XAF → AED</option>
         </select>
+        <button class="btn btn-secondary" onclick="exportCSV()" style="margin-left:auto;white-space:nowrap;">↓ Export CSV</button>
       </div>
 
       <div class="card">
@@ -1343,6 +1339,19 @@
     `;
     const recentTbody = document.getElementById('recent-tbody');
     recentTbody.insertBefore(recentRow, recentTbody.firstChild);
+    while (recentTbody.rows.length > 5) recentTbody.deleteRow(recentTbody.rows.length - 1);
+  }
+
+  function exportCSV() {
+    const headers = ['Reference','Beneficiary','Bank','Amount Sent','Amount Received','≈ USDT','Corridor','Initiated by','Status','Date & Time'];
+    const rows = [...document.querySelectorAll('#history-tbody tr')].map(tr =>
+      [...tr.cells].map(td => '"' + td.textContent.trim().replace(/"/g,'""') + '"').join(',')
+    );
+    const csv = [headers.join(','), ...rows].join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = 'ejara-transactions.csv';
+    a.click();
   }
 
   function updateApprovalsUI() {

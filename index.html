@@ -123,6 +123,11 @@
 
     .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .status-pending { background: #FFF8E1; color: #D97706; }
+    .deposit-method-card { border: 2px solid var(--border); border-radius: 10px; padding: 14px 8px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
+    .deposit-method-card:hover { border-color: var(--purple); background: var(--purple-light); }
+    .deposit-method-card.selected { border-color: var(--purple); background: var(--purple-light); }
+    .deposit-momo-card { border: 2px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: border-color .15s; }
+    .deposit-momo-card.selected { border-color: var(--purple); background: var(--purple-light); }
     .status-submitted { background: #EFF6FF; color: #3B82F6; }
     .status-completed { background: #F0FDF4; color: #16A34A; }
     .status-failed { background: #FEF2F2; color: #DC2626; }
@@ -265,10 +270,6 @@
 
     <div class="nav-section">
       <div class="nav-label">Payments</div>
-      <div class="nav-item" id="nav-approvals" onclick="navigate('approvals')">
-        <span class="nav-icon">✓</span> Approvals
-        <span class="badge" id="approval-badge" style="display:none">1</span>
-      </div>
       <div class="nav-item" id="nav-history" onclick="navigate('history')">
         <span class="nav-icon">⏱</span> History
       </div>
@@ -402,6 +403,8 @@
           <div class="step pending"><div class="step-num">3</div><div class="step-label">Beneficiary</div></div>
           <div class="step-line"></div>
           <div class="step pending"><div class="step-num">4</div><div class="step-label">Review</div></div>
+          <div class="step-line"></div>
+          <div class="step pending"><div class="step-num">5</div><div class="step-label">Deposit</div></div>
         </div>
 
         <div class="card">
@@ -455,6 +458,8 @@
           <div class="step pending"><div class="step-num">3</div><div class="step-label">Beneficiary</div></div>
           <div class="step-line"></div>
           <div class="step pending"><div class="step-num">4</div><div class="step-label">Review</div></div>
+          <div class="step-line"></div>
+          <div class="step pending"><div class="step-num">5</div><div class="step-label">Deposit</div></div>
         </div>
 
         <div class="card">
@@ -501,6 +506,8 @@
           <div class="step active"><div class="step-num">3</div><div class="step-label">Beneficiary</div></div>
           <div class="step-line"></div>
           <div class="step pending"><div class="step-num">4</div><div class="step-label">Review</div></div>
+          <div class="step-line"></div>
+          <div class="step pending"><div class="step-num">5</div><div class="step-label">Deposit</div></div>
         </div>
 
         <div class="card">
@@ -585,13 +592,15 @@
           <div class="step done"><div class="step-num">✓</div><div class="step-label">Beneficiary</div></div>
           <div class="step-line done"></div>
           <div class="step active"><div class="step-num">4</div><div class="step-label">Review</div></div>
+          <div class="step-line"></div>
+          <div class="step pending"><div class="step-num">5</div><div class="step-label">Deposit</div></div>
         </div>
 
         <div class="card">
-          <div class="card-header"><div class="card-title" data-i18n="reviewSubmit">Review & Submit for Approval</div></div>
+          <div class="card-header"><div class="card-title">Review & Confirm</div></div>
           <div class="card-body">
-            <div class="alert alert-warning">
-              ⏳ This payment will be sent to <strong id="review-approver">Théodore Ngassa (CFO)</strong> for approval. The locked rate will be honored.
+            <div class="alert alert-info">
+              ✅ Review the details below. On the next step you'll choose your deposit method and upload your proof of payment.
             </div>
 
             <div style="background:var(--bg);border-radius:10px;padding:16px;margin-bottom:20px;">
@@ -631,29 +640,142 @@
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <button class="btn btn-secondary btn-lg" onclick="goStep(3)" data-i18n="back">← Back</button>
-              <button class="btn btn-primary btn-lg" onclick="submitPayment()" data-i18n="submitApproval">Submit for Approval →</button>
+              <button class="btn btn-primary btn-lg" onclick="submitPayment()">Confirm & Continue →</button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Step 5: Success -->
+      <!-- Step 5: Deposit Instructions -->
       <div id="transfer-step-5" style="display:none">
+        <div class="steps">
+          <div class="step done"><div class="step-num">✓</div><div class="step-label">Amount</div></div>
+          <div class="step-line done"></div>
+          <div class="step done"><div class="step-num">✓</div><div class="step-label">Quote</div></div>
+          <div class="step-line done"></div>
+          <div class="step done"><div class="step-num">✓</div><div class="step-label">Beneficiary</div></div>
+          <div class="step-line done"></div>
+          <div class="step done"><div class="step-num">✓</div><div class="step-label">Review</div></div>
+          <div class="step-line done"></div>
+          <div class="step active"><div class="step-num">5</div><div class="step-label">Deposit</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Fund Your Transfer</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">Choose how you'd like to send funds to Ejara</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info" style="margin-bottom:20px;">
+              💡 Send exactly <strong id="deposit-amount">—</strong> using one of the methods below, then upload your proof of payment.
+            </div>
+
+            <!-- Payment method selector -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;">
+              <div class="deposit-method-card selected" onclick="selectDepositMethod('bank', this)">
+                <div style="font-size:22px;margin-bottom:4px;">🏦</div>
+                <div style="font-size:12px;font-weight:600;">Bank Transfer</div>
+              </div>
+              <div class="deposit-method-card" onclick="selectDepositMethod('momo', this)">
+                <div style="font-size:22px;margin-bottom:4px;">📱</div>
+                <div style="font-size:12px;font-weight:600;">Mobile Money</div>
+              </div>
+              <div class="deposit-method-card" onclick="selectDepositMethod('crypto', this)">
+                <div style="font-size:22px;margin-bottom:4px;">🔗</div>
+                <div style="font-size:12px;font-weight:600;">Crypto Wallet</div>
+              </div>
+              <div class="deposit-method-card" onclick="selectDepositMethod('cash', this)">
+                <div style="font-size:22px;margin-bottom:4px;">🏪</div>
+                <div style="font-size:12px;font-weight:600;">Cash Point</div>
+              </div>
+            </div>
+
+            <!-- Bank Transfer details -->
+            <div id="deposit-details-bank" style="background:var(--bg);border-radius:10px;padding:16px;margin-bottom:20px;">
+              <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);margin-bottom:12px;">Bank Transfer Details</div>
+              <div class="review-row"><span class="review-label">Bank</span><span class="review-value">Société Générale Cameroun</span></div>
+              <div class="review-row"><span class="review-label">Account name</span><span class="review-value">Ejara Financial Services SARL</span></div>
+              <div class="review-row"><span class="review-label">Account number</span><span class="review-value" style="font-family:monospace;">01-456-789012-01</span></div>
+              <div class="review-row"><span class="review-label">Branch address</span><span class="review-value">Rue Joss, Douala, Cameroon</span></div>
+            </div>
+
+            <!-- Mobile Money details -->
+            <div id="deposit-details-momo" style="display:none;background:var(--bg);border-radius:10px;padding:16px;margin-bottom:20px;">
+              <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);margin-bottom:12px;">Mobile Money</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+                <div class="deposit-momo-card selected" id="momo-orange" onclick="selectMomo('orange')">
+                  <div style="font-size:18px;">🟠</div>
+                  <div style="font-size:12px;font-weight:600;margin-top:4px;">Orange Money</div>
+                </div>
+                <div class="deposit-momo-card" id="momo-mtn" onclick="selectMomo('mtn')">
+                  <div style="font-size:18px;">🟡</div>
+                  <div style="font-size:12px;font-weight:600;margin-top:4px;">MTN MoMo</div>
+                </div>
+              </div>
+              <div id="momo-orange-details">
+                <div class="review-row"><span class="review-label">Account name</span><span class="review-value">Ejara Financial Services</span></div>
+                <div class="review-row"><span class="review-label">Number</span><span class="review-value" style="font-family:monospace;">+237 655 000 123</span></div>
+              </div>
+              <div id="momo-mtn-details" style="display:none">
+                <div class="review-row"><span class="review-label">Account name</span><span class="review-value">Ejara Financial Services</span></div>
+                <div class="review-row"><span class="review-label">Number</span><span class="review-value" style="font-family:monospace;">+237 677 000 456</span></div>
+              </div>
+            </div>
+
+            <!-- Crypto Wallet details -->
+            <div id="deposit-details-crypto" style="display:none;background:var(--bg);border-radius:10px;padding:16px;margin-bottom:20px;">
+              <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);margin-bottom:12px;">Crypto Wallet (USDC)</div>
+              <div class="review-row"><span class="review-label">Currency</span><span class="review-value">USDC</span></div>
+              <div class="review-row"><span class="review-label">Network</span><span class="review-value">Polygon (MATIC)</span></div>
+              <div class="review-row"><span class="review-label">Wallet address</span><span class="review-value" style="font-family:monospace;font-size:12px;word-break:break-all;">0x1A2b3C4d5E6f7890aBcDeF1234567890AbCdEf12</span></div>
+              <div class="review-row"><span class="review-label">Amount (USDC)</span><span class="review-value" id="deposit-usdc">—</span></div>
+              <div style="margin-top:10px;padding:8px 12px;background:#fff3cd;border-radius:6px;font-size:12px;color:#856404;">⚠️ Only send USDC on Polygon network. Sending on a different network may result in permanent loss of funds.</div>
+            </div>
+
+            <!-- Cash Point details -->
+            <div id="deposit-details-cash" style="display:none;background:var(--bg);border-radius:10px;padding:16px;margin-bottom:20px;">
+              <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);margin-bottom:12px;">Cash Point</div>
+              <div class="review-row"><span class="review-label">Agent name</span><span class="review-value">Ejara Agent — Akwa Point</span></div>
+              <div class="review-row"><span class="review-label">Address</span><span class="review-value">Carrefour Akwa, Rue Bebey Eyidi, Douala</span></div>
+              <div class="review-row"><span class="review-label">Hours</span><span class="review-value">Mon – Sat · 8am – 6pm</span></div>
+            </div>
+
+            <!-- Proof of payment upload -->
+            <div class="form-group">
+              <div class="form-label" style="margin-bottom:8px;">Upload Proof of Payment</div>
+              <div id="proof-upload-zone" style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;color:var(--text-secondary);font-size:13px;" onclick="document.getElementById('proof-file-input').click()">
+                📎 Click to upload — PDF, PNG, JPG or DOC accepted
+              </div>
+              <input type="file" id="proof-file-input" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" style="display:none" onchange="handleProofUpload(this)">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;">
+              <button class="btn btn-secondary btn-lg" onclick="goStep(4)">← Back to Review</button>
+              <button class="btn btn-primary btn-lg" onclick="confirmDeposit()">I've Made the Deposit →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transfer Done screen -->
+      <div id="transfer-done" style="display:none">
         <div class="card" style="text-align:center;padding:48px 32px;">
-          <div style="font-size:56px;margin-bottom:16px;">✅</div>
-          <div style="font-size:20px;font-weight:700;margin-bottom:8px;" data-i18n="submittedTitle">Submitted for Approval</div>
-          <div style="color:var(--text-secondary);font-size:14px;margin-bottom:32px;max-width:360px;margin-left:auto;margin-right:auto;">Your payment has been sent to <strong>Théodore Ngassa (CFO)</strong> for approval. You'll be notified by email once it's confirmed.</div>
+          <div style="font-size:56px;margin-bottom:16px;">⏳</div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Awaiting Deposit Confirmation</div>
+          <div style="color:var(--text-secondary);font-size:14px;margin-bottom:32px;max-width:400px;margin-left:auto;margin-right:auto;">Your proof of payment is under review by Ejara. You'll be notified by email once your deposit is confirmed and the transfer is initiated via the payment network.</div>
 
           <div style="background:var(--bg);border-radius:12px;padding:20px;display:inline-block;text-align:left;margin-bottom:32px;min-width:300px;">
-            <div class="review-row"><span class="review-label" data-i18n="reference">Reference</span><span class="review-value">BTXR-240001</span></div>
-            <div class="review-row"><span class="review-label" data-i18n="amount">Amount</span><span class="review-value" id="success-amount">2,016,129 XAF → 5,000,000 NGN</span></div>
-            <div class="review-row"><span class="review-label" data-i18n="beneficiary">Beneficiary</span><span class="review-value" id="success-bene">Chukwudi Electronics</span></div>
-            <div class="review-row"><span class="review-label" data-i18n="status">Status</span><span class="status-badge status-pending">● Pending Approval</span></div>
+            <div class="review-row"><span class="review-label">Reference</span><span class="review-value">BTXR-240001</span></div>
+            <div class="review-row"><span class="review-label">Amount</span><span class="review-value" id="done-amount">—</span></div>
+            <div class="review-row"><span class="review-label">Beneficiary</span><span class="review-value" id="done-bene">—</span></div>
+            <div class="review-row"><span class="review-label">Status</span><span class="status-badge status-pending">Pending Deposit</span></div>
           </div>
 
           <div style="display:flex;gap:12px;justify-content:center;">
-            <button class="btn btn-secondary" onclick="navigate('history')" data-i18n="viewHistory">View History</button>
-            <button class="btn btn-primary" onclick="resetTransfer();navigate('transfer')" data-i18n="newTransferAgain">New Transfer</button>
+            <button class="btn btn-secondary" onclick="navigate('history')">View History</button>
+            <button class="btn btn-primary" onclick="resetTransfer();navigate('transfer')">New Transfer</button>
           </div>
         </div>
       </div>
@@ -713,11 +835,11 @@
       <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center;flex-wrap:wrap;">
         <input class="form-input" data-i18n-ph="searchPlaceholder" placeholder="🔍 Search beneficiary..." style="max-width:240px;">
         <select class="form-input form-select" style="max-width:160px;">
-          <option data-i18n="allStatuses">All statuses</option>
-          <option data-i18n="pendingApproval">Pending Approval</option>
-          <option data-i18n="submitted">Submitted</option>
-          <option data-i18n="completed">Completed</option>
-          <option data-i18n="failed">Failed</option>
+          <option>All statuses</option>
+          <option>Pending Deposit</option>
+          <option>Under Review</option>
+          <option>Completed</option>
+          <option>Failed</option>
         </select>
         <select class="form-input form-select" style="max-width:160px;">
           <option data-i18n="allCorridors">All corridors</option>
@@ -966,63 +1088,6 @@
           </div>
         </div>
       </div>
-      <div class="card" style="margin-bottom:16px;" id="settings-approval-card">
-        <div class="card-header">
-          <div>
-            <div class="card-title" data-i18n="approvalSettings">Approval Settings (Maker-Checker)</div>
-            <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;" data-i18n="approvalSettingsDesc">Control who must approve payments before they are sent</div>
-          </div>
-          <button class="btn btn-secondary" style="padding:6px 14px;font-size:13px;" onclick="showToast('💾','Settings saved','Approval configuration updated.')" data-i18n="save">Save</button>
-        </div>
-        <div class="card-body">
-
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--bg);border-radius:10px;margin-bottom:20px;">
-            <div>
-              <div style="font-weight:600;" data-i18n="requireApproval">Require approval before sending payments</div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;" data-i18n="requireApprovalDesc">When enabled, every payment submitted by an Initiator must be approved by an Approver before funds are sent</div>
-            </div>
-            <div onclick="toggleMakerChecker(this)" id="mc-toggle" style="width:44px;height:24px;background:var(--purple);border-radius:12px;cursor:pointer;position:relative;flex-shrink:0;margin-left:20px;transition:background .2s;">
-              <div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;top:3px;right:3px;transition:right .2s;"></div>
-            </div>
-          </div>
-
-          <div id="mc-config">
-            <div class="form-group">
-              <div class="form-label" data-i18n="approversLabel">Approvers</div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;" data-i18n="approversDesc">These team members will be notified by email + SMS when a payment is awaiting approval</div>
-              <div style="display:flex;flex-direction:column;gap:8px;" id="approver-list">
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1.5px solid var(--purple);background:var(--purple-light);border-radius:8px;">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div class="avatar" style="width:30px;height:30px;font-size:12px;background:var(--purple);">T</div>
-                    <div>
-                      <div style="font-weight:600;font-size:13px;">Théodore Ngassa</div>
-                      <div style="font-size:11px;color:var(--text-secondary);">theodore@techimport.cm · Admin</div>
-                    </div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <span class="role-tag approver">Approver</span>
-                    <span style="color:var(--text-light);cursor:pointer;font-size:16px;" title="Remove">×</span>
-                  </div>
-                </div>
-              </div>
-              <button class="btn btn-secondary" style="margin-top:10px;padding:8px 16px;font-size:13px;" onclick="document.getElementById('invite-modal').classList.add('open')" data-i18n="addApprover">＋ Add Approver</button>
-            </div>
-
-            <div class="form-group" style="margin-bottom:0;">
-              <div class="form-label" data-i18n="thresholdLabel">Approval threshold</div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;" data-i18n="thresholdDesc">Payments below this amount are sent automatically without approval. Set to 0 to require approval on all payments.</div>
-              <div style="display:flex;align-items:center;gap:12px;">
-                <div style="display:flex;gap:0;flex:1;max-width:280px;">
-                  <div class="currency-badge" style="border-right:none;border-radius:8px 0 0 8px;padding:10px 12px;flex-shrink:0;">🇨🇲 XAF</div>
-                  <input class="form-input" type="number" value="0" placeholder="0 = all payments require approval" style="border-radius:0 8px 8px 0;border-left:none;">
-                </div>
-                <div style="font-size:12px;color:var(--text-secondary);" data-i18n="thresholdNote">Set to <strong>0</strong> to require approval on every payment</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
 
       <div class="card" id="settings-notif-card">
         <div class="card-header"><div class="card-title" data-i18n="notifPrefs">Notification Preferences</div></div>
@@ -1163,6 +1228,8 @@
 
   // ─── TRANSFER FLOW ───
   function goStep(n) {
+    const done = document.getElementById('transfer-done');
+    if (done) done.style.display = 'none';
     [1,2,3,4,5].forEach(i => {
       const el = document.getElementById('transfer-step-' + i);
       if (el) el.style.display = i === n ? 'block' : 'none';
@@ -1294,19 +1361,13 @@
 
   function submitPayment() {
     const p = state.pendingPayment;
-    const b = state.selectedBene;
-    document.getElementById('success-amount').textContent = fmt(p.xaf) + ' XAF → ' + fmt(p.dest) + ' ' + p.currency;
-    document.getElementById('success-bene').textContent = b.name;
+    const usdt = Math.round(p.xaf / 600);
+    document.getElementById('deposit-amount').textContent = fmt(p.xaf) + ' XAF';
+    document.getElementById('deposit-usdc').textContent = '≈ ' + fmt(usdt) + ' USDC';
 
-    // Add to approval queue
-    state.approvalPending = { xaf: p.xaf, dest: p.dest, rate: p.rate, currency: p.currency, flag: p.flag, bene: b, ref: 'BTXR-240001' };
-
-    // Add to history
-    addToHistory(p, b);
-    updateApprovalsUI();
-
+    addToHistory(p, state.selectedBene);
     goStep(5);
-    showToast('📤', 'Submitted for approval', 'Théodore will be notified by email & SMS.');
+    showToast('📋', 'Transfer confirmed', 'Choose your deposit method and upload your proof.');
   }
 
   function addToHistory(p, b) {
@@ -1327,7 +1388,7 @@
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ ${fmt(usdt)} USDT</td>
       <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">${corridor}</span></td>
       <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
-      <td><span class="status-badge status-pending" id="hist-status-001">● Pending Approval</span></td>
+      <td><span class="status-badge status-pending" id="hist-status-001">Pending Deposit</span></td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>
       <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" disabled>Receipt</button></td>
     `;
@@ -1344,12 +1405,47 @@
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ ${fmt(usdt)} USDT</td>
       <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">${corridor}</span></td>
       <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
-      <td><span class="status-badge status-pending">● Pending Approval</span></td>
+      <td><span class="status-badge status-pending">Pending Deposit</span></td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>
     `;
     const recentTbody = document.getElementById('recent-tbody');
     recentTbody.insertBefore(recentRow, recentTbody.firstChild);
     while (recentTbody.rows.length > 5) recentTbody.deleteRow(recentTbody.rows.length - 1);
+  }
+
+  function selectDepositMethod(method, el) {
+    document.querySelectorAll('.deposit-method-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    ['bank','momo','crypto','cash'].forEach(m => {
+      document.getElementById('deposit-details-' + m).style.display = m === method ? 'block' : 'none';
+    });
+  }
+
+  function selectMomo(provider) {
+    document.querySelectorAll('.deposit-momo-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('momo-' + provider).classList.add('selected');
+    document.getElementById('momo-orange-details').style.display = provider === 'orange' ? 'block' : 'none';
+    document.getElementById('momo-mtn-details').style.display = provider === 'mtn' ? 'block' : 'none';
+  }
+
+  function handleProofUpload(input) {
+    if (input.files.length) {
+      const zone = document.getElementById('proof-upload-zone');
+      zone.innerHTML = '📎 ' + input.files[0].name + ' <span style="color:var(--green);font-weight:600;">✓ Uploaded</span>';
+      zone.style.borderColor = 'var(--green)';
+    }
+  }
+
+  function confirmDeposit() {
+    const p = state.pendingPayment;
+    const b = state.selectedBene;
+    document.getElementById('done-amount').textContent = fmt(p.xaf) + ' XAF → ' + fmt(p.dest) + ' ' + p.currency;
+    document.getElementById('done-bene').textContent = b.name;
+    for (let i = 1; i <= 5; i++) {
+      document.getElementById('transfer-step-' + i).style.display = 'none';
+    }
+    document.getElementById('transfer-done').style.display = 'block';
+    showToast('⏳', 'Proof submitted', 'Ejara will review and confirm your deposit by email.');
   }
 
   function filterByDate() {

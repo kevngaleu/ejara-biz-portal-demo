@@ -719,46 +719,51 @@
           <span style="font-size:12px;color:var(--purple);font-weight:600;">Powered by crypto</span>
           <span style="font-size:12px;color:var(--text-secondary);">— all payments are settled via USDT on-chain before local delivery</span>
         </div>
-        <table>
+        <div style="overflow-x:auto;">
+        <table style="min-width:900px;">
           <thead><tr>
             <th data-i18n="reference">Reference</th>
             <th data-i18n="beneficiary">Beneficiary</th>
-            <th>Sent (XAF)</th>
-            <th>Received</th>
+            <th>Bank</th>
+            <th>Amount Sent</th>
+            <th>Amount Received</th>
             <th>≈ USDT</th>
             <th>Corridor</th>
             <th data-i18n="initiatedBy">Initiated by</th>
             <th data-i18n="status">Status</th>
-            <th data-i18n="date">Date</th>
+            <th>Date &amp; Time</th>
             <th></th>
           </tr></thead>
           <tbody id="history-tbody">
             <tr>
-              <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-240000</td>
-              <td><div style="font-weight:600;">Chukwudi Electronics</div><div style="font-size:12px;color:var(--text-secondary);">GTBank Nigeria</div></td>
-              <td style="font-weight:600;">2,016,129</td>
-              <td style="font-weight:600;color:var(--green);">5,000,000 NGN</td>
-              <td style="color:var(--text-secondary);font-size:12px;">≈ 3,360 USDT</td>
-              <td><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → NGN</span></td>
-              <td style="color:var(--text-secondary);">Aminata D.</td>
+              <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-240000</td>
+              <td style="font-weight:600;white-space:nowrap;">Chukwudi Electronics</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
+              <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
+              <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 3,360 USDT</td>
+              <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → NGN</span></td>
+              <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
               <td><span class="status-badge status-completed">● Completed</span></td>
-              <td style="color:var(--text-secondary);">Mar 21</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 21, 14:32</td>
               <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;">Receipt</button></td>
             </tr>
             <tr>
-              <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-230099</td>
-              <td><div style="font-weight:600;">Adeola Suppliers Ltd</div><div style="font-size:12px;color:var(--text-secondary);">Zenith Bank Nigeria</div></td>
-              <td style="font-weight:600;">4,032,258</td>
-              <td style="font-weight:600;color:var(--green);">10,000,000 NGN</td>
-              <td style="color:var(--text-secondary);font-size:12px;">≈ 6,720 USDT</td>
-              <td><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → NGN</span></td>
-              <td style="color:var(--text-secondary);">Fatima B.</td>
+              <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-230099</td>
+              <td style="font-weight:600;white-space:nowrap;">Adeola Suppliers Ltd</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
+              <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
+              <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 6,720 USDT</td>
+              <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → NGN</span></td>
+              <td style="color:var(--text-secondary);white-space:nowrap;">Fatima B.</td>
               <td><span class="status-badge status-completed">● Completed</span></td>
-              <td style="color:var(--text-secondary);">Mar 14</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 14, 09:15</td>
               <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;">Receipt</button></td>
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
 
@@ -1282,17 +1287,20 @@
   function addToHistory(p, b) {
     const tbody = document.getElementById('history-tbody');
     const usdt = Math.round(p.xaf / 600);
+    const now = new Date();
+    const dateStr = now.toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-240001</td>
-      <td><div style="font-weight:600;">${b.name}</div><div style="font-size:12px;color:var(--text-secondary);">${b.bank}</div></td>
-      <td style="font-weight:600;">${fmt(p.xaf)}</td>
-      <td style="font-weight:600;color:var(--green);">${fmt(p.dest)} ${p.currency}</td>
-      <td style="color:var(--text-secondary);font-size:12px;">≈ ${fmt(usdt)} USDT</td>
-      <td><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → ${p.currency}</span></td>
-      <td style="color:var(--text-secondary);">Aminata D.</td>
+      <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-240001</td>
+      <td style="font-weight:600;white-space:nowrap;">${b.name}</td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${b.bank}</td>
+      <td style="font-weight:600;white-space:nowrap;">${fmt(p.xaf)} XAF</td>
+      <td style="font-weight:600;color:var(--green);white-space:nowrap;">${fmt(p.dest)} ${p.currency}</td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ ${fmt(usdt)} USDT</td>
+      <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → ${p.currency}</span></td>
+      <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
       <td><span class="status-badge status-pending" id="hist-status-001">● Pending Approval</span></td>
-      <td style="color:var(--text-secondary);">Just now</td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>
       <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" disabled>Receipt</button></td>
     `;
     tbody.insertBefore(row, tbody.firstChild);

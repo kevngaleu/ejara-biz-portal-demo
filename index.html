@@ -532,7 +532,9 @@
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                 <div class="form-group">
                   <div class="form-label" data-i18n="bankName">Bank Name</div>
-                  <input class="form-input" placeholder="e.g. GTBank Nigeria" id="new-bene-bank">
+                  <select class="form-input form-select" id="new-bene-bank">
+                    <option value="">Select bank...</option>
+                  </select>
                 </div>
                 <div class="form-group">
                   <div class="form-label" data-i18n="accountNumber">Account Number</div>
@@ -712,27 +714,45 @@
       </div>
 
       <div class="card">
+        <div style="padding:8px 20px 6px;background:var(--purple-light);border-radius:12px 12px 0 0;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--purple-mid);">
+          <span style="font-size:13px;">⚡</span>
+          <span style="font-size:12px;color:var(--purple);font-weight:600;">Powered by crypto</span>
+          <span style="font-size:12px;color:var(--text-secondary);">— all payments are settled via USDT on-chain before local delivery</span>
+        </div>
         <table>
           <thead><tr>
-            <th data-i18n="reference">Reference</th><th data-i18n="beneficiary">Beneficiary</th><th data-i18n="amount">Amount</th><th>Corridor</th><th data-i18n="initiatedBy">Initiated by</th><th data-i18n="status">Status</th><th data-i18n="date">Date</th><th></th>
+            <th data-i18n="reference">Reference</th>
+            <th data-i18n="beneficiary">Beneficiary</th>
+            <th>Sent (XAF)</th>
+            <th>Received</th>
+            <th>≈ USDT</th>
+            <th>Corridor</th>
+            <th data-i18n="initiatedBy">Initiated by</th>
+            <th data-i18n="status">Status</th>
+            <th data-i18n="date">Date</th>
+            <th></th>
           </tr></thead>
           <tbody id="history-tbody">
             <tr>
-              <td style="font-weight:600;font-family:monospace;">BTXR-240000</td>
+              <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-240000</td>
               <td><div style="font-weight:600;">Chukwudi Electronics</div><div style="font-size:12px;color:var(--text-secondary);">GTBank Nigeria</div></td>
-              <td><div style="font-weight:600;">2,016,129 XAF</div><div style="font-size:12px;color:var(--text-secondary);">→ 5,000,000 NGN</div></td>
-              <td>🇨🇲 → 🇳🇬</td>
+              <td style="font-weight:600;">2,016,129</td>
+              <td style="font-weight:600;color:var(--green);">5,000,000 NGN</td>
+              <td style="color:var(--text-secondary);font-size:12px;">≈ 3,360 USDT</td>
+              <td><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → NGN</span></td>
               <td style="color:var(--text-secondary);">Aminata D.</td>
               <td><span class="status-badge status-completed">● Completed</span></td>
               <td style="color:var(--text-secondary);">Mar 21</td>
               <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;">Receipt</button></td>
             </tr>
             <tr>
-              <td style="font-weight:600;font-family:monospace;">BTXR-230099</td>
+              <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-230099</td>
               <td><div style="font-weight:600;">Adeola Suppliers Ltd</div><div style="font-size:12px;color:var(--text-secondary);">Zenith Bank Nigeria</div></td>
-              <td><div style="font-weight:600;">4,032,258 XAF</div><div style="font-size:12px;color:var(--text-secondary);">→ 10,000,000 NGN</div></td>
-              <td>🇨🇲 → 🇳🇬</td>
-              <td style="color:var(--text-secondary);">Aminata D.</td>
+              <td style="font-weight:600;">4,032,258</td>
+              <td style="font-weight:600;color:var(--green);">10,000,000 NGN</td>
+              <td style="color:var(--text-secondary);font-size:12px;">≈ 6,720 USDT</td>
+              <td><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → NGN</span></td>
+              <td style="color:var(--text-secondary);">Fatima B.</td>
               <td><span class="status-badge status-completed">● Completed</span></td>
               <td style="color:var(--text-secondary);">Mar 14</td>
               <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;">Receipt</button></td>
@@ -747,7 +767,7 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
         <div>
           <div style="font-size:16px;font-weight:700;" data-i18n="savedBeneTitle">Saved Beneficiaries</div>
-          <div style="color:var(--text-secondary);font-size:13px;margin-top:2px;" data-i18n="savedBeneDesc">Your supplier bank accounts — reuse them on any transfer</div>
+          <div style="color:var(--text-secondary);font-size:13px;margin-top:2px;" data-i18n="savedBeneDesc">Shared across your team — any member can save or reuse a beneficiary</div>
         </div>
         <button class="btn btn-primary" onclick="document.getElementById('add-bene-modal').classList.add('open')" data-i18n="addBeneficiary">＋ Add Beneficiary</button>
       </div>
@@ -759,6 +779,7 @@
             <div style="flex:1;">
               <div style="font-weight:700;">Chukwudi Electronics</div>
               <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">GTBank Nigeria · ****6789</div>
+              <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Added by Aminata D.</div>
             </div>
             <span style="font-size:18px;">🇳🇬</span>
           </div>
@@ -774,6 +795,7 @@
             <div style="flex:1;">
               <div style="font-weight:700;">Adeola Suppliers Ltd</div>
               <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Zenith Bank Nigeria · ****5432</div>
+              <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Added by Fatima B.</div>
             </div>
             <span style="font-size:18px;">🇳🇬</span>
           </div>
@@ -789,6 +811,7 @@
             <div style="flex:1;">
               <div style="font-weight:700;">Emeka & Sons Trading</div>
               <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">UBA Nigeria · ****8901</div>
+              <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Added by Aminata D.</div>
             </div>
             <span style="font-size:18px;">🇳🇬</span>
           </div>
@@ -828,7 +851,7 @@
           <div style="font-size:16px;font-weight:700;" data-i18n="teamTitle">Team Management</div>
           <div style="color:var(--text-secondary);font-size:13px;margin-top:2px;" data-i18n="teamDesc">Manage who can initiate and approve payments</div>
         </div>
-        <button class="btn btn-primary" onclick="document.getElementById('invite-modal').classList.add('open')" data-i18n="inviteMember">＋ Invite Member</button>
+        <button class="btn btn-primary" id="team-invite-btn" onclick="document.getElementById('invite-modal').classList.add('open')" data-i18n="inviteMember">＋ Invite Member</button>
       </div>
 
       <div class="card">
@@ -845,7 +868,7 @@
               <td><span class="role-tag admin">Admin</span> <span class="role-tag approver" style="margin-left:4px;">Approver</span></td>
               <td><span class="status-badge status-completed">● Active</span></td>
               <td style="color:var(--text-secondary);">Today</td>
-              <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;">Manage</button></td>
+              <td><button class="btn btn-secondary team-manage-btn" style="padding:5px 12px;font-size:12px;">Manage</button></td>
             </tr>
             <tr>
               <td>
@@ -857,7 +880,7 @@
               <td><span class="role-tag initiator">Initiator</span></td>
               <td><span class="status-badge status-completed">● Active</span></td>
               <td style="color:var(--text-secondary);">Today</td>
-              <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;">Manage</button></td>
+              <td><button class="btn btn-secondary team-manage-btn" style="padding:5px 12px;font-size:12px;">Manage</button></td>
             </tr>
             <tr>
               <td>
@@ -916,7 +939,7 @@
           </div>
         </div>
       </div>
-      <div class="card" style="margin-bottom:16px;">
+      <div class="card" style="margin-bottom:16px;" id="settings-approval-card">
         <div class="card-header">
           <div>
             <div class="card-title" data-i18n="approvalSettings">Approval Settings (Maker-Checker)</div>
@@ -974,7 +997,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="settings-notif-card">
         <div class="card-header"><div class="card-title" data-i18n="notifPrefs">Notification Preferences</div></div>
         <div class="card-body">
           <div style="display:flex;flex-direction:column;gap:16px;">
@@ -1073,6 +1096,20 @@
 
     const approvalsNav = document.getElementById('nav-approvals');
     approvalsNav.style.display = state.role === 'approver' ? 'flex' : 'none';
+
+    // Settings: hide approval + notification cards for Initiator
+    const isAdmin = state.role === 'approver'; // Théodore is Admin+Approver
+    const approvalCard = document.getElementById('settings-approval-card');
+    const notifCard = document.getElementById('settings-notif-card');
+    if (approvalCard) approvalCard.style.display = isAdmin ? 'block' : 'none';
+    if (notifCard) notifCard.style.display = isAdmin ? 'block' : 'none';
+
+    // Team: hide Manage buttons and Invite button for Initiator
+    document.querySelectorAll('.team-manage-btn').forEach(btn => {
+      btn.style.display = isAdmin ? 'inline-flex' : 'none';
+    });
+    const inviteBtn = document.getElementById('team-invite-btn');
+    if (inviteBtn) inviteBtn.style.display = isAdmin ? 'inline-flex' : 'none';
 
     updateApprovalsUI();
   }
@@ -1188,8 +1225,25 @@
     else { el.style.background = 'var(--purple)'; }
   }
 
+  const banksByCountry = {
+    NGN: ['GTBank (Guaranty Trust Bank)','Zenith Bank','UBA (United Bank for Africa)','Access Bank','First Bank of Nigeria','Fidelity Bank','Stanbic IBTC Bank','Sterling Bank','Wema Bank / ALAT','Kuda Bank','OPay','PalmPay'],
+    CNY: ['ICBC (Industrial & Commercial Bank of China)','Bank of China','China Construction Bank','Agricultural Bank of China','Bank of Communications','China Merchants Bank'],
+    AED: ['Emirates NBD','Abu Dhabi Commercial Bank (ADCB)','Dubai Islamic Bank','Mashreq Bank','First Abu Dhabi Bank (FAB)','RAKBANK'],
+    GBP: ['Barclays','HSBC','Lloyds Bank','NatWest','Santander UK'],
+    EUR: ['BNP Paribas','Société Générale','Deutsche Bank','ING','Crédit Agricole'],
+  };
+
+  function populateBankDropdown() {
+    const sel = document.getElementById('new-bene-bank');
+    if (!sel) return;
+    const currency = state.quoteData.destCurrency || 'NGN';
+    const banks = banksByCountry[currency] || banksByCountry['NGN'];
+    sel.innerHTML = '<option value="">Select bank...</option>' + banks.map(b => `<option value="${b}">${b}</option>`).join('');
+  }
+
   function acceptQuote() {
     clearInterval(state.timerInterval);
+    populateBankDropdown();
     goStep(3);
   }
 
@@ -1227,12 +1281,15 @@
 
   function addToHistory(p, b) {
     const tbody = document.getElementById('history-tbody');
+    const usdt = Math.round(p.xaf / 600);
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td style="font-weight:600;font-family:monospace;">BTXR-240001</td>
+      <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-240001</td>
       <td><div style="font-weight:600;">${b.name}</div><div style="font-size:12px;color:var(--text-secondary);">${b.bank}</div></td>
-      <td><div style="font-weight:600;">${fmt(p.xaf)} XAF</div><div style="font-size:12px;color:var(--text-secondary);">→ ${fmt(p.dest)} ${p.currency}</div></td>
-      <td>🇨🇲 → ${p.flag}</td>
+      <td style="font-weight:600;">${fmt(p.xaf)}</td>
+      <td style="font-weight:600;color:var(--green);">${fmt(p.dest)} ${p.currency}</td>
+      <td style="color:var(--text-secondary);font-size:12px;">≈ ${fmt(usdt)} USDT</td>
+      <td><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">XAF → ${p.currency}</span></td>
       <td style="color:var(--text-secondary);">Aminata D.</td>
       <td><span class="status-badge status-pending" id="hist-status-001">● Pending Approval</span></td>
       <td style="color:var(--text-secondary);">Just now</td>

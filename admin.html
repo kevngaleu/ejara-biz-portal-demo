@@ -191,6 +191,19 @@
     .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
     .empty-icon { font-size: 40px; margin-bottom: 12px; }
     .empty-title { font-weight: 600; color: var(--text); margin-bottom: 6px; }
+
+    /* ─── STATUS BADGES (matches business portal) ─── */
+    .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-pending-review { background: #EFF6FF; color: #2563EB; }
+    .status-completed { background: #F0FDF4; color: #16A34A; }
+    .status-rejected { background: #FEF2F2; color: #DC2626; }
+    .status-submitted { background: #EFF6FF; color: #3B82F6; }
+    .status-pending { background: #FFF7ED; color: #EA580C; }
+
+    /* ─── AUDIT LOG PAGE ─── */
+    .audit-entry { padding: 16px 20px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .audit-entry:last-child { border-bottom: none; }
+    .audit-meta { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -280,6 +293,9 @@
       <div class="nav-label">Finance</div>
       <div class="nav-item" id="nav-rates" onclick="navigate('rates')">
         <span class="nav-icon">📈</span> Exchange Rates
+      </div>
+      <div class="nav-item" id="nav-auditlog" onclick="navigate('auditlog')">
+        <span class="nav-icon">📋</span> Rate Change Log
       </div>
     </div>
 
@@ -472,67 +488,101 @@
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Review proof of payment and approve or reject transfers</div>
       </div>
 
-      <div class="filters">
-        <button class="filter-btn active" onclick="filterTX('all', this)">All (6)</button>
-        <button class="filter-btn" onclick="filterTX('pending', this)">Pending Review (2)</button>
-        <button class="filter-btn" onclick="filterTX('completed', this)">Completed (3)</button>
-        <button class="filter-btn" onclick="filterTX('rejected', this)">Rejected (1)</button>
-        <input class="search-input" type="text" placeholder="🔍 Search by reference or name…">
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
+        <select class="form-input" style="max-width:180px;padding:8px 12px;font-size:13px;">
+          <option>All statuses</option>
+          <option>Pending Review</option>
+          <option>Completed</option>
+          <option>Rejected</option>
+        </select>
+        <select class="form-input" style="max-width:160px;padding:8px 12px;font-size:13px;">
+          <option>All corridors</option>
+          <option>XAF → NGN</option>
+          <option>XAF → CNY</option>
+          <option>XAF → AED</option>
+        </select>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">From</span>
+          <input type="date" class="form-input" style="max-width:150px;padding:8px 12px;font-size:13px;">
+          <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">To</span>
+          <input type="date" class="form-input" style="max-width:150px;padding:8px 12px;font-size:13px;">
+        </div>
+        <button class="btn btn-secondary" style="margin-left:auto;white-space:nowrap;">↓ Export CSV</button>
       </div>
 
       <div class="card">
+        <div style="padding:8px 20px 6px;background:var(--purple-light);border-radius:12px 12px 0 0;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--purple-mid);">
+          <span style="font-size:13px;">⚡</span>
+          <span style="font-size:12px;color:var(--purple);font-weight:600;">Powered by crypto</span>
+          <span style="font-size:12px;color:var(--text-secondary);">— all payments are settled via USDT on-chain before local delivery</span>
+        </div>
         <div style="overflow-x:auto;">
-          <table style="min-width:900px;">
+          <table style="min-width:1100px;">
             <thead><tr>
               <th>Reference</th>
               <th>Customer</th>
-              <th>Amount</th>
-              <th>Corridor</th>
               <th>Beneficiary</th>
+              <th>Bank</th>
+              <th>Amount Sent</th>
+              <th>Amount Received</th>
+              <th>≈ USDT</th>
+              <th>Corridor</th>
               <th>Status</th>
-              <th>Submitted</th>
-              <th>Action</th>
+              <th>Date &amp; Time</th>
+              <th></th>
             </tr></thead>
             <tbody>
-              <tr onclick="openTX('tx-001')">
-                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260001</td>
-                <td style="font-weight:600;">Aminata Diallo</td>
-                <td style="font-weight:600;">2,016,129 XAF<br><span style="font-size:11px;color:var(--green);">→ 5,000,000 NGN</span></td>
-                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
-                <td style="font-size:13px;color:var(--text-secondary);">Chukwudi Electronics<br>GTBank Nigeria</td>
-                <td><span class="badge-pill badge-review">● Pending Review</span></td>
-                <td style="font-size:12px;color:var(--text-secondary);">Mar 26, 11:34</td>
-                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
+              <tr onclick="openTX('tx-001')" style="cursor:pointer;">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260001</td>
+                <td style="font-weight:600;white-space:nowrap;">Aminata Diallo</td>
+                <td style="font-weight:600;white-space:nowrap;">Chukwudi Electronics</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
+                <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
+                <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 3,360 USDT</td>
+                <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
+                <td><span class="status-badge status-pending-review">● Pending Review</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 11:34</td>
+                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
               </tr>
-              <tr onclick="openTX('tx-002')">
-                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260002</td>
-                <td style="font-weight:600;">Martin Foka</td>
-                <td style="font-weight:600;">4,032,258 XAF<br><span style="font-size:11px;color:var(--green);">→ 10,000,000 NGN</span></td>
-                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
-                <td style="font-size:13px;color:var(--text-secondary);">Adeola Suppliers<br>Zenith Bank Nigeria</td>
-                <td><span class="badge-pill badge-review">● Pending Review</span></td>
-                <td style="font-size:12px;color:var(--text-secondary);">Mar 26, 10:15</td>
-                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
+              <tr onclick="openTX('tx-002')" style="cursor:pointer;">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260002</td>
+                <td style="font-weight:600;white-space:nowrap;">Martin Foka</td>
+                <td style="font-weight:600;white-space:nowrap;">Adeola Suppliers Ltd</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
+                <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
+                <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 6,720 USDT</td>
+                <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
+                <td><span class="status-badge status-pending-review">● Pending Review</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 10:15</td>
+                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
               </tr>
-              <tr onclick="openTX('tx-003')">
-                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260003</td>
-                <td style="font-weight:600;">Alice Mbarga</td>
-                <td style="font-weight:600;">806,452 XAF<br><span style="font-size:11px;color:var(--green);">→ 2,000,000 NGN</span></td>
-                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
-                <td style="font-size:13px;color:var(--text-secondary);">Emeka Traders<br>Access Bank Nigeria</td>
-                <td><span class="badge-pill badge-approved">✓ Completed</span></td>
-                <td style="font-size:12px;color:var(--text-secondary);">Mar 25, 16:48</td>
-                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
+              <tr onclick="openTX('tx-003')" style="cursor:pointer;">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260003</td>
+                <td style="font-weight:600;white-space:nowrap;">Alice Mbarga</td>
+                <td style="font-weight:600;white-space:nowrap;">Emeka Traders</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Access Bank Nigeria</td>
+                <td style="font-weight:600;white-space:nowrap;">806,452 XAF</td>
+                <td style="font-weight:600;color:var(--green);white-space:nowrap;">2,000,000 NGN</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 1,344 USDT</td>
+                <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 16:48</td>
+                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
               </tr>
-              <tr onclick="openTX('tx-004')">
-                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260004</td>
-                <td style="font-weight:600;">Fatima Bello</td>
-                <td style="font-weight:600;">1,209,677 XAF<br><span style="font-size:11px;color:var(--green);">→ 3,000,000 NGN</span></td>
-                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
-                <td style="font-size:13px;color:var(--text-secondary);">Lagos Goods Ltd<br>First Bank Nigeria</td>
-                <td><span class="badge-pill badge-rejected">✗ Rejected</span></td>
-                <td style="font-size:12px;color:var(--text-secondary);">Mar 25, 14:20</td>
-                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
+              <tr onclick="openTX('tx-004')" style="cursor:pointer;">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260004</td>
+                <td style="font-weight:600;white-space:nowrap;">Fatima Bello</td>
+                <td style="font-weight:600;white-space:nowrap;">Lagos Goods Ltd</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">First Bank Nigeria</td>
+                <td style="font-weight:600;white-space:nowrap;">1,209,677 XAF</td>
+                <td style="font-weight:600;color:var(--green);white-space:nowrap;">3,000,000 NGN</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 2,016 USDT</td>
+                <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
+                <td><span class="status-badge status-rejected">✗ Rejected</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 14:20</td>
+                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
               </tr>
             </tbody>
           </table>
@@ -547,75 +597,96 @@
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Set retail rates per corridor. Changes apply to all new quotes immediately.</div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Retail Rates</div></div>
-          <div class="card-body">
-            <div class="rate-row">
-              <div>
-                <div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div>
-                <div class="rate-sub">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div>
-              </div>
-              <div class="rate-input-wrap">
-                <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
-                <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn">
-                <span style="font-size:13px;color:var(--text-secondary);">NGN</span>
-                <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('NGN', 'rate-ngn')">Save</button>
-              </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Retail Rates</div><a href="#" onclick="navigate('auditlog');return false;" style="font-size:13px;color:var(--purple);">View change log →</a></div>
+        <div class="card-body">
+          <div class="rate-row">
+            <div>
+              <div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div>
+              <div class="rate-sub">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div>
             </div>
-            <div class="rate-row">
-              <div>
-                <div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div>
-                <div class="rate-sub">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div>
-              </div>
-              <div class="rate-input-wrap">
-                <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
-                <input class="rate-input" type="number" value="0.0112" step="0.0001" id="rate-cny">
-                <span style="font-size:13px;color:var(--text-secondary);">CNY</span>
-                <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('CNY', 'rate-cny')">Save</button>
-              </div>
+            <div class="rate-input-wrap">
+              <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn">
+              <span style="font-size:13px;color:var(--text-secondary);">NGN</span>
+              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('NGN', 'rate-ngn')">Save</button>
             </div>
-            <div class="rate-row">
-              <div>
-                <div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div>
-                <div class="rate-sub">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div>
-              </div>
-              <div class="rate-input-wrap">
-                <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
-                <input class="rate-input" type="number" value="0.0061" step="0.0001" id="rate-aed">
-                <span style="font-size:13px;color:var(--text-secondary);">AED</span>
-                <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('AED', 'rate-aed')">Save</button>
-              </div>
+          </div>
+          <div class="rate-row">
+            <div>
+              <div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div>
+              <div class="rate-sub">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div>
+            </div>
+            <div class="rate-input-wrap">
+              <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" type="number" value="0.0112" step="0.0001" id="rate-cny">
+              <span style="font-size:13px;color:var(--text-secondary);">CNY</span>
+              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('CNY', 'rate-cny')">Save</button>
+            </div>
+          </div>
+          <div class="rate-row">
+            <div>
+              <div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div>
+              <div class="rate-sub">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div>
+            </div>
+            <div class="rate-input-wrap">
+              <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" type="number" value="0.0061" step="0.0001" id="rate-aed">
+              <span style="font-size:13px;color:var(--text-secondary);">AED</span>
+              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('AED', 'rate-aed')">Save</button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="card">
-          <div class="card-header"><div class="card-title">Rate Change Audit Log</div></div>
-          <div class="card-body" style="padding:0;">
-            <div id="audit-log">
-              <div style="padding:14px 20px;border-bottom:1px solid var(--bg);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:600;font-size:13px;">XAF → NGN</span>
-                  <span style="font-size:12px;color:var(--text-secondary);">Mar 26, 09:00</span>
-                </div>
-                <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">2.45 → 2.48 NGN · by recitKevin</div>
-              </div>
-              <div style="padding:14px 20px;border-bottom:1px solid var(--bg);">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:600;font-size:13px;">XAF → CNY</span>
-                  <span style="font-size:12px;color:var(--text-secondary);">Mar 25, 14:30</span>
-                </div>
-                <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">0.0110 → 0.0112 CNY · by recitKevin</div>
-              </div>
-              <div style="padding:14px 20px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span style="font-weight:600;font-size:13px;">XAF → AED</span>
-                  <span style="font-size:12px;color:var(--text-secondary);">Mar 24, 11:15</span>
-                </div>
-                <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">0.0059 → 0.0061 AED · by recitKevin</div>
-              </div>
+    <!-- ─── RATE CHANGE LOG ─── -->
+    <div id="page-auditlog" class="content" style="display:none">
+      <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:20px;font-weight:700;">Rate Change Log</div>
+          <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Full history of exchange rate updates</div>
+        </div>
+        <button class="btn btn-secondary" onclick="navigate('rates')">← Back to Rates</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">All Changes</div>
+          <select class="form-input" style="max-width:160px;padding:7px 12px;font-size:13px;">
+            <option>All corridors</option>
+            <option>XAF → NGN</option>
+            <option>XAF → CNY</option>
+            <option>XAF → AED</option>
+          </select>
+        </div>
+        <div id="audit-log">
+          <div class="audit-entry">
+            <div>
+              <div style="font-weight:600;font-size:14px;">XAF → NGN</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">2.45 → <strong style="color:var(--text);">2.48 NGN</strong> &nbsp;·&nbsp; by recitKevin</div>
             </div>
+            <div class="audit-meta">Mar 26, 2026 · 09:00</div>
+          </div>
+          <div class="audit-entry">
+            <div>
+              <div style="font-weight:600;font-size:14px;">XAF → CNY</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">0.0110 → <strong style="color:var(--text);">0.0112 CNY</strong> &nbsp;·&nbsp; by recitKevin</div>
+            </div>
+            <div class="audit-meta">Mar 25, 2026 · 14:30</div>
+          </div>
+          <div class="audit-entry">
+            <div>
+              <div style="font-weight:600;font-size:14px;">XAF → AED</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">0.0059 → <strong style="color:var(--text);">0.0061 AED</strong> &nbsp;·&nbsp; by recitKevin</div>
+            </div>
+            <div class="audit-meta">Mar 24, 2026 · 11:15</div>
+          </div>
+          <div class="audit-entry">
+            <div>
+              <div style="font-weight:600;font-size:14px;">XAF → NGN</div>
+              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">2.42 → <strong style="color:var(--text);">2.45 NGN</strong> &nbsp;·&nbsp; by recitKevin</div>
+            </div>
+            <div class="audit-meta">Mar 23, 2026 · 08:45</div>
           </div>
         </div>
       </div>
@@ -699,7 +770,28 @@
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Proof of Payment</div>
-      <div class="proof-img" id="tx-proof">📎 Bank transfer receipt uploaded by customer<br><span style="font-size:11px;margin-top:6px;display:block;">Mar 26, 2026 · 11:32 AM</span></div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Uploaded by customer · Mar 26, 2026 · 11:32 AM</div>
+      <!-- Simulated bank receipt image -->
+      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;background:white;">
+        <div style="background:#003087;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+          <span style="color:white;font-weight:700;font-size:14px;">Société Générale Cameroun</span>
+          <span style="color:rgba(255,255,255,.7);font-size:11px;">Bank Transfer Receipt</span>
+        </div>
+        <div style="padding:16px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">
+            <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Transaction Ref</div><div style="font-weight:600;font-family:monospace;">SGC2026032600441</div></div>
+            <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Date & Time</div><div style="font-weight:600;">26/03/2026 · 11:28</div></div>
+            <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">From Account</div><div style="font-weight:600;">****4821 — Aminata Diallo</div></div>
+            <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">To Account</div><div style="font-weight:600;">****0072 — Ejara Finance SA</div></div>
+            <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Amount</div><div style="font-weight:700;font-size:15px;color:#003087;">2,016,129 XAF</div></div>
+            <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Reference Note</div><div style="font-weight:600;">BTXR-260001</div></div>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--border);text-align:center;font-size:11px;color:var(--text-secondary);">✓ Transfer confirmed by Société Générale Cameroun</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;padding:10px 14px;background:#EFF6FF;border-radius:8px;font-size:12px;color:#1E40AF;">
+        ℹ️ <strong>Verify:</strong> Amount matches (2,016,129 XAF) · Reference note matches (BTXR-260001) · Destination account is Ejara's (****0072)
+      </div>
     </div>
     <div class="reject-reason" id="tx-reject-form">
       <div class="detail-section-title" style="margin-bottom:8px;">Rejection Reason <span style="color:var(--red);">*</span></div>
@@ -768,7 +860,7 @@
     if (pageEl) pageEl.style.display = 'block';
     const navEl = document.getElementById('nav-' + page);
     if (navEl) navEl.classList.add('active');
-    const titles = { dashboard: 'Dashboard', kyb: 'KYB Review', transactions: 'Transactions', rates: 'Exchange Rates' };
+    const titles = { dashboard: 'Dashboard', kyb: 'KYB Review', transactions: 'Transactions', rates: 'Exchange Rates', auditlog: 'Rate Change Log' };
     document.getElementById('topbar-title').textContent = titles[page] || page;
   }
 
@@ -909,13 +1001,13 @@
     const val = document.getElementById(inputId).value;
     const log = document.getElementById('audit-log');
     const now = new Date();
-    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short' }) + ', ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    const newEntry = `<div style="padding:14px 20px;border-bottom:1px solid var(--bg);">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-weight:600;font-size:13px;">XAF → ${corridor}</span>
-        <span style="font-size:12px;color:var(--text-secondary);">${dateStr}</span>
+    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const newEntry = `<div class="audit-entry">
+      <div>
+        <div style="font-weight:600;font-size:14px;">XAF → ${corridor}</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">Updated to <strong style="color:var(--text);">${val} ${corridor}</strong> &nbsp;·&nbsp; by recitKevin</div>
       </div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Updated to ${val} ${corridor} · by recitKevin</div>
+      <div class="audit-meta">${dateStr}</div>
     </div>`;
     log.insertAdjacentHTML('afterbegin', newEntry);
     showToast('📈', 'Rate updated', `XAF → ${corridor} is now ${val}`);

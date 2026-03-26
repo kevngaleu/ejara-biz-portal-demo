@@ -24,6 +24,7 @@
       --sidebar-width: 230px;
     }
 
+    html, body { overflow-x: hidden; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
 
     /* ─── SCREENS ─── */
@@ -70,7 +71,7 @@
     .role-tag.approver { background: #F0FDF4; color: #16A34A; }
     .role-tag.admin { background: #FFF7ED; color: #EA580C; }
 
-    .main { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; transition: margin-left .2s ease; }
+    .main { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; transition: margin-left .2s ease; min-width: 0; overflow-x: hidden; }
     .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
     .topbar-left { display: flex; align-items: center; gap: 16px; }
     .topbar-title { font-size: 16px; font-weight: 600; }
@@ -79,7 +80,6 @@
     .sidebar-toggle:hover { background: var(--bg); color: var(--text); }
 
     /* ─── COLLAPSED SIDEBAR ─── */
-    --sidebar-collapsed-width: 64px;
     .sidebar { transition: width .2s ease; overflow: hidden; }
     .sidebar.collapsed { width: 64px; }
     .sidebar.collapsed .sidebar-logo span,
@@ -93,7 +93,7 @@
     .sidebar.collapsed .sidebar-user { justify-content: center; padding: 12px; }
     .main.collapsed { margin-left: 64px; }
     .lang-btn { font-size: 13px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 4px; }
-    .content { padding: 32px; max-width: 1400px; margin: 0 auto; }
+    .content { padding: 32px; }
 
     /* ─── COMPONENTS ─── */
     .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }

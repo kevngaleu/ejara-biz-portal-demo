@@ -1171,7 +1171,7 @@
   }
 
   function login() {
-    state.role = selectedLoginRole;
+    state.role = 'initiator';
     document.getElementById('screen-login').classList.remove('active');
     document.getElementById('screen-app').classList.add('active');
     document.getElementById('role-bar').style.display = 'flex';
@@ -1182,8 +1182,6 @@
   function switchRole(role) {
     state.role = role;
     updateUserUI();
-    document.getElementById('btn-initiator').classList.toggle('current', role === 'initiator');
-    document.getElementById('btn-approver').classList.toggle('current', role === 'approver');
     navigate('dashboard');
   }
 

@@ -203,7 +203,19 @@
     /* ─── AUDIT LOG PAGE ─── */
     .audit-entry { padding: 16px 20px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
     .audit-entry:last-child { border-bottom: none; }
-    .audit-meta { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .audit-meta { font-size: 12px; color: var(--text-secondary); white-space: nowrap; text-align: right; }
+    .audit-user { display: inline-flex; align-items: center; gap: 4px; background: var(--purple-light); color: var(--purple); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 5px; }
+
+    /* ─── RATE CONFIRM MODAL ─── */
+    .rate-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
+    .rate-modal-overlay.open { display: flex; }
+    .rate-modal { background: var(--white); border-radius: 16px; padding: 32px; width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+    .rate-modal-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
+    .rate-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+    .rate-modal-body { font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 8px; }
+    .rate-modal-change { background: var(--bg); border-radius: 10px; padding: 14px; margin: 16px 0; text-align: center; }
+    .rate-modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+    .rate-modal-actions .btn { flex: 1; justify-content: center; }
   </style>
 </head>
 <body>
@@ -659,40 +671,79 @@
             <option>XAF → AED</option>
           </select>
         </div>
-        <div id="audit-log">
-          <div class="audit-entry">
-            <div>
-              <div style="font-weight:600;font-size:14px;">XAF → NGN</div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">2.45 → <strong style="color:var(--text);">2.48 NGN</strong> &nbsp;·&nbsp; by recitKevin</div>
-            </div>
-            <div class="audit-meta">Mar 26, 2026 · 09:00</div>
-          </div>
-          <div class="audit-entry">
-            <div>
-              <div style="font-weight:600;font-size:14px;">XAF → CNY</div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">0.0110 → <strong style="color:var(--text);">0.0112 CNY</strong> &nbsp;·&nbsp; by recitKevin</div>
-            </div>
-            <div class="audit-meta">Mar 25, 2026 · 14:30</div>
-          </div>
-          <div class="audit-entry">
-            <div>
-              <div style="font-weight:600;font-size:14px;">XAF → AED</div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">0.0059 → <strong style="color:var(--text);">0.0061 AED</strong> &nbsp;·&nbsp; by recitKevin</div>
-            </div>
-            <div class="audit-meta">Mar 24, 2026 · 11:15</div>
-          </div>
-          <div class="audit-entry">
-            <div>
-              <div style="font-weight:600;font-size:14px;">XAF → NGN</div>
-              <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">2.42 → <strong style="color:var(--text);">2.45 NGN</strong> &nbsp;·&nbsp; by recitKevin</div>
-            </div>
-            <div class="audit-meta">Mar 23, 2026 · 08:45</div>
-          </div>
+        <div style="overflow-x:auto;">
+        <table id="audit-log">
+          <thead><tr>
+            <th>Corridor</th>
+            <th>Old Rate</th>
+            <th>New Rate</th>
+            <th>Updated By</th>
+            <th>Date &amp; Time</th>
+          </tr></thead>
+          <tbody id="audit-tbody">
+            <tr>
+              <td style="font-weight:600;white-space:nowrap;">XAF → NGN</td>
+              <td style="color:var(--text-secondary);white-space:nowrap;">2.45 NGN</td>
+              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">2.48 NGN</td>
+              <td><span class="audit-user">👤 recitKevin</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 2026 · 09:00</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;white-space:nowrap;">XAF → CNY</td>
+              <td style="color:var(--text-secondary);white-space:nowrap;">0.0110 CNY</td>
+              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">0.0112 CNY</td>
+              <td><span class="audit-user">👤 recitKevin</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 2026 · 14:30</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;white-space:nowrap;">XAF → AED</td>
+              <td style="color:var(--text-secondary);white-space:nowrap;">0.0059 AED</td>
+              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">0.0061 AED</td>
+              <td><span class="audit-user">👤 recitKevin</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 24, 2026 · 11:15</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600;white-space:nowrap;">XAF → NGN</td>
+              <td style="color:var(--text-secondary);white-space:nowrap;">2.42 NGN</td>
+              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">2.45 NGN</td>
+              <td><span class="audit-user">👤 recitKevin</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 23, 2026 · 08:45</td>
+            </tr>
+          </tbody>
+        </table>
         </div>
       </div>
     </div>
 
   </main>
+</div>
+
+<!-- ─── RATE CONFIRMATION MODAL ─── -->
+<div class="rate-modal-overlay" id="rate-modal-overlay">
+  <div class="rate-modal">
+    <div class="rate-modal-icon">📈</div>
+    <div class="rate-modal-title">Confirm Rate Change</div>
+    <div class="rate-modal-body">You are about to update the exchange rate for:</div>
+    <div class="rate-modal-change">
+      <div style="font-weight:700;font-size:15px;margin-bottom:10px;" id="modal-corridor-label">XAF → NGN</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+        <div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">Current rate</div>
+          <div style="font-size:18px;font-weight:700;color:var(--text-secondary);" id="modal-old-rate">—</div>
+        </div>
+        <div style="font-size:20px;color:var(--text-light);">→</div>
+        <div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">New rate</div>
+          <div style="font-size:18px;font-weight:700;color:var(--purple);" id="modal-new-rate">—</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);text-align:center;">This change applies to all new transactions. Locked rates are not affected.</div>
+    <div class="rate-modal-actions">
+      <button class="btn btn-secondary btn-lg" onclick="cancelRateModal()">Cancel</button>
+      <button class="btn btn-primary btn-lg" onclick="confirmSaveRate()">Confirm Update</button>
+    </div>
+  </div>
 </div>
 
 <!-- ─── KYB DETAIL PANEL ─── -->
@@ -997,20 +1048,53 @@
   }
 
   // ─── RATES ───
+  let _pendingRate = null; // { corridor, inputId, oldVal, newVal }
+
   function saveRate(corridor, inputId) {
-    const val = document.getElementById(inputId).value;
-    const log = document.getElementById('audit-log');
+    const input = document.getElementById(inputId);
+    const newVal = parseFloat(input.value);
+    // Store old value from data attribute (set after first save) or the original input default
+    const oldVal = parseFloat(input.dataset.committed || input.defaultValue);
+
+    _pendingRate = { corridor, inputId, oldVal, newVal };
+
+    // Populate modal
+    document.getElementById('modal-corridor-label').textContent = `XAF → ${corridor}`;
+    document.getElementById('modal-old-rate').textContent = `${oldVal} ${corridor}`;
+    document.getElementById('modal-new-rate').textContent = `${newVal} ${corridor}`;
+    document.getElementById('rate-modal-overlay').classList.add('open');
+  }
+
+  function cancelRateModal() {
+    document.getElementById('rate-modal-overlay').classList.remove('open');
+    _pendingRate = null;
+  }
+
+  function confirmSaveRate() {
+    if (!_pendingRate) return;
+    const { corridor, inputId, oldVal, newVal } = _pendingRate;
+
+    // Commit the new value as the baseline for next change
+    const input = document.getElementById(inputId);
+    input.dataset.committed = newVal;
+
+    // Insert row at top of audit table
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    const newEntry = `<div class="audit-entry">
-      <div>
-        <div style="font-weight:600;font-size:14px;">XAF → ${corridor}</div>
-        <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;">Updated to <strong style="color:var(--text);">${val} ${corridor}</strong> &nbsp;·&nbsp; by recitKevin</div>
-      </div>
-      <div class="audit-meta">${dateStr}</div>
-    </div>`;
-    log.insertAdjacentHTML('afterbegin', newEntry);
-    showToast('📈', 'Rate updated', `XAF → ${corridor} is now ${val}`);
+    const tbody = document.getElementById('audit-tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600;white-space:nowrap;">XAF → ${corridor}</td>
+      <td style="color:var(--text-secondary);white-space:nowrap;">${oldVal} ${corridor}</td>
+      <td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newVal} ${corridor}</td>
+      <td><span class="audit-user">👤 recitKevin</span></td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>
+    `;
+    tbody.insertBefore(tr, tbody.firstChild);
+
+    document.getElementById('rate-modal-overlay').classList.remove('open');
+    _pendingRate = null;
+    showToast('📈', 'Rate updated', `XAF → ${corridor} is now ${newVal}`);
   }
 
   // ─── BADGES ───

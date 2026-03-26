@@ -226,20 +226,8 @@
     </div>
     <div class="login-title">Welcome to Ejara FX Business</div>
     <div class="login-sub">Self-service cross-border payments for your company</div>
-    <div class="prototype-note">⚡ Prototype — Select a role to explore the flow</div>
-    <div class="role-select">
-      <div class="role-btn selected" onclick="selectRole('initiator', this)">
-        <div class="role-icon">👩‍💼</div>
-        <div class="role-name">Aminata</div>
-        <div class="role-desc">Finance Manager<br>Initiator</div>
-      </div>
-      <div class="role-btn" onclick="selectRole('approver', this)">
-        <div class="role-icon">👨‍💼</div>
-        <div class="role-name">Théodore</div>
-        <div class="role-desc">CFO / Admin<br>Approver</div>
-      </div>
-    </div>
-    <button class="btn btn-primary btn-lg" onclick="login()">Sign In →</button>
+    <div class="prototype-note">⚡ Prototype — Explore the business payment flow</div>
+    <button class="btn btn-primary btn-lg" onclick="login()">Sign In as Aminata →</button>
   </div>
 </div>
 
@@ -386,7 +374,7 @@
       </div>
 
       <div class="alert alert-info" style="margin-top:20px;">
-        ℹ️ <div><strong>Onboarding checklist</strong> — <a href="#" onclick="navigate('team');return false;" style="color:inherit;">Invite your team members</a> to split payment duties between Initiator and Approver roles.</div>
+        ℹ️ <div><strong>Onboarding checklist</strong> — <a href="#" onclick="navigate('team');return false;" style="color:inherit;">Invite your team members</a> to manage your account.</div>
       </div>
     </div>
 
@@ -1094,11 +1082,11 @@
         <div class="card-body">
           <div style="display:flex;flex-direction:column;gap:16px;">
             <label style="display:flex;justify-content:space-between;align-items:center;">
-              <div><div style="font-weight:500;" data-i18n="notif1">Payment submitted for approval</div><div style="font-size:12px;color:var(--text-secondary);" data-i18n="notif1Desc">Email + SMS to approvers</div></div>
+              <div><div style="font-weight:500;" data-i18n="notif1">Payment submitted for review</div><div style="font-size:12px;color:var(--text-secondary);" data-i18n="notif1Desc">Email to Ejara ops team</div></div>
               <input type="checkbox" checked style="accent-color:var(--purple);width:18px;height:18px;">
             </label>
             <label style="display:flex;justify-content:space-between;align-items:center;">
-              <div><div style="font-weight:500;" data-i18n="notif2">Payment approved or completed</div><div style="font-size:12px;color:var(--text-secondary);" data-i18n="notif2Desc">Email to initiator</div></div>
+              <div><div style="font-weight:500;" data-i18n="notif2">Payment approved or completed</div><div style="font-size:12px;color:var(--text-secondary);" data-i18n="notif2Desc">Email to you</div></div>
               <input type="checkbox" checked style="accent-color:var(--purple);width:18px;height:18px;">
             </label>
             <label style="display:flex;justify-content:space-between;align-items:center;">
@@ -1115,9 +1103,7 @@
 <!-- Role Switcher Bar -->
 <div class="switch-role-bar" id="role-bar" style="display:none">
   <span>🎭 Prototype — viewing as:</span>
-  <button class="role-switch-btn current" id="btn-initiator" onclick="switchRole('initiator')">👩‍💼 Aminata (Initiator)</button>
-  <button class="role-switch-btn" id="btn-approver" onclick="switchRole('approver')">👨‍💼 Théodore (Approver)</button>
-  <span style="font-size:12px;color:#C4B5FD;">Switch roles to test the full Maker-Checker flow</span>
+  <button class="role-switch-btn current" id="btn-initiator">👩‍💼 Aminata (Finance Manager)</button>
 </div>
 
 <!-- Toast Notification -->

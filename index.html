@@ -575,6 +575,24 @@
                   <input class="form-input" placeholder="10-digit account" id="new-bene-account">
                 </div>
               </div>
+              <div class="form-group">
+                <div class="form-label">WhatsApp Number <span style="font-weight:400;color:var(--text-light);">(optional)</span></div>
+                <input class="form-input" placeholder="e.g. +234 812 345 6789" id="new-bene-whatsapp">
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="form-group">
+                  <div class="form-label">Address <span style="font-weight:400;color:var(--text-light);">(optional)</span></div>
+                  <input class="form-input" placeholder="Street address" id="new-bene-address">
+                </div>
+                <div class="form-group">
+                  <div class="form-label">City <span style="font-weight:400;color:var(--text-light);">(optional)</span></div>
+                  <input class="form-input" placeholder="e.g. Lagos" id="new-bene-city">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="form-label">Postal Code <span style="font-weight:400;color:var(--text-light);">(optional)</span></div>
+                <input class="form-input" placeholder="e.g. 100001" id="new-bene-postal" style="max-width:180px;">
+              </div>
               <div class="form-group" style="display:flex;align-items:center;gap:10px;background:var(--bg);padding:12px;border-radius:8px;">
                 <input type="checkbox" id="save-bene" style="width:16px;height:16px;accent-color:var(--purple);">
                 <label for="save-bene" style="font-size:13px;cursor:pointer;" data-i18n="saveBeneficiary">Save this beneficiary for future transfers</label>
@@ -998,6 +1016,12 @@
           <div class="form-group"><div class="form-label" data-i18n="country">Country</div>
             <select class="form-input form-select"><option>Nigeria</option><option>China</option><option>UAE</option><option>UK</option></select>
           </div>
+          <div class="form-group"><div class="form-label">WhatsApp Number <span style="font-weight:400;color:var(--text-light);">(optional)</span></div><input class="form-input" placeholder="e.g. +234 812 345 6789"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div class="form-group"><div class="form-label">Address <span style="font-weight:400;color:var(--text-light);">(optional)</span></div><input class="form-input" placeholder="Street address"></div>
+            <div class="form-group"><div class="form-label">City <span style="font-weight:400;color:var(--text-light);">(optional)</span></div><input class="form-input" placeholder="e.g. Lagos"></div>
+          </div>
+          <div class="form-group"><div class="form-label">Postal Code <span style="font-weight:400;color:var(--text-light);">(optional)</span></div><input class="form-input" placeholder="e.g. 100001" style="max-width:180px;"></div>
           <div class="modal-actions">
             <button class="btn btn-secondary" onclick="document.getElementById('add-bene-modal').classList.remove('open')" data-i18n="cancel">Cancel</button>
             <button class="btn btn-primary" onclick="document.getElementById('add-bene-modal').classList.remove('open');showToast('✅','Beneficiary saved','You can now use it on any transfer.')" data-i18n="saveBeneBtn">Save Beneficiary</button>

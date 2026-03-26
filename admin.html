@@ -783,14 +783,16 @@
       <div class="detail-section-title">Rejection Reason</div>
       <div style="padding:12px 16px;background:#FEF2F2;border-radius:8px;font-size:13px;color:var(--red);" id="kyb-rejection-text">—</div>
     </div>
-    <div class="reject-reason" id="kyb-reject-form">
-      <div class="detail-section-title" style="margin-bottom:8px;">Rejection Reason <span style="color:var(--red);">*</span></div>
-      <textarea id="kyb-reject-reason" placeholder="Explain why this KYB is being rejected (will be sent to the applicant)…"></textarea>
+    <div class="detail-section" style="background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:14px 16px;">
+      <div style="font-size:13px;color:#856404;">
+        <strong>Review and approval are handled on Dotfile.</strong><br>
+        Open the applicant's case on Dotfile to approve, reject, or request additional documents. The status here will update automatically via webhook.
+      </div>
     </div>
   </div>
   <div class="detail-actions" id="kyb-actions">
-    <button class="btn btn-danger" onclick="rejectKYB()">✗ Reject</button>
-    <button class="btn btn-success" onclick="approveKYB()">✓ Approve</button>
+    <button class="btn btn-secondary" onclick="closeKYB()">Close</button>
+    <a id="kyb-dotfile-link" href="https://app.dotfile.com" target="_blank" class="btn btn-primary" style="text-decoration:none;">Open in Dotfile ↗</a>
   </div>
 </div>
 
@@ -925,12 +927,10 @@
   };
 
   let currentKYB = null;
-  let rejectKYBMode = false;
 
   function openKYB(id) {
     const d = kybData[id];
     currentKYB = id;
-    rejectKYBMode = false;
     document.getElementById('kyb-panel-title').textContent = 'KYB — ' + d.name;
     document.getElementById('kyb-name').textContent = d.name;
     document.getElementById('kyb-email').textContent = d.email;
@@ -938,11 +938,8 @@
     document.getElementById('kyb-date').textContent = d.date;
     const statusMap = { pending: '<span class="badge-pill badge-pending">● Pending</span>', approved: '<span class="badge-pill badge-approved">✓ Approved</span>', rejected: '<span class="badge-pill badge-rejected">✗ Rejected</span>' };
     document.getElementById('kyb-status').innerHTML = statusMap[d.status];
-    document.getElementById('kyb-reject-form').style.display = 'none';
     document.getElementById('kyb-rejection-note').style.display = d.status === 'rejected' ? 'block' : 'none';
     if (d.rejectionReason) document.getElementById('kyb-rejection-text').textContent = d.rejectionReason;
-    const actions = document.getElementById('kyb-actions');
-    actions.style.display = d.status === 'pending' ? 'flex' : 'none';
     document.getElementById('kyb-overlay').classList.add('open');
     document.getElementById('kyb-panel').classList.add('open');
   }
@@ -950,29 +947,6 @@
   function closeKYB() {
     document.getElementById('kyb-overlay').classList.remove('open');
     document.getElementById('kyb-panel').classList.remove('open');
-  }
-
-  function approveKYB() {
-    kybData[currentKYB].status = 'approved';
-    closeKYB();
-    updateBadges();
-    showToast('✅', 'KYB Approved', kybData[currentKYB].name + ' has been notified and can now access the platform.');
-  }
-
-  function rejectKYB() {
-    const form = document.getElementById('kyb-reject-form');
-    if (!rejectKYBMode) {
-      rejectKYBMode = true;
-      form.style.display = 'block';
-      return;
-    }
-    const reason = document.getElementById('kyb-reject-reason').value;
-    if (!reason.trim()) { alert('Please enter a rejection reason.'); return; }
-    kybData[currentKYB].status = 'rejected';
-    kybData[currentKYB].rejectionReason = reason;
-    closeKYB();
-    updateBadges();
-    showToast('↩️', 'KYB Rejected', kybData[currentKYB].name + ' has been notified with the reason.');
   }
 
   // ─── TRANSACTION DATA ───

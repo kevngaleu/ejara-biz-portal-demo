@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejara FX — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple: #6B47FF;
+      --purple-light: #F0EEFF;
+      --purple-mid: #D4C8FF;
+      --bg: #F5F5FA;
+      --white: #FFFFFF;
+      --border: #E5E5EF;
+      --text: #111827;
+      --text-secondary: #6B7280;
+      --text-light: #9CA3AF;
+      --green: #10B981;
+      --orange: #F59E0B;
+      --red: #EF4444;
+      --sidebar-width: 230px;
+    }
+
+    html, body { overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+
+    /* ─── SCREENS ─── */
+    .screen { display: none; }
+    .screen.active { display: flex; }
+
+    /* ─── LOGIN ─── */
+    #screen-login { min-height: 100vh; align-items: center; justify-content: center; background: #1E1B4B; flex-direction: column; gap: 24px; }
+    .login-card { background: var(--white); border-radius: 16px; padding: 40px; width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
+    .login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .login-logo svg { width: 32px; height: 32px; }
+    .login-logo span { font-size: 18px; font-weight: 700; }
+    .login-badge { display: inline-block; background: #FFF7ED; color: #EA580C; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-bottom: 24px; }
+    .login-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .login-sub { color: var(--text-secondary); font-size: 13px; margin-bottom: 28px; }
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--white); outline: none; transition: border .15s; }
+    .form-input:focus { border-color: var(--purple); }
+    .form-hint { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; }
+    .btn-primary { background: var(--purple); color: white; }
+    .btn-primary:hover { background: #5A38E8; }
+    .btn-secondary { background: var(--white); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--purple-mid); background: var(--purple-light); }
+    .btn-danger { background: #FEF2F2; color: var(--red); border: 1.5px solid #FECACA; }
+    .btn-success { background: #F0FDF4; color: var(--green); border: 1.5px solid #BBF7D0; }
+    .btn-success:hover { background: #DCFCE7; }
+    .btn-lg { padding: 12px 28px; font-size: 15px; width: 100%; justify-content: center; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+    .prototype-note { background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #856404; margin-bottom: 20px; }
+
+    /* 2FA screen */
+    .twofa-icon { font-size: 40px; text-align: center; margin-bottom: 12px; }
+    .twofa-digits { display: flex; gap: 8px; justify-content: center; margin: 20px 0; }
+    .twofa-digits input { width: 44px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border: 2px solid var(--border); border-radius: 10px; outline: none; transition: border .15s; }
+    .twofa-digits input:focus { border-color: var(--purple); }
+
+    /* ─── APP SHELL ─── */
+    #screen-app { min-height: 100vh; flex-direction: row; }
+    .sidebar { width: var(--sidebar-width); background: #1E1B4B; border-right: none; display: flex; flex-direction: column; padding: 0; flex-shrink: 0; position: fixed; height: 100vh; overflow-y: auto; transition: width .2s ease; overflow-x: hidden; }
+    .sidebar.collapsed { width: 64px; }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .sidebar-logo span { font-size: 18px; font-weight: 700; color: white; }
+    .sidebar-logo svg { width: 28px; height: 28px; flex-shrink: 0; }
+    .sidebar-badge { background: #EA580C; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+    .nav-section { padding: 16px 12px 8px; }
+    .nav-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.4); padding: 0 8px; margin-bottom: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,.6); font-weight: 500; transition: all .15s; margin-bottom: 2px; white-space: nowrap; }
+    .nav-item:hover { background: rgba(255,255,255,.08); color: white; }
+    .nav-item.active { background: var(--purple); color: white; }
+    .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+    .nav-item .badge { margin-left: auto; background: #EF4444; color: white; border-radius: 10px; font-size: 10px; font-weight: 700; padding: 2px 7px; }
+    .sidebar-user { margin-top: auto; padding: 16px; border-top: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: white; flex-shrink: 0; }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white; }
+    .user-role { font-size: 11px; color: rgba(255,255,255,.5); }
+
+    /* Collapsed sidebar */
+    .sidebar.collapsed .sidebar-logo span,
+    .sidebar.collapsed .nav-label,
+    .sidebar.collapsed .user-info,
+    .sidebar.collapsed .sidebar-badge,
+    .sidebar.collapsed .nav-item .badge { display: none; }
+    .sidebar.collapsed .sidebar-logo { justify-content: center; padding: 20px 0 16px; }
+    .sidebar.collapsed .nav-section { padding: 16px 8px 8px; }
+    .sidebar.collapsed .nav-item { justify-content: center; padding: 10px; }
+    .sidebar.collapsed .sidebar-user { justify-content: center; padding: 12px; }
+
+    .main { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; transition: margin-left .2s ease; min-width: 0; overflow-x: hidden; }
+    .main.collapsed { margin-left: 64px; }
+    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    .topbar-title { font-size: 16px; font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .sidebar-toggle { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .sidebar-toggle:hover { background: var(--bg); }
+    .content { padding: 32px; }
+
+    /* ─── CARDS ─── */
+    .card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); }
+    .card-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 15px; font-weight: 700; }
+    .card-body { padding: 24px; }
+
+    /* ─── STAT GRID ─── */
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 20px 24px; }
+    .stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); margin-bottom: 8px; }
+    .stat-value { font-size: 28px; font-weight: 700; }
+    .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .stat-alert { color: var(--red); }
+
+    /* ─── TABLE ─── */
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 14px 16px; border-bottom: 1px solid var(--bg); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg); cursor: pointer; }
+
+    /* ─── STATUS BADGES ─── */
+    .badge-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .badge-pending { background: #FFF7ED; color: #EA580C; }
+    .badge-approved { background: #F0FDF4; color: #16A34A; }
+    .badge-rejected { background: #FEF2F2; color: #DC2626; }
+    .badge-completed { background: #F0FDF4; color: #16A34A; }
+    .badge-review { background: #EFF6FF; color: #2563EB; }
+    .badge-individual { background: #F0EEFF; color: var(--purple); }
+    .badge-business { background: #FFF7ED; color: #EA580C; }
+
+    /* ─── DETAIL PANEL ─── */
+    .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; }
+    .detail-overlay.open { display: block; }
+    .detail-panel { position: fixed; top: 0; right: -600px; width: 560px; height: 100vh; background: var(--white); box-shadow: -8px 0 40px rgba(0,0,0,.12); z-index: 101; transition: right .3s ease; overflow-y: auto; display: flex; flex-direction: column; }
+    .detail-panel.open { right: 0; }
+    .detail-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--white); z-index: 1; }
+    .detail-title { font-size: 17px; font-weight: 700; }
+    .detail-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); padding: 4px 8px; border-radius: 6px; }
+    .detail-close:hover { background: var(--bg); }
+    .detail-body { padding: 24px; flex: 1; }
+    .detail-section { margin-bottom: 24px; }
+    .detail-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 12px; }
+    .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--bg); }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--text-secondary); font-size: 13px; }
+    .detail-value { font-weight: 600; font-size: 13px; text-align: right; max-width: 60%; }
+    .detail-actions { padding: 20px 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: var(--white); }
+    .detail-actions .btn { flex: 1; justify-content: center; }
+    .proof-img { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 8px; background: var(--bg); padding: 40px; text-align: center; color: var(--text-secondary); font-size: 13px; }
+    .reject-reason { margin-top: 12px; display: none; }
+    .reject-reason textarea { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; resize: vertical; min-height: 80px; outline: none; }
+    .reject-reason textarea:focus { border-color: var(--red); }
+
+    /* ─── ALERT ─── */
+    .alert { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; }
+    .alert-warning { background: #FFF7ED; border: 1px solid #FED7AA; color: #92400E; }
+    .alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+
+    /* ─── FILTERS ─── */
+    .filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .filter-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all .15s; }
+    .filter-btn:hover { border-color: var(--purple-mid); color: var(--purple); }
+    .filter-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+    .search-input { padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; width: 220px; }
+    .search-input:focus { border-color: var(--purple); }
+
+    /* ─── TOAST ─── */
+    .notification-toast { position: fixed; top: 20px; right: 20px; background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; box-shadow: 0 8px 32px rgba(0,0,0,.12); z-index: 200; display: flex; align-items: flex-start; gap: 12px; max-width: 340px; transform: translateX(400px); transition: transform .3s ease; }
+    .notification-toast.show { transform: translateX(0); }
+    .toast-icon { font-size: 20px; flex-shrink: 0; }
+    .toast-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+    .toast-body { font-size: 12px; color: var(--text-secondary); }
+
+    /* ─── RATE TABLE ─── */
+    .rate-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--bg); gap: 16px; }
+    .rate-row:last-child { border-bottom: none; }
+    .rate-corridor { font-weight: 700; font-size: 15px; }
+    .rate-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .rate-input-wrap { display: flex; align-items: center; gap: 8px; }
+    .rate-input { width: 120px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif; outline: none; text-align: right; }
+    .rate-input:focus { border-color: var(--purple); }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
+    .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-title { font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     LOGIN SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-login" class="screen active">
+  <div class="login-card" id="login-step-1">
+    <div class="login-logo">
+      <svg viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="15" fill="#6B47FF"/>
+        <path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/>
+        <circle cx="15" cy="14" r="3.5" fill="#6B47FF"/>
+      </svg>
+      <span>ejara</span>
+      <span class="sidebar-badge">Admin</span>
+    </div>
+    <div class="login-title" style="margin-top:16px;">Admin Sign In</div>
+    <div class="login-sub">Internal operations panel — restricted access</div>
+    <div class="prototype-note">⚡ Prototype — use <strong>recitKevin</strong> / any password</div>
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-input" id="username-input" type="text" placeholder="recitFirstname" value="recitKevin">
+      <div class="form-hint">Format: recit + your firstname</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="password-input" type="password" placeholder="••••••••" value="password">
+    </div>
+    <button class="btn btn-primary btn-lg" onclick="goTo2FA()">Continue →</button>
+  </div>
+
+  <div class="login-card" id="login-step-2" style="display:none;">
+    <div class="twofa-icon">🔐</div>
+    <div class="login-title" style="text-align:center;">Two-Factor Authentication</div>
+    <div class="login-sub" style="text-align:center;">Enter the 6-digit code from your Google Authenticator app</div>
+    <div class="prototype-note">⚡ Prototype — enter any 6 digits</div>
+    <div class="twofa-digits" id="twofa-digits">
+      <input type="text" maxlength="1" oninput="nextDigit(this, 0)" onkeydown="prevDigit(event, this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this, 1)" onkeydown="prevDigit(event, this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this, 2)" onkeydown="prevDigit(event, this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this, 3)" onkeydown="prevDigit(event, this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this, 4)" onkeydown="prevDigit(event, this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this, 5)" onkeydown="prevDigit(event, this)">
+    </div>
+    <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="backToLogin()">← Back</button>
+    <button class="btn btn-primary btn-lg" id="verify-btn" onclick="verifyCode()" disabled>Verify & Sign In</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════════ -->
+<div id="screen-app" class="screen">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="15" fill="#6B47FF"/>
+        <path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/>
+        <circle cx="15" cy="14" r="3.5" fill="#6B47FF"/>
+      </svg>
+      <span>ejara <span class="sidebar-badge">Admin</span></span>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')">
+        <span class="nav-icon">⊞</span> Dashboard
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Operations</div>
+      <div class="nav-item" id="nav-kyb" onclick="navigate('kyb')">
+        <span class="nav-icon">🪪</span> KYB Review
+        <span class="badge" id="kyb-badge">3</span>
+      </div>
+      <div class="nav-item" id="nav-transactions" onclick="navigate('transactions')">
+        <span class="nav-icon">↗</span> Transactions
+        <span class="badge" id="tx-badge">2</span>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Finance</div>
+      <div class="nav-item" id="nav-rates" onclick="navigate('rates')">
+        <span class="nav-icon">📈</span> Exchange Rates
+      </div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="avatar" style="background:var(--purple);">K</div>
+      <div class="user-info">
+        <div class="user-name">recitKevin</div>
+        <div class="user-role">Super Admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="avatar" style="background:var(--purple);width:32px;height:32px;font-size:12px;">K</div>
+          <div>
+            <div style="font-weight:600;font-size:13px;">recitKevin</div>
+            <div style="font-size:11px;color:var(--text-secondary);">Super Admin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── DASHBOARD ─── -->
+    <div id="page-dashboard" class="content" style="display:block">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:20px;font-weight:700;">Good morning, Kevin 👋</div>
+        <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Ejara FX Operations Panel</div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">KYB Pending</div>
+          <div class="stat-value" style="color:var(--orange);">3</div>
+          <div class="stat-sub">Awaiting review</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Transactions to Review</div>
+          <div class="stat-value" style="color:var(--purple);">2</div>
+          <div class="stat-sub">Proof uploaded</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Completed Today</div>
+          <div class="stat-value" style="color:var(--green);">7</div>
+          <div class="stat-sub">XAF 28.4M processed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Success Rate</div>
+          <div class="stat-value">98.2%</div>
+          <div class="stat-sub" style="color:var(--green);">↑ Last 24 hours</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔴 Action Required</div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="navigate('kyb')">
+              <div>
+                <div style="font-weight:600;">3 KYB submissions pending</div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Oldest: 2 days ago</div>
+              </div>
+              <span class="badge-pill badge-pending">Review →</span>
+            </div>
+            <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="navigate('transactions')">
+              <div>
+                <div style="font-weight:600;">2 transactions with proof uploaded</div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Waiting for approval</div>
+              </div>
+              <span class="badge-pill badge-review">Review →</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📈 Current Rates</div>
+            <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="navigate('rates')">Edit rates</button>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div style="padding:14px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-weight:600;">XAF → NGN</span>
+              <span style="font-weight:700;color:var(--purple);">1 XAF = 2.48 NGN</span>
+            </div>
+            <div style="padding:14px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-weight:600;">XAF → CNY</span>
+              <span style="font-weight:700;color:var(--purple);">1 XAF = 0.0112 CNY</span>
+            </div>
+            <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-weight:600;">XAF → AED</span>
+              <span style="font-weight:700;color:var(--purple);">1 XAF = 0.0061 AED</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── KYB REVIEW ─── -->
+    <div id="page-kyb" class="content" style="display:none">
+      <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:20px;font-weight:700;">KYB Review</div>
+          <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Review and action identity verification submissions</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterKYB('all', this)">All (5)</button>
+        <button class="filter-btn" onclick="filterKYB('pending', this)">Pending (3)</button>
+        <button class="filter-btn" onclick="filterKYB('approved', this)">Approved (1)</button>
+        <button class="filter-btn" onclick="filterKYB('rejected', this)">Rejected (1)</button>
+        <input class="search-input" type="text" placeholder="🔍 Search by name or email…">
+      </div>
+
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Submitted</th>
+              <th>Action</th>
+            </tr></thead>
+            <tbody id="kyb-tbody">
+              <tr onclick="openKYB('kyb-001')">
+                <td style="font-weight:600;">Aminata Diallo</td>
+                <td style="color:var(--text-secondary);">aminata@techimport.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td><span class="badge-pill badge-pending">● Pending</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 24, 10:12</td>
+                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-001')">Review</button></td>
+              </tr>
+              <tr onclick="openKYB('kyb-002')">
+                <td style="font-weight:600;">Martin Foka</td>
+                <td style="color:var(--text-secondary);">martin@tekstile.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td><span class="badge-pill badge-pending">● Pending</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 25, 09:44</td>
+                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-002')">Review</button></td>
+              </tr>
+              <tr onclick="openKYB('kyb-003')">
+                <td style="font-weight:600;">Alice Mbarga</td>
+                <td style="color:var(--text-secondary);">alice.mbarga@gmail.com</td>
+                <td><span class="badge-pill badge-individual">Individual</span></td>
+                <td><span class="badge-pill badge-pending">● Pending</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 26, 08:30</td>
+                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-003')">Review</button></td>
+              </tr>
+              <tr onclick="openKYB('kyb-004')">
+                <td style="font-weight:600;">Jean-Pierre Nkeng</td>
+                <td style="color:var(--text-secondary);">jp.nkeng@logistics.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td><span class="badge-pill badge-approved">✓ Approved</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 22, 14:05</td>
+                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-004')">View</button></td>
+              </tr>
+              <tr onclick="openKYB('kyb-005')">
+                <td style="font-weight:600;">Sandra Eto'o</td>
+                <td style="color:var(--text-secondary);">sandra@etootrading.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td><span class="badge-pill badge-rejected">✗ Rejected</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 20, 16:22</td>
+                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-005')">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TRANSACTIONS ─── -->
+    <div id="page-transactions" class="content" style="display:none">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:20px;font-weight:700;">Transactions</div>
+        <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Review proof of payment and approve or reject transfers</div>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterTX('all', this)">All (6)</button>
+        <button class="filter-btn" onclick="filterTX('pending', this)">Pending Review (2)</button>
+        <button class="filter-btn" onclick="filterTX('completed', this)">Completed (3)</button>
+        <button class="filter-btn" onclick="filterTX('rejected', this)">Rejected (1)</button>
+        <input class="search-input" type="text" placeholder="🔍 Search by reference or name…">
+      </div>
+
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table style="min-width:900px;">
+            <thead><tr>
+              <th>Reference</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Corridor</th>
+              <th>Beneficiary</th>
+              <th>Status</th>
+              <th>Submitted</th>
+              <th>Action</th>
+            </tr></thead>
+            <tbody>
+              <tr onclick="openTX('tx-001')">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260001</td>
+                <td style="font-weight:600;">Aminata Diallo</td>
+                <td style="font-weight:600;">2,016,129 XAF<br><span style="font-size:11px;color:var(--green);">→ 5,000,000 NGN</span></td>
+                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
+                <td style="font-size:13px;color:var(--text-secondary);">Chukwudi Electronics<br>GTBank Nigeria</td>
+                <td><span class="badge-pill badge-review">● Pending Review</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);">Mar 26, 11:34</td>
+                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
+              </tr>
+              <tr onclick="openTX('tx-002')">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260002</td>
+                <td style="font-weight:600;">Martin Foka</td>
+                <td style="font-weight:600;">4,032,258 XAF<br><span style="font-size:11px;color:var(--green);">→ 10,000,000 NGN</span></td>
+                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
+                <td style="font-size:13px;color:var(--text-secondary);">Adeola Suppliers<br>Zenith Bank Nigeria</td>
+                <td><span class="badge-pill badge-review">● Pending Review</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);">Mar 26, 10:15</td>
+                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
+              </tr>
+              <tr onclick="openTX('tx-003')">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260003</td>
+                <td style="font-weight:600;">Alice Mbarga</td>
+                <td style="font-weight:600;">806,452 XAF<br><span style="font-size:11px;color:var(--green);">→ 2,000,000 NGN</span></td>
+                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
+                <td style="font-size:13px;color:var(--text-secondary);">Emeka Traders<br>Access Bank Nigeria</td>
+                <td><span class="badge-pill badge-approved">✓ Completed</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);">Mar 25, 16:48</td>
+                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
+              </tr>
+              <tr onclick="openTX('tx-004')">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;">BTXR-260004</td>
+                <td style="font-weight:600;">Fatima Bello</td>
+                <td style="font-weight:600;">1,209,677 XAF<br><span style="font-size:11px;color:var(--green);">→ 3,000,000 NGN</span></td>
+                <td><span style="font-size:12px;font-weight:600;">CMR → NGA</span></td>
+                <td style="font-size:13px;color:var(--text-secondary);">Lagos Goods Ltd<br>First Bank Nigeria</td>
+                <td><span class="badge-pill badge-rejected">✗ Rejected</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);">Mar 25, 14:20</td>
+                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── EXCHANGE RATES ─── -->
+    <div id="page-rates" class="content" style="display:none">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:20px;font-weight:700;">Exchange Rates</div>
+        <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Set retail rates per corridor. Changes apply to all new quotes immediately.</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Retail Rates</div></div>
+          <div class="card-body">
+            <div class="rate-row">
+              <div>
+                <div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div>
+                <div class="rate-sub">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div>
+              </div>
+              <div class="rate-input-wrap">
+                <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
+                <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn">
+                <span style="font-size:13px;color:var(--text-secondary);">NGN</span>
+                <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('NGN', 'rate-ngn')">Save</button>
+              </div>
+            </div>
+            <div class="rate-row">
+              <div>
+                <div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div>
+                <div class="rate-sub">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div>
+              </div>
+              <div class="rate-input-wrap">
+                <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
+                <input class="rate-input" type="number" value="0.0112" step="0.0001" id="rate-cny">
+                <span style="font-size:13px;color:var(--text-secondary);">CNY</span>
+                <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('CNY', 'rate-cny')">Save</button>
+              </div>
+            </div>
+            <div class="rate-row">
+              <div>
+                <div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div>
+                <div class="rate-sub">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div>
+              </div>
+              <div class="rate-input-wrap">
+                <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
+                <input class="rate-input" type="number" value="0.0061" step="0.0001" id="rate-aed">
+                <span style="font-size:13px;color:var(--text-secondary);">AED</span>
+                <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('AED', 'rate-aed')">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Rate Change Audit Log</div></div>
+          <div class="card-body" style="padding:0;">
+            <div id="audit-log">
+              <div style="padding:14px 20px;border-bottom:1px solid var(--bg);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:600;font-size:13px;">XAF → NGN</span>
+                  <span style="font-size:12px;color:var(--text-secondary);">Mar 26, 09:00</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">2.45 → 2.48 NGN · by recitKevin</div>
+              </div>
+              <div style="padding:14px 20px;border-bottom:1px solid var(--bg);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:600;font-size:13px;">XAF → CNY</span>
+                  <span style="font-size:12px;color:var(--text-secondary);">Mar 25, 14:30</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">0.0110 → 0.0112 CNY · by recitKevin</div>
+              </div>
+              <div style="padding:14px 20px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-weight:600;font-size:13px;">XAF → AED</span>
+                  <span style="font-size:12px;color:var(--text-secondary);">Mar 24, 11:15</span>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">0.0059 → 0.0061 AED · by recitKevin</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ─── KYB DETAIL PANEL ─── -->
+<div class="detail-overlay" id="kyb-overlay" onclick="closeKYB()"></div>
+<div class="detail-panel" id="kyb-panel">
+  <div class="detail-header">
+    <div class="detail-title" id="kyb-panel-title">KYB Review</div>
+    <button class="detail-close" onclick="closeKYB()">✕</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <div class="detail-section-title">Applicant</div>
+      <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-value" id="kyb-name">—</span></div>
+      <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value" id="kyb-email">—</span></div>
+      <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value" id="kyb-type">—</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value" id="kyb-date">—</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="kyb-status">—</span></div>
+    </div>
+    <div class="detail-section" id="kyb-docs-section">
+      <div class="detail-section-title">Documents submitted via Dotfile</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:13px;">📄 Company Registration Certificate</span>
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">View</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:13px;">🪪 Director National ID</span>
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">View</button>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:8px;">
+          <span style="font-size:13px;">🏠 Proof of Business Address</span>
+          <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">View</button>
+        </div>
+      </div>
+    </div>
+    <div class="detail-section" id="kyb-rejection-note" style="display:none;">
+      <div class="detail-section-title">Rejection Reason</div>
+      <div style="padding:12px 16px;background:#FEF2F2;border-radius:8px;font-size:13px;color:var(--red);" id="kyb-rejection-text">—</div>
+    </div>
+    <div class="reject-reason" id="kyb-reject-form">
+      <div class="detail-section-title" style="margin-bottom:8px;">Rejection Reason <span style="color:var(--red);">*</span></div>
+      <textarea id="kyb-reject-reason" placeholder="Explain why this KYB is being rejected (will be sent to the applicant)…"></textarea>
+    </div>
+  </div>
+  <div class="detail-actions" id="kyb-actions">
+    <button class="btn btn-danger" onclick="rejectKYB()">✗ Reject</button>
+    <button class="btn btn-success" onclick="approveKYB()">✓ Approve</button>
+  </div>
+</div>
+
+<!-- ─── TRANSACTION DETAIL PANEL ─── -->
+<div class="detail-overlay" id="tx-overlay" onclick="closeTX()"></div>
+<div class="detail-panel" id="tx-panel">
+  <div class="detail-header">
+    <div class="detail-title" id="tx-panel-title">Transaction Review</div>
+    <button class="detail-close" onclick="closeTX()">✕</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <div class="detail-section-title">Transfer Details</div>
+      <div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value" id="tx-ref" style="font-family:monospace;">—</span></div>
+      <div class="detail-row"><span class="detail-label">Customer</span><span class="detail-value" id="tx-customer">—</span></div>
+      <div class="detail-row"><span class="detail-label">Amount Sent</span><span class="detail-value" id="tx-amount">—</span></div>
+      <div class="detail-row"><span class="detail-label">Amount Received</span><span class="detail-value" id="tx-dest" style="color:var(--green);">—</span></div>
+      <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value" id="tx-rate">—</span></div>
+      <div class="detail-row"><span class="detail-label">Corridor</span><span class="detail-value" id="tx-corridor">—</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value" id="tx-date">—</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="tx-status">—</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Beneficiary</div>
+      <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value" id="tx-bene-name">—</span></div>
+      <div class="detail-row"><span class="detail-label">Bank</span><span class="detail-value" id="tx-bene-bank">—</span></div>
+      <div class="detail-row"><span class="detail-label">Account Number</span><span class="detail-value" id="tx-bene-acct">—</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Proof of Payment</div>
+      <div class="proof-img" id="tx-proof">📎 Bank transfer receipt uploaded by customer<br><span style="font-size:11px;margin-top:6px;display:block;">Mar 26, 2026 · 11:32 AM</span></div>
+    </div>
+    <div class="reject-reason" id="tx-reject-form">
+      <div class="detail-section-title" style="margin-bottom:8px;">Rejection Reason <span style="color:var(--red);">*</span></div>
+      <textarea id="tx-reject-reason" placeholder="Explain why this transaction is being rejected (will be sent to the customer)…"></textarea>
+    </div>
+  </div>
+  <div class="detail-actions" id="tx-actions">
+    <button class="btn btn-danger" onclick="rejectTX()">✗ Reject</button>
+    <button class="btn btn-success" onclick="approveTX()">✓ Approve & Route to CPN</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="notification-toast" id="toast">
+  <div class="toast-icon" id="toast-icon">✅</div>
+  <div><div class="toast-title" id="toast-title"></div><div class="toast-body" id="toast-body"></div></div>
+</div>
+
+<script>
+  // ─── SIDEBAR TOGGLE ───
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+    document.getElementById('main').classList.toggle('collapsed');
+  }
+
+  // ─── LOGIN FLOW ───
+  function goTo2FA() {
+    const u = document.getElementById('username-input').value;
+    const p = document.getElementById('password-input').value;
+    if (!u || !p) { alert('Please enter username and password'); return; }
+    document.getElementById('login-step-1').style.display = 'none';
+    document.getElementById('login-step-2').style.display = 'block';
+    setTimeout(() => document.querySelector('.twofa-digits input').focus(), 100);
+  }
+
+  function backToLogin() {
+    document.getElementById('login-step-1').style.display = 'block';
+    document.getElementById('login-step-2').style.display = 'none';
+  }
+
+  function nextDigit(el, idx) {
+    el.value = el.value.replace(/\D/g, '');
+    const inputs = document.querySelectorAll('.twofa-digits input');
+    if (el.value && idx < 5) inputs[idx + 1].focus();
+    const filled = [...inputs].every(i => i.value);
+    document.getElementById('verify-btn').disabled = !filled;
+  }
+
+  function prevDigit(e, el) {
+    const inputs = document.querySelectorAll('.twofa-digits input');
+    const idx = [...inputs].indexOf(el);
+    if (e.key === 'Backspace' && !el.value && idx > 0) inputs[idx - 1].focus();
+  }
+
+  function verifyCode() {
+    document.getElementById('screen-login').classList.remove('active');
+    document.getElementById('screen-app').classList.add('active');
+    navigate('dashboard');
+  }
+
+  // ─── NAVIGATION ───
+  function navigate(page) {
+    document.querySelectorAll('[id^="page-"]').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const pageEl = document.getElementById('page-' + page);
+    if (pageEl) pageEl.style.display = 'block';
+    const navEl = document.getElementById('nav-' + page);
+    if (navEl) navEl.classList.add('active');
+    const titles = { dashboard: 'Dashboard', kyb: 'KYB Review', transactions: 'Transactions', rates: 'Exchange Rates' };
+    document.getElementById('topbar-title').textContent = titles[page] || page;
+  }
+
+  // ─── KYB DATA ───
+  const kybData = {
+    'kyb-001': { name: 'Aminata Diallo', email: 'aminata@techimport.cm', type: 'Business', date: 'Mar 24, 2026 · 10:12', status: 'pending' },
+    'kyb-002': { name: 'Martin Foka', email: 'martin@tekstile.cm', type: 'Business', date: 'Mar 25, 2026 · 09:44', status: 'pending' },
+    'kyb-003': { name: 'Alice Mbarga', email: 'alice.mbarga@gmail.com', type: 'Individual', date: 'Mar 26, 2026 · 08:30', status: 'pending' },
+    'kyb-004': { name: 'Jean-Pierre Nkeng', email: 'jp.nkeng@logistics.cm', type: 'Business', date: 'Mar 22, 2026 · 14:05', status: 'approved' },
+    'kyb-005': { name: 'Sandra Eto\'o', email: 'sandra@etootrading.cm', type: 'Business', date: 'Mar 20, 2026 · 16:22', status: 'rejected', rejectionReason: 'Company registration document is expired. Please provide a valid certificate issued within the last 12 months.' },
+  };
+
+  let currentKYB = null;
+  let rejectKYBMode = false;
+
+  function openKYB(id) {
+    const d = kybData[id];
+    currentKYB = id;
+    rejectKYBMode = false;
+    document.getElementById('kyb-panel-title').textContent = 'KYB — ' + d.name;
+    document.getElementById('kyb-name').textContent = d.name;
+    document.getElementById('kyb-email').textContent = d.email;
+    document.getElementById('kyb-type').innerHTML = `<span class="badge-pill badge-${d.type === 'Business' ? 'business' : 'individual'}">${d.type}</span>`;
+    document.getElementById('kyb-date').textContent = d.date;
+    const statusMap = { pending: '<span class="badge-pill badge-pending">● Pending</span>', approved: '<span class="badge-pill badge-approved">✓ Approved</span>', rejected: '<span class="badge-pill badge-rejected">✗ Rejected</span>' };
+    document.getElementById('kyb-status').innerHTML = statusMap[d.status];
+    document.getElementById('kyb-reject-form').style.display = 'none';
+    document.getElementById('kyb-rejection-note').style.display = d.status === 'rejected' ? 'block' : 'none';
+    if (d.rejectionReason) document.getElementById('kyb-rejection-text').textContent = d.rejectionReason;
+    const actions = document.getElementById('kyb-actions');
+    actions.style.display = d.status === 'pending' ? 'flex' : 'none';
+    document.getElementById('kyb-overlay').classList.add('open');
+    document.getElementById('kyb-panel').classList.add('open');
+  }
+
+  function closeKYB() {
+    document.getElementById('kyb-overlay').classList.remove('open');
+    document.getElementById('kyb-panel').classList.remove('open');
+  }
+
+  function approveKYB() {
+    kybData[currentKYB].status = 'approved';
+    closeKYB();
+    updateBadges();
+    showToast('✅', 'KYB Approved', kybData[currentKYB].name + ' has been notified and can now access the platform.');
+  }
+
+  function rejectKYB() {
+    const form = document.getElementById('kyb-reject-form');
+    if (!rejectKYBMode) {
+      rejectKYBMode = true;
+      form.style.display = 'block';
+      return;
+    }
+    const reason = document.getElementById('kyb-reject-reason').value;
+    if (!reason.trim()) { alert('Please enter a rejection reason.'); return; }
+    kybData[currentKYB].status = 'rejected';
+    kybData[currentKYB].rejectionReason = reason;
+    closeKYB();
+    updateBadges();
+    showToast('↩️', 'KYB Rejected', kybData[currentKYB].name + ' has been notified with the reason.');
+  }
+
+  // ─── TRANSACTION DATA ───
+  const txData = {
+    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789' },
+    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421' },
+    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122' },
+    'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833' },
+  };
+
+  let currentTX = null;
+  let rejectTXMode = false;
+
+  function openTX(id) {
+    const d = txData[id];
+    currentTX = id;
+    rejectTXMode = false;
+    document.getElementById('tx-panel-title').textContent = d.ref;
+    document.getElementById('tx-ref').textContent = d.ref;
+    document.getElementById('tx-customer').textContent = d.customer;
+    document.getElementById('tx-amount').textContent = d.amount;
+    document.getElementById('tx-dest').textContent = d.dest;
+    document.getElementById('tx-rate').textContent = d.rate;
+    document.getElementById('tx-corridor').textContent = d.corridor;
+    document.getElementById('tx-date').textContent = d.date;
+    const statusMap = { pending: '<span class="badge-pill badge-review">● Pending Review</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">✗ Rejected</span>' };
+    document.getElementById('tx-status').innerHTML = statusMap[d.status];
+    document.getElementById('tx-bene-name').textContent = d.beneName;
+    document.getElementById('tx-bene-bank').textContent = d.beneBank;
+    document.getElementById('tx-bene-acct').textContent = d.beneAcct;
+    document.getElementById('tx-reject-form').style.display = 'none';
+    document.getElementById('tx-actions').style.display = d.status === 'pending' ? 'flex' : 'none';
+    document.getElementById('tx-overlay').classList.add('open');
+    document.getElementById('tx-panel').classList.add('open');
+  }
+
+  function closeTX() {
+    document.getElementById('tx-overlay').classList.remove('open');
+    document.getElementById('tx-panel').classList.remove('open');
+  }
+
+  function approveTX() {
+    txData[currentTX].status = 'completed';
+    closeTX();
+    updateBadges();
+    showToast('✅', 'Transaction Approved', txData[currentTX].ref + ' routed to CPN. Payout initiated to beneficiary.');
+  }
+
+  function rejectTX() {
+    const form = document.getElementById('tx-reject-form');
+    if (!rejectTXMode) {
+      rejectTXMode = true;
+      form.style.display = 'block';
+      return;
+    }
+    const reason = document.getElementById('tx-reject-reason').value;
+    if (!reason.trim()) { alert('Please enter a rejection reason.'); return; }
+    txData[currentTX].status = 'rejected';
+    closeTX();
+    updateBadges();
+    showToast('↩️', 'Transaction Rejected', txData[currentTX].customer + ' has been notified with the reason.');
+  }
+
+  // ─── FILTERS ───
+  function filterKYB(status, btn) {
+    document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function filterTX(status, btn) {
+    document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // ─── RATES ───
+  function saveRate(corridor, inputId) {
+    const val = document.getElementById(inputId).value;
+    const log = document.getElementById('audit-log');
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short' }) + ', ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const newEntry = `<div style="padding:14px 20px;border-bottom:1px solid var(--bg);">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:600;font-size:13px;">XAF → ${corridor}</span>
+        <span style="font-size:12px;color:var(--text-secondary);">${dateStr}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Updated to ${val} ${corridor} · by recitKevin</div>
+    </div>`;
+    log.insertAdjacentHTML('afterbegin', newEntry);
+    showToast('📈', 'Rate updated', `XAF → ${corridor} is now ${val}`);
+  }
+
+  // ─── BADGES ───
+  function updateBadges() {
+    const kybPending = Object.values(kybData).filter(k => k.status === 'pending').length;
+    const txPending = Object.values(txData).filter(t => t.status === 'pending').length;
+    document.getElementById('kyb-badge').textContent = kybPending;
+    document.getElementById('tx-badge').textContent = txPending;
+    if (kybPending === 0) document.getElementById('kyb-badge').style.display = 'none';
+    if (txPending === 0) document.getElementById('tx-badge').style.display = 'none';
+  }
+
+  // ─── TOAST ───
+  function showToast(icon, title, body) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-icon').textContent = icon;
+    document.getElementById('toast-title').textContent = title;
+    document.getElementById('toast-body').textContent = body;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+</script>
+</body>
+</html>

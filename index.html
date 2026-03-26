@@ -1199,28 +1199,11 @@
     document.getElementById('topbar-email').textContent = u.email;
     document.getElementById('dash-name').textContent = u.name.split(' ')[0];
 
-    // Hide/show nav items based on role
-    const transferNav = document.getElementById('nav-transfer');
-    transferNav.style.display = state.role === 'initiator' ? 'flex' : 'none';
-
-    const approvalsNav = document.getElementById('nav-approvals');
-    approvalsNav.style.display = state.role === 'approver' ? 'flex' : 'none';
-
-    // Settings: hide approval + notification cards for Initiator
-    const isAdmin = state.role === 'approver'; // Théodore is Admin+Approver
+    // Single user — show all nav and UI elements
     const approvalCard = document.getElementById('settings-approval-card');
     const notifCard = document.getElementById('settings-notif-card');
-    if (approvalCard) approvalCard.style.display = isAdmin ? 'block' : 'none';
-    if (notifCard) notifCard.style.display = isAdmin ? 'block' : 'none';
-
-    // Team: hide Manage buttons and Invite button for Initiator
-    document.querySelectorAll('.team-manage-btn').forEach(btn => {
-      btn.style.display = isAdmin ? 'inline-flex' : 'none';
-    });
-    const inviteBtn = document.getElementById('team-invite-btn');
-    if (inviteBtn) inviteBtn.style.display = isAdmin ? 'inline-flex' : 'none';
-
-    updateApprovalsUI();
+    if (approvalCard) approvalCard.style.display = 'none';
+    if (notifCard) notifCard.style.display = 'block';
   }
 
   // ─── NAVIGATION ───
@@ -1903,8 +1886,8 @@
     // Nav items
     document.querySelector('#nav-dashboard').innerHTML = `<span class="nav-icon">⊞</span> ${T('dashboard')}`;
     document.querySelector('#nav-transfer').innerHTML = `<span class="nav-icon">↗</span> ${T('newTransfer')}`;
-    const badge = state.approvalPending ? `<span class="badge" id="approval-badge">1</span>` : `<span class="badge" id="approval-badge" style="display:none">1</span>`;
-    document.querySelector('#nav-approvals').innerHTML = `<span class="nav-icon">✓</span> ${T('approvals')} ${badge}`;
+    const navApprovals = document.querySelector('#nav-approvals');
+    if (navApprovals) { const badge = state.approvalPending ? `<span class="badge" id="approval-badge">1</span>` : `<span class="badge" id="approval-badge" style="display:none">1</span>`; navApprovals.innerHTML = `<span class="nav-icon">✓</span> ${T('approvals')} ${badge}`; }
     document.querySelector('#nav-history').innerHTML = `<span class="nav-icon">⏱</span> ${T('history')}`;
     document.querySelector('#nav-beneficiaries').innerHTML = `<span class="nav-icon">👤</span> ${T('beneficiaries')}`;
     document.querySelector('#nav-team').innerHTML = `<span class="nav-icon">👥</span> ${T('team')}`;

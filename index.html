@@ -70,10 +70,28 @@
     .role-tag.approver { background: #F0FDF4; color: #16A34A; }
     .role-tag.admin { background: #FFF7ED; color: #EA580C; }
 
-    .main { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; }
-    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .main { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; transition: margin-left .2s ease; }
+    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
     .topbar-title { font-size: 16px; font-weight: 600; }
     .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .sidebar-toggle { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .sidebar-toggle:hover { background: var(--bg); color: var(--text); }
+
+    /* ─── COLLAPSED SIDEBAR ─── */
+    --sidebar-collapsed-width: 64px;
+    .sidebar { transition: width .2s ease; overflow: hidden; }
+    .sidebar.collapsed { width: 64px; }
+    .sidebar.collapsed .sidebar-logo span,
+    .sidebar.collapsed .nav-label,
+    .sidebar.collapsed .user-info,
+    .sidebar.collapsed .nav-item .badge { display: none; }
+    .sidebar.collapsed .sidebar-logo { justify-content: center; padding: 20px 0 16px; }
+    .sidebar.collapsed .nav-section { padding: 16px 8px 8px; }
+    .sidebar.collapsed .nav-item { justify-content: center; padding: 10px; }
+    .sidebar.collapsed .nav-item .nav-icon { width: auto; }
+    .sidebar.collapsed .sidebar-user { justify-content: center; padding: 12px; }
+    .main.collapsed { margin-left: 64px; }
     .lang-btn { font-size: 13px; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 4px; }
     .content { padding: 32px; max-width: 1400px; margin: 0 auto; }
 
@@ -288,7 +306,14 @@
   <!-- MAIN CONTENT -->
   <main class="main">
     <div class="topbar">
-      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-left">
+        <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+      </div>
       <div class="topbar-right">
         <span class="lang-btn" id="lang-btn" onclick="toggleLang()">🌐 English</span>
         <div style="display:flex;align-items:center;gap:8px;">
@@ -1113,6 +1138,14 @@
 </div>
 
 <script>
+  // ─── SIDEBAR TOGGLE ───
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const main = document.querySelector('.main');
+    sidebar.classList.toggle('collapsed');
+    main.classList.toggle('collapsed');
+  }
+
   // ─── STATE ───
   const state = {
     role: 'initiator',

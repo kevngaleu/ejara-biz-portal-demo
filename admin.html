@@ -483,7 +483,7 @@
                 <td style="font-weight:600;">Sandra Eto'o</td>
                 <td style="color:var(--text-secondary);">sandra@etootrading.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
-                <td><span class="badge-pill badge-rejected">✗ Rejected</span></td>
+                <td><span class="badge-pill badge-rejected">Rejected</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 20, 16:22</td>
                 <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-005')">View</button></td>
               </tr>
@@ -535,11 +535,13 @@
               <th>Customer</th>
               <th>Beneficiary</th>
               <th>Bank</th>
-              <th>Amount Sent</th>
-              <th>Amount Received</th>
-              <th>≈ USDT</th>
+              <th>Amount Deposited</th>
+              <th>Amount to Receive</th>
+              <th>Crypto</th>
+              <th>Rate</th>
               <th>Corridor</th>
               <th>Status</th>
+              <th>Validated by</th>
               <th>Date &amp; Time</th>
               <th></th>
             </tr></thead>
@@ -551,9 +553,11 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 3,360 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">3,360</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
-                <td><span class="status-badge status-pending-review">● Pending Review</span></td>
+                <td><span class="status-badge status-pending-review">Pending Review</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 11:34</td>
                 <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
               </tr>
@@ -564,9 +568,11 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 6,720 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">6,720</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
-                <td><span class="status-badge status-pending-review">● Pending Review</span></td>
+                <td><span class="status-badge status-pending-review">Pending Review</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 10:15</td>
                 <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
               </tr>
@@ -577,9 +583,11 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Access Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">806,452 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">2,000,000 NGN</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 1,344 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1,344</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td><span class="status-badge status-completed">Completed</span></td>
+                <td style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 16:48</td>
                 <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
               </tr>
@@ -590,9 +598,11 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">First Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">1,209,677 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">3,000,000 NGN</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 2,016 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">2,016</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
-                <td><span class="status-badge status-rejected">✗ Rejected</span></td>
+                <td><span class="status-badge status-rejected">Rejected</span></td>
+                <td style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 14:20</td>
                 <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
               </tr>
@@ -936,7 +946,7 @@
     document.getElementById('kyb-email').textContent = d.email;
     document.getElementById('kyb-type').innerHTML = `<span class="badge-pill badge-${d.type === 'Business' ? 'business' : 'individual'}">${d.type}</span>`;
     document.getElementById('kyb-date').textContent = d.date;
-    const statusMap = { pending: '<span class="badge-pill badge-pending">● Pending</span>', approved: '<span class="badge-pill badge-approved">✓ Approved</span>', rejected: '<span class="badge-pill badge-rejected">✗ Rejected</span>' };
+    const statusMap = { pending: '<span class="badge-pill badge-pending">● Pending</span>', approved: '<span class="badge-pill badge-approved">✓ Approved</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
     document.getElementById('kyb-status').innerHTML = statusMap[d.status];
     document.getElementById('kyb-rejection-note').style.display = d.status === 'rejected' ? 'block' : 'none';
     if (d.rejectionReason) document.getElementById('kyb-rejection-text').textContent = d.rejectionReason;
@@ -972,7 +982,7 @@
     document.getElementById('tx-rate').textContent = d.rate;
     document.getElementById('tx-corridor').textContent = d.corridor;
     document.getElementById('tx-date').textContent = d.date;
-    const statusMap = { pending: '<span class="badge-pill badge-review">● Pending Review</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">✗ Rejected</span>' };
+    const statusMap = { pending: '<span class="badge-pill badge-review">Pending Review</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
     document.getElementById('tx-status').innerHTML = statusMap[d.status];
     document.getElementById('tx-bene-name').textContent = d.beneName;
     document.getElementById('tx-bene-bank').textContent = d.beneBank;

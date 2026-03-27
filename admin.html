@@ -206,6 +206,24 @@
     .audit-meta { font-size: 12px; color: var(--text-secondary); white-space: nowrap; text-align: right; }
     .audit-user { display: inline-flex; align-items: center; gap: 4px; background: var(--purple-light); color: var(--purple); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 5px; }
 
+    /* ─── APPROVE TX MODAL ─── */
+    .approve-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
+    .approve-modal-overlay.open { display: flex; }
+    .approve-modal { background: var(--white); border-radius: 16px; padding: 32px; width: 460px; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+    .approve-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .approve-modal-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+    .approve-modal label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
+    .approve-modal input[type="text"] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; box-sizing: border-box; }
+    .approve-modal input[type="text"]:focus { border-color: var(--purple); }
+    .approve-upload-zone { border: 1.5px dashed var(--border); border-radius: 10px; padding: 18px; text-align: center; margin-top: 16px; cursor: pointer; transition: border-color .2s; }
+    .approve-upload-zone:hover { border-color: var(--purple); }
+    .approve-upload-zone input { display: none; }
+    .approve-upload-label { font-size: 13px; color: var(--text-secondary); }
+    .approve-upload-label span { color: var(--purple); font-weight: 600; cursor: pointer; }
+    .approve-upload-filename { font-size: 12px; color: var(--purple); margin-top: 6px; font-weight: 600; display: none; }
+    .approve-modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+    .approve-modal-actions .btn { flex: 1; justify-content: center; }
+
     /* ─── RATE CONFIRM MODAL ─── */
     .rate-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
     .rate-modal-overlay.open { display: flex; }
@@ -556,10 +574,10 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">3,360</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
-                <td><span class="status-badge status-pending-review">Pending Review</span></td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
+                <td id="tx-row-status-tx-001"><span class="status-badge status-pending-review">Pending Review</span></td>
+                <td id="tx-row-validated-tx-001" style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 11:34</td>
-                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
+                <td id="tx-row-action-tx-001"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
               </tr>
               <tr onclick="openTX('tx-002')" style="cursor:pointer;">
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260002</td>
@@ -571,10 +589,10 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">6,720</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
-                <td><span class="status-badge status-pending-review">Pending Review</span></td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
+                <td id="tx-row-status-tx-002"><span class="status-badge status-pending-review">Pending Review</span></td>
+                <td id="tx-row-validated-tx-002" style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 10:15</td>
-                <td><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
+                <td id="tx-row-action-tx-002"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
               </tr>
               <tr onclick="openTX('tx-003')" style="cursor:pointer;">
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260003</td>
@@ -586,10 +604,10 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1,344</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
-                <td><span class="status-badge status-completed">Completed</span></td>
-                <td style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
+                <td id="tx-row-status-tx-003"><span class="status-badge status-completed">Completed</span></td>
+                <td id="tx-row-validated-tx-003" style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 16:48</td>
-                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
+                <td id="tx-row-action-tx-003"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
               </tr>
               <tr onclick="openTX('tx-004')" style="cursor:pointer;">
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260004</td>
@@ -601,10 +619,10 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">2,016</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
-                <td><span class="status-badge status-rejected">Rejected</span></td>
-                <td style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
+                <td id="tx-row-status-tx-004"><span class="status-badge status-rejected">Rejected</span></td>
+                <td id="tx-row-validated-tx-004" style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 14:20</td>
-                <td><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
+                <td id="tx-row-action-tx-004"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
               </tr>
             </tbody>
           </table>
@@ -863,7 +881,32 @@
   </div>
   <div class="detail-actions" id="tx-actions">
     <button class="btn btn-danger" onclick="rejectTX()">✗ Reject</button>
-    <button class="btn btn-success" onclick="approveTX()">✓ Approve & Route to CPN</button>
+    <button class="btn btn-success" onclick="approveTX()">✓ Approve & Complete</button>
+  </div>
+</div>
+
+<!-- Approve TX Modal -->
+<div class="approve-modal-overlay" id="approve-modal-overlay">
+  <div class="approve-modal">
+    <div class="approve-modal-title">Complete Transaction</div>
+    <div class="approve-modal-sub">Provide the outgoing payment reference before completing this transaction.</div>
+    <div style="margin-bottom:16px;">
+      <label for="admin-payment-ref">Payment Reference <span style="color:var(--red);">*</span></label>
+      <input type="text" id="admin-payment-ref" placeholder="e.g. TRF-2026-00412" />
+    </div>
+    <div>
+      <label>Proof of Payment (Optional)</label>
+      <div class="approve-upload-zone" onclick="document.getElementById('admin-proof-input').click()">
+        <input type="file" id="admin-proof-input" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" onchange="handleAdminProofUpload(this)" />
+        <div class="approve-upload-label">📎 <span>Click to upload</span> or drag and drop</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:4px;">JPG, PNG, PDF, DOC — max 10 MB</div>
+        <div class="approve-upload-filename" id="admin-proof-filename"></div>
+      </div>
+    </div>
+    <div class="approve-modal-actions">
+      <button class="btn btn-secondary" onclick="closeApproveModal()">Cancel</button>
+      <button class="btn btn-success" onclick="confirmApproveTX()">✓ Confirm & Complete</button>
+    </div>
   </div>
 </div>
 
@@ -999,10 +1042,52 @@
   }
 
   function approveTX() {
+    // Open the approve modal instead of approving directly
+    document.getElementById('admin-payment-ref').value = '';
+    document.getElementById('admin-proof-input').value = '';
+    document.getElementById('admin-proof-filename').style.display = 'none';
+    document.getElementById('admin-proof-filename').textContent = '';
+    document.getElementById('approve-modal-overlay').classList.add('open');
+  }
+
+  function closeApproveModal() {
+    document.getElementById('approve-modal-overlay').classList.remove('open');
+  }
+
+  function handleAdminProofUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const maxMB = 10;
+    if (file.size > maxMB * 1024 * 1024) {
+      alert('File is too large. Maximum size is 10 MB.');
+      input.value = '';
+      return;
+    }
+    const allowed = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowed.includes(file.type)) {
+      alert('Invalid file type. Accepted formats: JPG, PNG, PDF, DOC.');
+      input.value = '';
+      return;
+    }
+    const filename = document.getElementById('admin-proof-filename');
+    filename.textContent = '✓ ' + file.name;
+    filename.style.display = 'block';
+  }
+
+  function confirmApproveTX() {
+    const ref = document.getElementById('admin-payment-ref').value.trim();
+    if (!ref) {
+      alert('Please enter the payment reference.');
+      document.getElementById('admin-payment-ref').focus();
+      return;
+    }
     txData[currentTX].status = 'completed';
+    txData[currentTX].adminPaymentRef = ref;
+    closeApproveModal();
+    updateTXRow(currentTX);
     closeTX();
     updateBadges();
-    showToast('✅', 'Transaction Approved', txData[currentTX].ref + ' routed to CPN. Payout initiated to beneficiary.');
+    showToast('✅', 'Transaction Completed', txData[currentTX].ref + ' has been marked as completed. Payout initiated to beneficiary.');
   }
 
   function rejectTX() {
@@ -1015,6 +1100,7 @@
     const reason = document.getElementById('tx-reject-reason').value;
     if (!reason.trim()) { alert('Please enter a rejection reason.'); return; }
     txData[currentTX].status = 'rejected';
+    updateTXRow(currentTX);
     closeTX();
     updateBadges();
     showToast('↩️', 'Transaction Rejected', txData[currentTX].customer + ' has been notified with the reason.');
@@ -1082,6 +1168,25 @@
   }
 
   // ─── BADGES ───
+  function updateTXRow(id) {
+    const statusEl = document.getElementById('tx-row-status-' + id);
+    const actionEl = document.getElementById('tx-row-action-' + id);
+    const validatedEl = document.getElementById('tx-row-validated-' + id);
+    if (!statusEl || !actionEl) return;
+    const status = txData[id].status;
+    const statusMap = {
+      pending:   '<span class="status-badge status-pending-review">Pending Review</span>',
+      completed: '<span class="status-badge status-completed">Completed</span>',
+      rejected:  '<span class="status-badge status-rejected">Rejected</span>'
+    };
+    statusEl.innerHTML = statusMap[status] || '';
+    if (validatedEl) {
+      validatedEl.textContent = status === 'pending' ? '—' : 'recitKevin';
+    }
+    const isActionable = status === 'pending';
+    actionEl.innerHTML = `<button class="btn ${isActionable ? 'btn-primary' : 'btn-secondary'}" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('${id}')">${isActionable ? 'Review' : 'View'}</button>`;
+  }
+
   function updateBadges() {
     const kybPending = Object.values(kybData).filter(k => k.status === 'pending').length;
     const txPending = Object.values(txData).filter(t => t.status === 'pending').length;

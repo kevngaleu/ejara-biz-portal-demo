@@ -360,9 +360,10 @@
               <th>Reference</th>
               <th>Beneficiary</th>
               <th>Bank</th>
-              <th>Amount Sent</th>
-              <th>Amount Received</th>
-              <th>≈ USDT</th>
+              <th>Amount Deposited</th>
+              <th>Amount to Receive</th>
+              <th>Crypto</th>
+            <th>Rate</th>
               <th>Corridor</th>
               <th>Initiated by</th>
               <th>Status</th>
@@ -375,7 +376,8 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 3,360 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">3,360</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
                 <td><span class="status-badge status-completed">Completed</span></td>
@@ -387,7 +389,8 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 6,720 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">6,720</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td style="color:var(--text-secondary);white-space:nowrap;">Fatima B.</td>
                 <td><span class="status-badge status-completed">Completed</span></td>
@@ -900,9 +903,10 @@
             <th data-i18n="reference">Reference</th>
             <th data-i18n="beneficiary">Beneficiary</th>
             <th>Bank</th>
-            <th>Amount Sent</th>
-            <th>Amount Received</th>
-            <th>≈ USDT</th>
+            <th>Amount Deposited</th>
+            <th>Amount to Receive</th>
+            <th>Crypto</th>
+            <th>Rate</th>
             <th>Corridor</th>
             <th data-i18n="initiatedBy">Initiated by</th>
             <th data-i18n="status">Status</th>
@@ -916,7 +920,8 @@
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
               <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
               <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
-              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 3,360 USDT</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">3,360</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
               <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
               <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
               <td><span class="status-badge status-completed">Completed</span></td>
@@ -929,7 +934,8 @@
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
               <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
               <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
-              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ 6,720 USDT</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">6,720</td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
               <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
               <td style="color:var(--text-secondary);white-space:nowrap;">Fatima B.</td>
               <td><span class="status-badge status-completed">Completed</span></td>
@@ -1409,7 +1415,7 @@
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${b.bank}</td>
       <td style="font-weight:600;white-space:nowrap;">${fmt(p.xaf)} XAF</td>
       <td style="font-weight:600;color:var(--green);white-space:nowrap;">${fmt(p.dest)} ${p.currency}</td>
-      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ ${fmt(usdt)} USDT</td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${fmt(usdt)}</td>
       <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">${corridor}</span></td>
       <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
       <td><span class="status-badge status-pending" id="hist-status-001">Pending Deposit</span></td>
@@ -1426,7 +1432,7 @@
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${b.bank}</td>
       <td style="font-weight:600;white-space:nowrap;">${fmt(p.xaf)} XAF</td>
       <td style="font-weight:600;color:var(--green);white-space:nowrap;">${fmt(p.dest)} ${p.currency}</td>
-      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">≈ ${fmt(usdt)} USDT</td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${fmt(usdt)}</td>
       <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">${corridor}</span></td>
       <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
       <td><span class="status-badge status-pending">Pending Deposit</span></td>
@@ -1490,7 +1496,7 @@
   }
 
   function exportCSV() {
-    const headers = ['Reference','Beneficiary','Bank','Amount Sent','Amount Received','≈ USDT','Corridor','Initiated by','Status','Date & Time'];
+    const headers = ['Reference','Beneficiary','Bank','Amount Deposited','Amount to Receive','Crypto','Rate','Corridor','Initiated by','Status','Date & Time'];
     const rows = [...document.querySelectorAll('#history-tbody tr')].map(tr =>
       [...tr.cells].map(td => '"' + td.textContent.trim().replace(/"/g,'""') + '"').join(',')
     );

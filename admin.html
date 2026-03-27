@@ -523,6 +523,7 @@
         <select class="form-input" style="max-width:180px;padding:8px 12px;font-size:13px;">
           <option>All statuses</option>
           <option>Pending Review</option>
+          <option>Approved</option>
           <option>Completed</option>
           <option>Rejected</option>
         </select>
@@ -895,6 +896,7 @@
     <button class="btn btn-success" onclick="approveTX()">✓ Approve</button>
   </div>
   <div class="detail-actions" id="tx-actions-approved" style="display:none;">
+    <button class="btn btn-danger" onclick="rejectTX()">✗ Reject</button>
     <button class="btn btn-success" onclick="openCompleteModal()">✓ Complete</button>
   </div>
 </div>

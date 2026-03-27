@@ -195,6 +195,7 @@
     /* ─── STATUS BADGES (matches business portal) ─── */
     .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .status-pending-review { background: #EFF6FF; color: #2563EB; }
+    .status-approved { background: #FFF7ED; color: #EA580C; }
     .status-completed { background: #F0FDF4; color: #16A34A; }
     .status-rejected { background: #FEF2F2; color: #DC2626; }
     .status-submitted { background: #EFF6FF; color: #3B82F6; }
@@ -619,6 +620,21 @@
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 14:20</td>
                 <td id="tx-row-action-tx-004"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
               </tr>
+              <tr onclick="openTX('tx-005')" style="cursor:pointer;">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260005</td>
+                <td style="font-weight:600;white-space:nowrap;">Paul Nguemo</td>
+                <td style="font-weight:600;white-space:nowrap;">Kemi Supplies Ltd</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">UBA Nigeria</td>
+                <td style="font-weight:600;white-space:nowrap;">2,419,355 XAF</td>
+                <td style="font-weight:600;color:var(--green);white-space:nowrap;">6,000,000 NGN</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">4,032 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
+                <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
+                <td id="tx-row-status-tx-005"><span class="status-badge status-approved">Approved</span></td>
+                <td id="tx-row-validated-tx-005" style="font-size:12px;white-space:nowrap;">recitKevin</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 09:02</td>
+                <td id="tx-row-action-tx-005"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-005')">Complete</button></td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -874,21 +890,20 @@
       <textarea id="tx-reject-reason" placeholder="Explain why this transaction is being rejected (will be sent to the customer)…"></textarea>
     </div>
   </div>
-  <div class="detail-actions" id="tx-actions">
+  <div class="detail-actions" id="tx-actions-pending" style="display:none;">
     <button class="btn btn-danger" onclick="rejectTX()">✗ Reject</button>
-    <button class="btn btn-success" onclick="approveTX()">✓ Approve & Complete</button>
+    <button class="btn btn-success" onclick="approveTX()">✓ Approve</button>
+  </div>
+  <div class="detail-actions" id="tx-actions-approved" style="display:none;">
+    <button class="btn btn-success" onclick="openCompleteModal()">✓ Complete</button>
   </div>
 </div>
 
-<!-- Approve TX Modal -->
+<!-- Complete TX Modal -->
 <div class="approve-modal-overlay" id="approve-modal-overlay">
   <div class="approve-modal">
     <div class="approve-modal-title">Complete Transaction</div>
-    <div class="approve-modal-sub">Provide the outgoing payment reference before completing this transaction.</div>
-    <div style="margin-bottom:16px;">
-      <label for="admin-payment-ref">Payment Reference <span style="color:var(--red);">*</span></label>
-      <input type="text" id="admin-payment-ref" placeholder="e.g. TRF-2026-00412" />
-    </div>
+    <div class="approve-modal-sub">Confirm that the beneficiary has received the funds. You can optionally attach proof of payment.</div>
     <div>
       <label>Proof of Payment (Optional)</label>
       <div class="approve-upload-zone" onclick="document.getElementById('admin-proof-input').click()">
@@ -900,7 +915,7 @@
     </div>
     <div class="approve-modal-actions">
       <button class="btn btn-secondary" onclick="closeApproveModal()">Cancel</button>
-      <button class="btn btn-success" onclick="confirmApproveTX()">✓ Confirm & Complete</button>
+      <button class="btn btn-success" onclick="completeTX()">✓ Confirm & Complete</button>
     </div>
   </div>
 </div>
@@ -1003,6 +1018,7 @@
     'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421' },
     'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122' },
     'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833' },
+    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390' },
   };
 
   let currentTX = null;
@@ -1020,13 +1036,14 @@
     document.getElementById('tx-rate').textContent = d.rate;
     document.getElementById('tx-corridor').textContent = d.corridor;
     document.getElementById('tx-date').textContent = d.date;
-    const statusMap = { pending: '<span class="badge-pill badge-review">Pending Review</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
+    const statusMap = { pending: '<span class="badge-pill badge-review">Pending Review</span>', approved: '<span class="status-badge status-approved">Approved</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
     document.getElementById('tx-status').innerHTML = statusMap[d.status];
     document.getElementById('tx-bene-name').textContent = d.beneName;
     document.getElementById('tx-bene-bank').textContent = d.beneBank;
     document.getElementById('tx-bene-acct').textContent = d.beneAcct;
     document.getElementById('tx-reject-form').style.display = 'none';
-    document.getElementById('tx-actions').style.display = d.status === 'pending' ? 'flex' : 'none';
+    document.getElementById('tx-actions-pending').style.display = d.status === 'pending' ? 'flex' : 'none';
+    document.getElementById('tx-actions-approved').style.display = d.status === 'approved' ? 'flex' : 'none';
     document.getElementById('tx-overlay').classList.add('open');
     document.getElementById('tx-panel').classList.add('open');
   }
@@ -1037,8 +1054,14 @@
   }
 
   function approveTX() {
-    // Open the approve modal instead of approving directly
-    document.getElementById('admin-payment-ref').value = '';
+    txData[currentTX].status = 'approved';
+    updateTXRow(currentTX);
+    closeTX();
+    updateBadges();
+    showToast('✅', 'Transaction Approved', txData[currentTX].ref + ' — payout routing initiated.');
+  }
+
+  function openCompleteModal() {
     document.getElementById('admin-proof-input').value = '';
     document.getElementById('admin-proof-filename').style.display = 'none';
     document.getElementById('admin-proof-filename').textContent = '';
@@ -1069,20 +1092,13 @@
     filename.style.display = 'block';
   }
 
-  function confirmApproveTX() {
-    const ref = document.getElementById('admin-payment-ref').value.trim();
-    if (!ref) {
-      alert('Please enter the payment reference.');
-      document.getElementById('admin-payment-ref').focus();
-      return;
-    }
+  function completeTX() {
     txData[currentTX].status = 'completed';
-    txData[currentTX].adminPaymentRef = ref;
     closeApproveModal();
     updateTXRow(currentTX);
     closeTX();
     updateBadges();
-    showToast('✅', 'Transaction Completed', txData[currentTX].ref + ' has been marked as completed. Payout initiated to beneficiary.');
+    showToast('✅', 'Transaction Completed', txData[currentTX].ref + ' — beneficiary payment confirmed.');
   }
 
   function rejectTX() {
@@ -1171,6 +1187,7 @@
     const status = txData[id].status;
     const statusMap = {
       pending:   '<span class="status-badge status-pending-review">Pending Review</span>',
+      approved:  '<span class="status-badge status-approved">Approved</span>',
       completed: '<span class="status-badge status-completed">Completed</span>',
       rejected:  '<span class="status-badge status-rejected">Rejected</span>'
     };
@@ -1178,8 +1195,9 @@
     if (validatedEl) {
       validatedEl.textContent = status === 'pending' ? '—' : 'recitKevin';
     }
-    const isActionable = status === 'pending';
-    actionEl.innerHTML = `<button class="btn ${isActionable ? 'btn-primary' : 'btn-secondary'}" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('${id}')">${isActionable ? 'Review' : 'View'}</button>`;
+    const btnClass = status === 'pending' ? 'btn-primary' : status === 'approved' ? 'btn-success' : 'btn-secondary';
+    const btnLabel = status === 'pending' ? 'Review' : status === 'approved' ? 'Complete' : 'View';
+    actionEl.innerHTML = `<button class="btn ${btnClass}" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('${id}')">${btnLabel}</button>`;
   }
 
   function updateBadges() {

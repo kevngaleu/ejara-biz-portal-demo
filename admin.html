@@ -194,6 +194,7 @@
 
     /* ─── STATUS BADGES (matches business portal) ─── */
     .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-initiated { background: #F5F3FF; color: #7C3AED; }
     .status-pending-review { background: #EFF6FF; color: #2563EB; }
     .status-approved { background: #FFF7ED; color: #EA580C; }
     .status-completed { background: #F0FDF4; color: #16A34A; }
@@ -522,6 +523,7 @@
       <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
         <select class="form-input" style="max-width:180px;padding:8px 12px;font-size:13px;">
           <option>All statuses</option>
+          <option>Initiated</option>
           <option>Pending Review</option>
           <option>Approved</option>
           <option>Completed</option>
@@ -635,6 +637,21 @@
                 <td id="tx-row-validated-tx-005" style="font-size:12px;white-space:nowrap;">recitKevin</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 09:02</td>
                 <td id="tx-row-action-tx-005"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-005')">Complete</button></td>
+              </tr>
+              <tr onclick="openTX('tx-006')" style="cursor:pointer;">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260006</td>
+                <td style="font-weight:600;white-space:nowrap;">Hervé Tchinda</td>
+                <td style="font-weight:600;white-space:nowrap;">Biodun Trading Co.</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Fidelity Bank Nigeria</td>
+                <td style="font-weight:600;white-space:nowrap;">1,612,903 XAF</td>
+                <td style="font-weight:600;color:var(--green);white-space:nowrap;">4,000,000 NGN</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">2,688 USDT</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
+                <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
+                <td id="tx-row-status-tx-006"><span class="status-badge status-initiated">Initiated</span></td>
+                <td id="tx-row-validated-tx-006" style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 13:10</td>
+                <td id="tx-row-action-tx-006"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-006')">View</button></td>
               </tr>
             </tbody>
           </table>
@@ -1021,6 +1038,7 @@
     'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122' },
     'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833' },
     'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390' },
+    'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714' },
   };
 
   let currentTX = null;
@@ -1038,7 +1056,7 @@
     document.getElementById('tx-rate').textContent = d.rate;
     document.getElementById('tx-corridor').textContent = d.corridor;
     document.getElementById('tx-date').textContent = d.date;
-    const statusMap = { pending: '<span class="badge-pill badge-review">Pending Review</span>', approved: '<span class="status-badge status-approved">Approved</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
+    const statusMap = { initiated: '<span class="status-badge status-initiated">Initiated</span>', pending: '<span class="badge-pill badge-review">Pending Review</span>', approved: '<span class="status-badge status-approved">Approved</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
     document.getElementById('tx-status').innerHTML = statusMap[d.status];
     document.getElementById('tx-bene-name').textContent = d.beneName;
     document.getElementById('tx-bene-bank').textContent = d.beneBank;
@@ -1046,6 +1064,7 @@
     document.getElementById('tx-reject-form').style.display = 'none';
     document.getElementById('tx-actions-pending').style.display = d.status === 'pending' ? 'flex' : 'none';
     document.getElementById('tx-actions-approved').style.display = d.status === 'approved' ? 'flex' : 'none';
+
     document.getElementById('tx-overlay').classList.add('open');
     document.getElementById('tx-panel').classList.add('open');
   }
@@ -1188,6 +1207,7 @@
     if (!statusEl || !actionEl) return;
     const status = txData[id].status;
     const statusMap = {
+      initiated: '<span class="status-badge status-initiated">Initiated</span>',
       pending:   '<span class="status-badge status-pending-review">Pending Review</span>',
       approved:  '<span class="status-badge status-approved">Approved</span>',
       completed: '<span class="status-badge status-completed">Completed</span>',
@@ -1199,6 +1219,7 @@
     }
     const btnClass = status === 'pending' ? 'btn-primary' : status === 'approved' ? 'btn-success' : 'btn-secondary';
     const btnLabel = status === 'pending' ? 'Review' : status === 'approved' ? 'Complete' : 'View';
+
     actionEl.innerHTML = `<button class="btn ${btnClass}" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('${id}')">${btnLabel}</button>`;
   }
 

@@ -922,9 +922,14 @@
 <div class="approve-modal-overlay" id="approve-modal-overlay">
   <div class="approve-modal">
     <div class="approve-modal-title">Complete Transaction</div>
-    <div class="approve-modal-sub">Confirm that the beneficiary has received the funds. You can optionally attach proof of payment.</div>
+    <div class="approve-modal-sub">Confirm that the beneficiary has received the funds. Enter the payment reference and optionally attach proof of payment.</div>
+    <div style="margin-bottom:16px;">
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Transaction Reference <span style="color:#DC2626;">*</span></label>
+      <input type="text" id="admin-tx-reference" placeholder="e.g. TRF-20260326-00441" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;" oninput="this.style.borderColor=this.value.trim()?'var(--purple)':'var(--border)'" />
+      <div id="admin-tx-reference-error" style="font-size:11px;color:#DC2626;margin-top:4px;display:none;">A transaction reference is required.</div>
+    </div>
     <div>
-      <label>Proof of Payment (Optional)</label>
+      <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Proof of Payment (Optional)</label>
       <div class="approve-upload-zone" onclick="document.getElementById('admin-proof-input').click()">
         <input type="file" id="admin-proof-input" accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" onchange="handleAdminProofUpload(this)" />
         <div class="approve-upload-label">📎 <span>Click to upload</span> or drag and drop</div>
@@ -1086,6 +1091,9 @@
     document.getElementById('admin-proof-input').value = '';
     document.getElementById('admin-proof-filename').style.display = 'none';
     document.getElementById('admin-proof-filename').textContent = '';
+    document.getElementById('admin-tx-reference').value = '';
+    document.getElementById('admin-tx-reference').style.borderColor = 'var(--border)';
+    document.getElementById('admin-tx-reference-error').style.display = 'none';
     document.getElementById('approve-modal-overlay').classList.add('open');
   }
 
@@ -1114,6 +1122,13 @@
   }
 
   function completeTX() {
+    const ref = document.getElementById('admin-tx-reference').value.trim();
+    if (!ref) {
+      document.getElementById('admin-tx-reference-error').style.display = 'block';
+      document.getElementById('admin-tx-reference').style.borderColor = '#DC2626';
+      document.getElementById('admin-tx-reference').focus();
+      return;
+    }
     txData[currentTX].status = 'completed';
     closeApproveModal();
     updateTXRow(currentTX);

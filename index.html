@@ -66,6 +66,10 @@
     .kyb-needs ul li::before { content: '✓ '; color: var(--green); font-weight: 700; }
     .kyb-needs ul li { font-size: 13px; color: var(--text); }
     .kyb-review-note { font-size: 12px; color: var(--text-secondary); margin-bottom: 24px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 48px; height: 48px; border: 3px solid var(--purple-mid); border-top-color: var(--purple); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 24px; }
+    .dotfile-status { font-size: 13px; color: var(--text-secondary); text-align: center; margin-top: 8px; }
+    .activated-icon { width: 64px; height: 64px; border-radius: 50%; background: #F0FDF4; border: 2px solid #BBF7D0; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 20px; }
     .phone-row { display: flex; gap: 8px; }
     .phone-row .phone-code { width: 110px; flex-shrink: 0; }
     .phone-row .phone-number { flex: 1; }
@@ -287,7 +291,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     REGISTER SCREEN
+     REGISTER SCREEN — Step 1: Company + Email
 ═══════════════════════════════════════════════ -->
 <div id="screen-register" class="screen auth-screen">
   <div class="login-card">
@@ -299,10 +303,14 @@
       </svg>
       <span>ejara</span>
     </div>
-    <div class="login-title">Create your account</div>
+    <div class="login-title">Register your business</div>
     <div class="login-sub" style="margin-bottom:24px;">Already have an account? <span class="auth-link" onclick="showScreen('login')">Sign in</span></div>
     <div class="form-group">
-      <div class="form-label">Email address</div>
+      <div class="form-label">Company name</div>
+      <input class="form-input" id="reg-company" type="text" placeholder="Acme Import Ltd.">
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <div class="form-label">Admin email address</div>
       <input class="form-input" id="reg-email" type="email" placeholder="you@company.cm">
       <div id="reg-email-error" class="field-error" style="display:none;">An account with this email already exists. <span onclick="showScreen('login')">Sign in instead →</span></div>
     </div>
@@ -566,8 +574,102 @@
         <button class="pass-toggle" onclick="togglePass('reg-password2', this)">👁</button>
       </div>
     </div>
+    <div class="prototype-note">⚡ Prototype — "Continue" simulates Path A (existing verified business). Click "New business?" below to jump to Path B.</div>
+    <button class="btn btn-primary btn-lg" onclick="register()">Continue →</button>
+    <div style="text-align:center;margin-top:12px;font-size:13px;">
+      <span class="auth-link" style="color:var(--text-secondary);font-weight:400;" onclick="showScreen('register-new')">New business? Set up credentials instead →</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     DOTFILE CHECK SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-dotfile-check" class="screen auth-screen">
+  <div class="login-card" style="text-align:center;padding:48px 40px;">
+    <div class="spinner"></div>
+    <div class="login-title" style="margin-bottom:8px;">Verifying your business</div>
+    <div class="dotfile-status">Looking up your company in our compliance system…</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PATH A — ACCOUNT ACTIVATED SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-register-found" class="screen auth-screen">
+  <div class="login-card" style="text-align:center;">
+    <div class="activated-icon">✅</div>
+    <div class="login-title">Your account is active</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin:12px 0 8px;line-height:1.7;">
+      We found your verified business profile.<br>
+      We've sent an email to <strong id="found-email">your address</strong> with a link to set your password and invite your team.
+    </div>
+    <div style="background:var(--purple-light);border-radius:10px;padding:14px 16px;margin:20px 0;text-align:left;font-size:13px;">
+      <div style="font-weight:600;margin-bottom:6px;">What happens next</div>
+      <div style="color:var(--text-secondary);line-height:1.7;">
+        1. Check your inbox for the setup email<br>
+        2. Click the link to set your password<br>
+        3. Sign in and invite your team
+      </div>
+    </div>
+    <div class="prototype-note" style="text-align:left;">⚡ Prototype — click Sign in to continue the demo</div>
+    <button class="btn btn-primary btn-lg" onclick="showScreen('login')">Back to sign in</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PATH B — NEW BUSINESS CREDENTIALS SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-register-new" class="screen auth-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#6B47FF"/>
+        <path d="M10 22C10 17 14 12 18 11C22 12 26 17 26 22C24 24 21 25 18 25C15 25 12 24 10 22Z" fill="white" opacity=".9"/>
+        <circle cx="18" cy="17" r="4" fill="#6B47FF"/>
+      </svg>
+      <span>ejara</span>
+    </div>
+    <div class="login-title">Set up your account</div>
+    <div class="login-sub" style="margin-bottom:24px;">Complete your credentials to continue</div>
+    <div class="form-group">
+      <div class="form-label">Email address</div>
+      <input class="form-input" id="reg-new-email" type="email" placeholder="you@company.cm">
+      <div id="reg-new-email-error" class="field-error" style="display:none;">An account with this email already exists. <span class="auth-link" onclick="showScreen('login')">Sign in instead →</span></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Phone number</div>
+      <div class="phone-row">
+        <select class="form-input form-select phone-code" id="reg-new-phone-code">
+          <option value="+237">🇨🇲 +237</option>
+          <option value="+234">🇳🇬 +234</option>
+          <option value="+225">🇨🇮 +225</option>
+          <option value="+221">🇸🇳 +221</option>
+          <option value="+33">🇫🇷 +33</option>
+          <option value="+1">🇺🇸 +1</option>
+          <option value="+44">🇬🇧 +44</option>
+          <option value="+86">🇨🇳 +86</option>
+          <option value="+971">🇦🇪 +971</option>
+        </select>
+        <input class="form-input phone-number" id="reg-new-phone" type="tel" placeholder="6XX XXX XXX">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Password</div>
+      <div class="pass-wrap">
+        <input class="form-input" id="reg-password" type="password" placeholder="Create a password">
+        <button class="pass-toggle" onclick="togglePass('reg-password', this)">👁</button>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <div class="form-label">Confirm password</div>
+      <div class="pass-wrap">
+        <input class="form-input" id="reg-password2" type="password" placeholder="Repeat your password">
+        <button class="pass-toggle" onclick="togglePass('reg-password2', this)">👁</button>
+      </div>
+    </div>
     <div class="prototype-note">⚡ Prototype — enter any details. Submit twice to see the "email already exists" error.</div>
-    <button class="btn btn-primary btn-lg" onclick="register()">Create account</button>
+    <button class="btn btn-primary btn-lg" onclick="registerNew()">Create account</button>
   </div>
 </div>
 
@@ -1580,14 +1682,25 @@
     btn.textContent = inp.type === 'password' ? '👁' : '🙈';
   }
 
-  let registerAttempts = 0;
+  // Path A: existing Dotfile customer
   function register() {
-    registerAttempts++;
-    if (registerAttempts >= 2) {
-      document.getElementById('reg-email-error').style.display = 'block';
+    const email = document.getElementById('reg-email').value || 'your address';
+    showScreen('dotfile-check');
+    setTimeout(function() {
+      document.getElementById('found-email').textContent = email;
+      showScreen('register-found');
+    }, 2000);
+  }
+
+  // Path B: new business credentials
+  let registerNewAttempts = 0;
+  function registerNew() {
+    registerNewAttempts++;
+    if (registerNewAttempts >= 2) {
+      document.getElementById('reg-new-email-error').style.display = 'block';
       return;
     }
-    document.getElementById('reg-email-error').style.display = 'none';
+    document.getElementById('reg-new-email-error').style.display = 'none';
     showScreen('validate-email');
   }
 

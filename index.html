@@ -66,6 +66,9 @@
     .kyb-needs ul li::before { content: '✓ '; color: var(--green); font-weight: 700; }
     .kyb-needs ul li { font-size: 13px; color: var(--text); }
     .kyb-review-note { font-size: 12px; color: var(--text-secondary); margin-bottom: 24px; }
+    .phone-row { display: flex; gap: 8px; }
+    .phone-row .phone-code { width: 110px; flex-shrink: 0; }
+    .phone-row .phone-number { flex: 1; }
 
     /* ─── APP SHELL ─── */
     #screen-app { min-height: 100vh; flex-direction: row; }
@@ -305,7 +308,20 @@
     </div>
     <div class="form-group">
       <div class="form-label">Phone number</div>
-      <input class="form-input" id="reg-phone" type="tel" placeholder="+237 6XX XXX XXX">
+      <div class="phone-row">
+        <select class="form-input form-select phone-code" id="reg-phone-code">
+          <option value="+237">🇨🇲 +237</option>
+          <option value="+234">🇳🇬 +234</option>
+          <option value="+225">🇨🇮 +225</option>
+          <option value="+221">🇸🇳 +221</option>
+          <option value="+33">🇫🇷 +33</option>
+          <option value="+1">🇺🇸 +1</option>
+          <option value="+44">🇬🇧 +44</option>
+          <option value="+86">🇨🇳 +86</option>
+          <option value="+971">🇦🇪 +971</option>
+        </select>
+        <input class="form-input phone-number" id="reg-phone" type="tel" placeholder="6XX XXX XXX">
+      </div>
     </div>
     <div class="form-group">
       <div class="form-label">Password</div>

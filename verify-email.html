@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verified — Ejara FX Business</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #6B47FF;
+      --purple-light: #F0EEFF;
+      --bg: #F5F5FA;
+      --white: #FFFFFF;
+      --border: #E5E5EF;
+      --text: #111827;
+      --text-secondary: #6B7280;
+      --green: #10B981;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: var(--white); border-radius: 16px; padding: 48px 40px; width: 440px; box-shadow: 0 4px 24px rgba(107,71,255,0.08); text-align: center; }
+    .check-circle { width: 64px; height: 64px; border-radius: 50%; background: #F0FDF4; border: 2px solid #BBF7D0; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 24px; }
+    .logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 32px; }
+    .logo svg { width: 32px; height: 32px; }
+    .logo span { font-size: 20px; font-weight: 700; color: var(--text); }
+    h1 { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 32px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; width: 100%; padding: 13px 28px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; background: var(--purple); color: white; text-decoration: none; transition: background .2s; }
+    .btn:hover { background: #5A38E8; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#6B47FF"/>
+        <path d="M10 22C10 17 14 12 18 11C22 12 26 17 26 22C24 24 21 25 18 25C15 25 12 24 10 22Z" fill="white" opacity=".9"/>
+        <circle cx="18" cy="17" r="4" fill="#6B47FF"/>
+      </svg>
+      <span>ejara</span>
+    </div>
+    <div class="check-circle">✅</div>
+    <h1>Email successfully verified</h1>
+    <p>Your email has been confirmed. You can now sign in to complete your business verification and start sending payments.</p>
+    <a href="index.html?verified=true" class="btn">Sign in to your account →</a>
+  </div>
+</body>
+</html>

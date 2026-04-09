@@ -48,6 +48,25 @@
     .role-btn .role-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
     .prototype-note { background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #856404; margin-bottom: 20px; }
 
+    /* ─── AUTH SCREENS (register / validate-email / kyb-intro) ─── */
+    .auth-screen { min-height: 100vh; align-items: center; justify-content: center; background: var(--bg); flex-direction: column; gap: 32px; }
+    .pass-wrap { position: relative; }
+    .pass-wrap .form-input { padding-right: 44px; }
+    .pass-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 16px; padding: 2px; line-height: 1; }
+    .pass-toggle:hover { color: var(--text); }
+    .field-error { font-size: 12px; color: var(--red); margin-top: 6px; }
+    .field-error a { color: var(--red); font-weight: 600; text-decoration: underline; cursor: pointer; }
+    .auth-link { color: var(--purple); font-weight: 600; cursor: pointer; text-decoration: none; }
+    .auth-link:hover { text-decoration: underline; }
+    .email-icon-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--purple); display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 20px; }
+    .validated-banner { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 10px; padding: 12px 16px; font-size: 13px; color: #15803D; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+    .kyb-needs { background: var(--bg); border-radius: 10px; padding: 16px 20px; margin: 20px 0; }
+    .kyb-needs-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); margin-bottom: 10px; }
+    .kyb-needs ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .kyb-needs ul li::before { content: '✓ '; color: var(--green); font-weight: 700; }
+    .kyb-needs ul li { font-size: 13px; color: var(--text); }
+    .kyb-review-note { font-size: 12px; color: var(--text-secondary); margin-bottom: 24px; }
+
     /* ─── APP SHELL ─── */
     #screen-app { min-height: 100vh; flex-direction: row; }
     .sidebar { width: var(--sidebar-width); background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 0; flex-shrink: 0; position: fixed; height: 100vh; overflow-y: auto; }
@@ -232,7 +251,7 @@
 <!-- ═══════════════════════════════════════════════
      LOGIN SCREEN
 ═══════════════════════════════════════════════ -->
-<div id="screen-login" class="screen active">
+<div id="screen-login" class="screen auth-screen active">
   <div class="login-card">
     <div class="login-logo">
       <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -242,10 +261,122 @@
       </svg>
       <span>ejara</span>
     </div>
-    <div class="login-title">Welcome to Ejara FX Business</div>
-    <div class="login-sub">Self-service cross-border payments for your company</div>
-    <div class="prototype-note">⚡ Prototype — Explore the business payment flow</div>
-    <button class="btn btn-primary btn-lg" onclick="login()">Sign In as Aminata →</button>
+    <div id="validated-banner" class="validated-banner" style="display:none;">✅ Email verified — sign in to continue</div>
+    <div class="login-title">Welcome back</div>
+    <div class="login-sub" style="margin-bottom:24px;">Sign in to your Ejara FX Business account</div>
+    <div class="form-group">
+      <div class="form-label">Email address</div>
+      <input class="form-input" id="login-email" type="email" placeholder="you@company.cm" value="aminata@techimport.cm">
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <div class="form-label">Password</div>
+      <div class="pass-wrap">
+        <input class="form-input" id="login-password" type="password" placeholder="Your password" value="••••••••">
+        <button class="pass-toggle" onclick="togglePass('login-password', this)">👁</button>
+      </div>
+    </div>
+    <div class="prototype-note">⚡ Prototype — pre-filled as Aminata. Click Sign in to continue.</div>
+    <button class="btn btn-primary btn-lg" onclick="login()">Sign in</button>
+    <div style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-secondary);">
+      Don't have an account? <span class="auth-link" onclick="showScreen('register')">Create one</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     REGISTER SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-register" class="screen auth-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#6B47FF"/>
+        <path d="M10 22C10 17 14 12 18 11C22 12 26 17 26 22C24 24 21 25 18 25C15 25 12 24 10 22Z" fill="white" opacity=".9"/>
+        <circle cx="18" cy="17" r="4" fill="#6B47FF"/>
+      </svg>
+      <span>ejara</span>
+    </div>
+    <div class="login-title">Create your account</div>
+    <div class="login-sub" style="margin-bottom:24px;">Already have an account? <span class="auth-link" onclick="showScreen('login')">Sign in</span></div>
+    <div class="form-group">
+      <div class="form-label">Email address</div>
+      <input class="form-input" id="reg-email" type="email" placeholder="you@company.cm">
+      <div id="reg-email-error" class="field-error" style="display:none;">An account with this email already exists. <span onclick="showScreen('login')">Sign in instead →</span></div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Phone number</div>
+      <input class="form-input" id="reg-phone" type="tel" placeholder="+237 6XX XXX XXX">
+    </div>
+    <div class="form-group">
+      <div class="form-label">Password</div>
+      <div class="pass-wrap">
+        <input class="form-input" id="reg-password" type="password" placeholder="Create a password">
+        <button class="pass-toggle" onclick="togglePass('reg-password', this)">👁</button>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <div class="form-label">Confirm password</div>
+      <div class="pass-wrap">
+        <input class="form-input" id="reg-password2" type="password" placeholder="Repeat your password">
+        <button class="pass-toggle" onclick="togglePass('reg-password2', this)">👁</button>
+      </div>
+    </div>
+    <div class="prototype-note">⚡ Prototype — enter any details. Submit twice to see the "email already exists" error.</div>
+    <button class="btn btn-primary btn-lg" onclick="register()">Create account</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     VALIDATE EMAIL SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-validate-email" class="screen auth-screen">
+  <div class="login-card" style="text-align:center;">
+    <div style="display:flex;justify-content:center;margin-bottom:20px;">
+      <div class="email-icon-circle">✉️</div>
+    </div>
+    <div class="login-title">Verify your email address</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin:12px 0 24px;line-height:1.6;">
+      A verification email has been sent to you. Please open it and click the link to verify your email address.
+    </div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:24px;">
+      Didn't receive an email?<br>
+      <span class="auth-link" onclick="resendEmail()">Resend verification email</span>
+    </div>
+    <div class="prototype-note" style="text-align:left;">⚡ Prototype — click below to simulate clicking the link in the email</div>
+    <button class="btn btn-secondary btn-lg" onclick="window.open('verify-email.html','_blank')">Simulate email click →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     KYB INTRO SCREEN
+═══════════════════════════════════════════════ -->
+<div id="screen-kyb-intro" class="screen auth-screen">
+  <div class="login-card" style="width:480px;">
+    <div class="login-logo">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#6B47FF"/>
+        <path d="M10 22C10 17 14 12 18 11C22 12 26 17 26 22C24 24 21 25 18 25C15 25 12 24 10 22Z" fill="white" opacity=".9"/>
+        <circle cx="18" cy="17" r="4" fill="#6B47FF"/>
+      </svg>
+      <span>ejara</span>
+    </div>
+    <div class="login-title">Complete your business verification</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin:10px 0 4px;line-height:1.6;">
+      Before you can send payments, we need to verify your business. This takes about 10 minutes.
+    </div>
+    <div class="kyb-needs">
+      <div class="kyb-needs-title">What you'll need</div>
+      <ul>
+        <li>Company registration certificate</li>
+        <li>ID of the account administrator</li>
+        <li>Proof of business address</li>
+      </ul>
+    </div>
+    <div class="kyb-review-note">Once submitted, our compliance team reviews your file within 48 hours and you'll be notified by email.</div>
+    <button class="btn btn-primary btn-lg" onclick="enterApp()">Start verification →</button>
+    <div style="text-align:center;margin-top:12px;">
+      <span class="auth-link" style="font-weight:400;color:var(--text-secondary);font-size:13px;" onclick="enterApp()">I'll do this later</span>
+    </div>
   </div>
 </div>
 
@@ -1192,22 +1323,57 @@
     approver:  { name: 'Théodore Ngassa', email: 'theodore@techimport.cm', role: 'Admin · Approver', color: '#6B47FF', short: 'T', roleTag: 'approver' },
   };
 
-  // ─── ROLE SELECT (LOGIN) ───
-  let selectedLoginRole = 'initiator';
-  function selectRole(role, el) {
-    selectedLoginRole = role;
-    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
+  // ─── AUTH HELPERS ───
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
   }
 
-  function login() {
+  function togglePass(inputId, btn) {
+    const inp = document.getElementById(inputId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    btn.textContent = inp.type === 'password' ? '👁' : '🙈';
+  }
+
+  let registerAttempts = 0;
+  function register() {
+    registerAttempts++;
+    if (registerAttempts >= 2) {
+      document.getElementById('reg-email-error').style.display = 'block';
+      return;
+    }
+    document.getElementById('reg-email-error').style.display = 'none';
+    showScreen('validate-email');
+  }
+
+  function resendEmail() {
+    showToast('📧', 'Verification email resent', 'Check your inbox — it may take a minute to arrive.');
+  }
+
+  function enterApp() {
     state.role = 'initiator';
-    document.getElementById('screen-login').classList.remove('active');
-    document.getElementById('screen-app').classList.add('active');
+    showScreen('app');
     document.getElementById('role-bar').style.display = 'flex';
     updateUserUI();
     navigate('dashboard');
   }
+
+  function login() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('verified') === 'true') {
+      showScreen('kyb-intro');
+    } else {
+      enterApp();
+    }
+  }
+
+  // Check for ?verified=true on page load
+  window.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('verified') === 'true') {
+      document.getElementById('validated-banner').style.display = 'flex';
+    }
+  });
 
   function switchRole(role) {
     state.role = role;

@@ -933,7 +933,7 @@
                 <div class="bene-icon">🏪</div>
                 <div>
                   <div class="bene-name">Chukwudi Electronics</div>
-                  <div class="bene-detail">GTBank Nigeria · ****6789</div>
+                  <div class="bene-detail">GTBank Nigeria · 0123456789</div>
                 </div>
                 <div class="bene-check">✓</div>
               </div>
@@ -941,7 +941,7 @@
                 <div class="bene-icon">🏬</div>
                 <div>
                   <div class="bene-name">Adeola Suppliers Ltd</div>
-                  <div class="bene-detail">Zenith Bank Nigeria · ****5432</div>
+                  <div class="bene-detail">Zenith Bank Nigeria · 0198765432</div>
                 </div>
                 <div class="bene-check">✓</div>
               </div>
@@ -949,7 +949,7 @@
                 <div class="bene-icon">🏢</div>
                 <div>
                   <div class="bene-name">Emeka & Sons Trading</div>
-                  <div class="bene-detail">UBA Nigeria · ****8901</div>
+                  <div class="bene-detail">UBA Nigeria · 0156788901</div>
                 </div>
                 <div class="bene-check">✓</div>
               </div>
@@ -1062,8 +1062,13 @@
               </div>
               <div class="review-row">
                 <span class="review-label">Account</span>
-                <span class="review-value" id="rv-bene-acct">****6789</span>
+                <span class="review-value" id="rv-bene-acct">0123456789</span>
               </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:24px;">
+              <div class="form-label">Reason for transaction <span style="color:var(--text-secondary);font-weight:400;">(required)</span></div>
+              <textarea class="form-input" id="transfer-reason" rows="2" placeholder="e.g. Payment for electronic goods — invoice #INV-2045" style="resize:none;line-height:1.6;"></textarea>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
@@ -1241,7 +1246,8 @@
             <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);margin-bottom:10px;" data-i18n="beneficiary">Beneficiary</div>
             <div class="review-row"><span class="review-label">Name</span><span class="review-value" id="modal-bene-name">Chukwudi Electronics</span></div>
             <div class="review-row"><span class="review-label">Bank</span><span class="review-value" id="modal-bene-bank">GTBank Nigeria</span></div>
-            <div class="review-row"><span class="review-label">Account</span><span class="review-value" id="modal-bene-acct">****6789</span></div>
+            <div class="review-row"><span class="review-label">Account</span><span class="review-value" id="modal-bene-acct">0123456789</span></div>
+            <div class="review-row"><span class="review-label">Reason</span><span class="review-value" id="modal-transfer-reason" style="color:var(--text-secondary);font-weight:400;">—</span></div>
           </div>
 
           <div class="form-group" id="reject-reason-group" style="display:none">
@@ -1358,7 +1364,7 @@
             <div class="bene-icon" style="width:44px;height:44px;">🏪</div>
             <div style="flex:1;">
               <div style="font-weight:700;">Chukwudi Electronics</div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">GTBank Nigeria · ****6789</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">GTBank Nigeria · 0123456789</div>
               <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Added by Aminata D.</div>
             </div>
             <span style="font-size:18px;">🇳🇬</span>
@@ -1374,7 +1380,7 @@
             <div class="bene-icon" style="width:44px;height:44px;">🏬</div>
             <div style="flex:1;">
               <div style="font-weight:700;">Adeola Suppliers Ltd</div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Zenith Bank Nigeria · ****5432</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Zenith Bank Nigeria · 0198765432</div>
               <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Added by Fatima B.</div>
             </div>
             <span style="font-size:18px;">🇳🇬</span>
@@ -1390,7 +1396,7 @@
             <div class="bene-icon" style="width:44px;height:44px;">🏢</div>
             <div style="flex:1;">
               <div style="font-weight:700;">Emeka & Sons Trading</div>
-              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">UBA Nigeria · ****8901</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">UBA Nigeria · 0156788901</div>
               <div style="font-size:11px;color:var(--text-light);margin-top:2px;">Added by Aminata D.</div>
             </div>
             <span style="font-size:18px;">🇳🇬</span>
@@ -1574,7 +1580,7 @@
   const state = {
     role: 'initiator',
     transferStep: 1,
-    selectedBene: { name: 'Chukwudi Electronics', bank: 'GTBank Nigeria', acct: '****6789' },
+    selectedBene: { name: 'Chukwudi Electronics', bank: 'GTBank Nigeria', acct: '0123456789' },
     quoteData: { xaf: 0, dest: 0, rate: 2.48, destCurrency: 'NGN', destFlag: '🇳🇬' },
     pendingPayment: null,
     timerInterval: null,
@@ -1811,7 +1817,7 @@
     document.querySelectorAll('.beneficiary-card').forEach(c => c.classList.remove('selected'));
     document.getElementById(id).classList.add('selected');
     selectedBeneId = id;
-    state.selectedBene = { name, bank, acct: '****' + acct.slice(-4) };
+    state.selectedBene = { name, bank, acct };
   }
 
   function switchBeneTab(tab, el) {
@@ -1827,6 +1833,7 @@
     document.getElementById('deposit-amount').textContent = fmt(p.xaf) + ' XAF';
     document.getElementById('deposit-usdc').textContent = '≈ ' + fmt(usdt) + ' USDC';
 
+    state.transferReason = document.getElementById('transfer-reason').value || '—';
     addToHistory(p, state.selectedBene);
     goStep(5);
     showToast('📋', 'Transfer confirmed', 'Choose your deposit method and upload your proof.');
@@ -1999,6 +2006,7 @@
     document.getElementById('modal-bene-name').textContent = p.bene.name;
     document.getElementById('modal-bene-bank').textContent = p.bene.bank;
     document.getElementById('modal-bene-acct').textContent = p.bene.acct;
+    document.getElementById('modal-transfer-reason').textContent = p.reason || state.transferReason || '—';
     document.getElementById('reject-reason-group').style.display = 'none';
     document.getElementById('approve-confirm-btn').textContent = '✓ Approve Payment';
     document.getElementById('approval-modal').classList.add('open');
@@ -2056,7 +2064,7 @@
     document.getElementById('xaf-input').value = '';
     document.getElementById('dest-input').value = '';
     document.getElementById('get-quote-btn').disabled = true;
-    state.selectedBene = { name: 'Chukwudi Electronics', bank: 'GTBank Nigeria', acct: '****6789' };
+    state.selectedBene = { name: 'Chukwudi Electronics', bank: 'GTBank Nigeria', acct: '0123456789' };
     document.querySelectorAll('.beneficiary-card').forEach(c => c.classList.remove('selected'));
     const b1 = document.getElementById('bene-1');
     if (b1) b1.classList.add('selected');
@@ -2064,7 +2072,7 @@
 
   function startTransferTo(name, bank, acct) {
     navigate('transfer');
-    state.selectedBene = { name, bank, acct: '****' + acct.slice(-4) };
+    state.selectedBene = { name, bank, acct };
   }
 
   // ─── REVIEW SCREEN UPDATE ───

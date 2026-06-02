@@ -1378,7 +1378,7 @@
     'cust-001': { name: 'Aminata Diallo', email: 'aminata@techimport.cm', type: 'Business', businessName: 'TechImport SARL', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 10, 2026', members: [{ name: 'Aminata Diallo', role: 'owner' }, { name: 'Ibrahim Koné', role: 'admin' }, { name: 'Berthe Essama', role: 'member' }], bankAccounts: [] },
     'cust-002': { name: 'Martin Foka', email: 'martin@tekstile.cm', type: 'Business', businessName: 'Tekstile & Co.', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 15, 2026', members: [{ name: 'Martin Foka', role: 'owner' }, { name: 'Cécile Ateba', role: 'member' }], bankAccounts: [] },
     'cust-003': { name: 'Alice Mbarga', email: 'alice.mbarga@gmail.com', type: 'Individual', businessName: '', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 18, 2026', members: [], bankAccounts: [] },
-    'cust-004': { name: 'Jean-Pierre Nkeng', email: 'jp.nkeng@logistics.cm', type: 'Business', businessName: 'Nkeng Logistics', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 05, 2026', members: [{ name: 'Jean-Pierre Nkeng', role: 'owner' }], bankAccounts: [{ bankName: 'Afriland First Bank', accountName: 'Nkeng Logistics SARL', accountNumber: '****2211' }] },
+    'cust-004': { name: 'Jean-Pierre Nkeng', email: 'jp.nkeng@logistics.cm', type: 'Business', businessName: 'Nkeng Logistics', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 05, 2026', members: [{ name: 'Jean-Pierre Nkeng', role: 'owner' }], bankAccounts: [{ bankName: 'Afriland First Bank', accountName: 'Nkeng Logistics SARL', accountNumber: '****2211', source: 'dotfile' }] },
     'cust-005': { name: 'Hervé Tchinda', email: 'herve@tchinda-trading.cm', type: 'Business', businessName: 'Tchinda Trading SA', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 08, 2026', members: [{ name: 'Hervé Tchinda', role: 'owner' }, { name: 'Pauline Ndongo', role: 'admin' }], bankAccounts: [] },
   };
   let currentCustomer = null;
@@ -1429,11 +1429,14 @@
     } else {
       container.innerHTML = d.bankAccounts.map((acct, i) => `
         <div class="bank-account-item">
-          <div>
-            <div class="bank-account-info" style="font-weight:600;">${acct.bankName}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="bank-account-info" style="font-weight:600;">${acct.bankName}</span>
+              ${acct.source === 'dotfile' ? '<span style="display:inline-flex;align-items:center;gap:4px;padding:1px 7px;background:#F5F3FF;color:#7C3AED;border-radius:20px;font-size:10px;font-weight:600;">Dotfile</span>' : ''}
+            </div>
             <div class="bank-account-sub">${acct.accountName} · ${acct.accountNumber}</div>
           </div>
-          <button class="btn btn-danger" style="padding:4px 10px;font-size:11px;" onclick="removeBank('${id}', ${i})">Remove</button>
+          <button class="btn btn-danger" style="padding:4px 10px;font-size:11px;flex-shrink:0;" onclick="removeBank('${id}', ${i})">Remove</button>
         </div>
       `).join('');
     }

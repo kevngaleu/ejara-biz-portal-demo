@@ -880,7 +880,7 @@
 
 <!-- ADD PM MODAL -->
 <div class="modal-overlay" id="add-pm-overlay">
-  <div class="modal-box" style="width:500px;">
+  <div class="modal-box" style="width:500px;max-height:90vh;overflow-y:auto;">
     <div style="font-size:18px;font-weight:700;margin-bottom:20px;">Add Payment Method</div>
     <div style="margin-bottom:14px;">
       <label class="form-label">Type</label>
@@ -893,6 +893,26 @@
 
     <!-- Bank fields -->
     <div id="add-pm-bank-fields">
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Country <span style="color:var(--red);">*</span></label>
+        <select class="form-input" id="add-pm-bank-country" onchange="onBankCountryChange()">
+          <option value="">Select a country…</option>
+          <option>Cameroon</option>
+          <option>Côte d'Ivoire</option>
+          <option>Senegal</option>
+          <option>Mali</option>
+          <option>Gabon</option>
+          <option>Congo</option>
+          <option>Chad</option>
+          <option>Burkina Faso</option>
+          <option>Algeria</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Currency</label>
+        <input class="form-input" id="add-pm-bank-currency" placeholder="Auto-filled by country" style="background:var(--bg);color:var(--text-secondary);" readonly>
+      </div>
       <div style="margin-bottom:14px;">
         <label class="form-label">Bank Name</label>
         <input class="form-input" id="add-pm-bank-name" placeholder="e.g. Afriland First Bank">
@@ -914,6 +934,22 @@
     <!-- Mobile Money fields -->
     <div id="add-pm-mm-fields" style="display:none;">
       <div style="margin-bottom:14px;">
+        <label class="form-label">Country <span style="color:var(--red);">*</span></label>
+        <select class="form-input" id="add-pm-mm-country" onchange="onMMCountryChange()">
+          <option value="">Select a country…</option>
+          <option>Cameroon</option>
+          <option>Côte d'Ivoire</option>
+          <option>Senegal</option>
+          <option>Mali</option>
+          <option>Gabon</option>
+          <option>Congo</option>
+          <option>Chad</option>
+          <option>Burkina Faso</option>
+          <option>Algeria</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;">
         <label class="form-label">Operator</label>
         <input class="form-input" id="add-pm-mm-operator" placeholder="e.g. MTN Mobile Money">
       </div>
@@ -923,21 +959,13 @@
       </div>
       <div style="margin-bottom:14px;">
         <label class="form-label">Phone / MSISDN</label>
-        <input class="form-input" id="add-pm-mm-phone" placeholder="e.g. 237 6 77 00 00 00">
+        <div style="display:flex;gap:8px;align-items:stretch;">
+          <div id="mm-phone-prefix" style="display:flex;align-items:center;padding:0 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:14px;white-space:nowrap;color:var(--text-secondary);min-width:120px;justify-content:center;">Select country</div>
+          <input class="form-input" id="add-pm-mm-phone" placeholder="6 77 00 00 00" style="flex:1;">
+        </div>
       </div>
     </div>
 
-    <!-- Shared fields -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-      <div>
-        <label class="form-label">Country <span style="color:var(--red);">*</span></label>
-        <input class="form-input" id="add-pm-country" placeholder="e.g. Cameroon">
-      </div>
-      <div>
-        <label class="form-label">Currency</label>
-        <input class="form-input" id="add-pm-currency" placeholder="e.g. XAF">
-      </div>
-    </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeAddPM()">Cancel</button>
       <button class="btn btn-primary" onclick="saveAddPM()">Add Method</button>
@@ -1233,12 +1261,65 @@
       if (typeCell) typeCell.style.display = showTypeCol ? '' : 'none';
     });
   }
+  const countryData = {
+    'Cameroon':       { currency: 'XAF', code: '+237', flag: '🇨🇲' },
+    'Côte d\'Ivoire': { currency: 'XOF', code: '+225', flag: '🇨🇮' },
+    'Senegal':        { currency: 'XOF', code: '+221', flag: '🇸🇳' },
+    'Mali':           { currency: 'XOF', code: '+223', flag: '🇲🇱' },
+    'Gabon':          { currency: 'XAF', code: '+241', flag: '🇬🇦' },
+    'Congo':          { currency: 'XAF', code: '+242', flag: '🇨🇬' },
+    'Chad':           { currency: 'XAF', code: '+235', flag: '🇹🇩' },
+    'Burkina Faso':   { currency: 'XOF', code: '+226', flag: '🇧🇫' },
+    'Algeria':        { currency: 'DZD', code: '+213', flag: '🇩🇿' },
+  };
+
+  function onBankCountryChange() {
+    const country = document.getElementById('add-pm-bank-country').value;
+    const cfg = countryData[country];
+    const currInput = document.getElementById('add-pm-bank-currency');
+    if (cfg) {
+      currInput.value = cfg.currency;
+      currInput.readOnly = true;
+      currInput.style.background = 'var(--bg)';
+      currInput.style.color = 'var(--text)';
+    } else {
+      currInput.value = '';
+      currInput.readOnly = false;
+      currInput.style.background = '';
+      currInput.style.color = '';
+      currInput.placeholder = 'e.g. XAF';
+    }
+  }
+
+  function onMMCountryChange() {
+    const country = document.getElementById('add-pm-mm-country').value;
+    const cfg = countryData[country];
+    const prefix = document.getElementById('mm-phone-prefix');
+    if (cfg && cfg.code) {
+      prefix.textContent = cfg.flag + ' ' + cfg.code;
+      prefix.style.color = 'var(--text)';
+      prefix.style.fontWeight = '600';
+    } else {
+      prefix.textContent = 'Select country';
+      prefix.style.color = 'var(--text-secondary)';
+      prefix.style.fontWeight = '';
+    }
+  }
+
   function openAddPM() {
     ['add-pm-bank-name','add-pm-bank-account-name','add-pm-bank-account-number','add-pm-branch',
-     'add-pm-mm-operator','add-pm-mm-account-name','add-pm-mm-phone',
-     'add-pm-country','add-pm-currency'].forEach(id => {
+     'add-pm-mm-operator','add-pm-mm-account-name','add-pm-mm-phone'].forEach(id => {
       const el = document.getElementById(id); if (el) el.value = '';
     });
+    document.getElementById('add-pm-bank-country').value = '';
+    document.getElementById('add-pm-mm-country').value = '';
+    const currInput = document.getElementById('add-pm-bank-currency');
+    currInput.value = ''; currInput.readOnly = true;
+    currInput.style.background = 'var(--bg)'; currInput.style.color = 'var(--text-secondary)';
+    currInput.placeholder = 'Auto-filled by country';
+    document.getElementById('mm-phone-prefix').textContent = 'Select country';
+    document.getElementById('mm-phone-prefix').style.color = 'var(--text-secondary)';
+    document.getElementById('mm-phone-prefix').style.fontWeight = '';
     document.getElementById('add-pm-type').value = 'bank';
     updatePMFormFields();
     document.getElementById('add-pm-overlay').classList.add('open');
@@ -1251,21 +1332,26 @@
   }
   function saveAddPM() {
     const type = document.getElementById('add-pm-type').value;
-    const country = document.getElementById('add-pm-country').value.trim();
-    let name, accountName, accountNumber, branchAddress = '';
+    let name, accountName, accountNumber, branchAddress = '', country, currency;
     if (type === 'bank') {
+      country = document.getElementById('add-pm-bank-country').value;
+      currency = document.getElementById('add-pm-bank-currency').value.trim() || 'XAF';
       name = document.getElementById('add-pm-bank-name').value.trim();
       accountName = document.getElementById('add-pm-bank-account-name').value.trim();
       accountNumber = document.getElementById('add-pm-bank-account-number').value.trim();
       branchAddress = document.getElementById('add-pm-branch').value.trim();
     } else {
+      country = document.getElementById('add-pm-mm-country').value;
+      const cfg = countryData[country];
+      currency = cfg ? cfg.currency : 'XOF';
+      const prefix = cfg ? cfg.code + ' ' : '';
       name = document.getElementById('add-pm-mm-operator').value.trim();
       accountName = document.getElementById('add-pm-mm-account-name').value.trim();
-      accountNumber = document.getElementById('add-pm-mm-phone').value.trim();
+      accountNumber = prefix + document.getElementById('add-pm-mm-phone').value.trim();
     }
     if (!name || !country) { alert('Name and Country are required.'); return; }
     const id = 'pm-' + Date.now();
-    pmData[id] = { name, type, country, currency: document.getElementById('add-pm-currency').value.trim() || 'XAF', accountName, accountNumber, branchAddress, active: true };
+    pmData[id] = { name, type, country, currency, accountName, accountNumber, branchAddress, active: true };
     const tbody = document.getElementById('pm-tbody');
     const tr = document.createElement('tr');
     tr.id = 'pm-row-' + id; tr.dataset.pmType = type; tr.style.cursor = 'pointer';
@@ -1274,7 +1360,7 @@
       <td style="font-weight:600;">${name}</td>
       <td class="pm-type-cell">${pmTypeLabels[type] || type}</td>
       <td>${country}</td>
-      <td>${pmData[id].currency}</td>
+      <td>${currency}</td>
       <td style="font-size:12px;">${accountNumber || '—'}</td>
       <td id="pm-status-${id}"><span class="badge-pill badge-active-pm">● Active</span></td>
       <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('${id}')">View</button></td>

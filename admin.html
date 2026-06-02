@@ -7,31 +7,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --purple: #6B47FF;
-      --purple-light: #F0EEFF;
-      --purple-mid: #D4C8FF;
-      --bg: #F5F5FA;
-      --white: #FFFFFF;
-      --border: #E5E5EF;
-      --text: #111827;
-      --text-secondary: #6B7280;
-      --text-light: #9CA3AF;
-      --green: #10B981;
-      --orange: #F59E0B;
-      --red: #EF4444;
+      --purple: #6B47FF; --purple-light: #F0EEFF; --purple-mid: #D4C8FF;
+      --bg: #F5F5FA; --white: #FFFFFF; --border: #E5E5EF;
+      --text: #111827; --text-secondary: #6B7280; --text-light: #9CA3AF;
+      --green: #10B981; --orange: #F59E0B; --red: #EF4444;
       --sidebar-width: 230px;
     }
-
     html, body { overflow-x: hidden; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
-
-    /* ─── SCREENS ─── */
     .screen { display: none; }
     .screen.active { display: flex; }
 
-    /* ─── LOGIN ─── */
+    /* LOGIN */
     #screen-login { min-height: 100vh; align-items: center; justify-content: center; background: #1E1B4B; flex-direction: column; gap: 24px; }
     .login-card { background: var(--white); border-radius: 16px; padding: 40px; width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
     .login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -56,16 +44,14 @@
     .btn-lg { padding: 12px 28px; font-size: 15px; width: 100%; justify-content: center; }
     .btn:disabled { opacity: .5; cursor: not-allowed; }
     .prototype-note { background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #856404; margin-bottom: 20px; }
-
-    /* 2FA screen */
     .twofa-icon { font-size: 40px; text-align: center; margin-bottom: 12px; }
     .twofa-digits { display: flex; gap: 8px; justify-content: center; margin: 20px 0; }
     .twofa-digits input { width: 44px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border: 2px solid var(--border); border-radius: 10px; outline: none; transition: border .15s; }
     .twofa-digits input:focus { border-color: var(--purple); }
 
-    /* ─── APP SHELL ─── */
+    /* APP SHELL */
     #screen-app { min-height: 100vh; flex-direction: row; }
-    .sidebar { width: var(--sidebar-width); background: #1E1B4B; border-right: none; display: flex; flex-direction: column; padding: 0; flex-shrink: 0; position: fixed; height: 100vh; overflow-y: auto; transition: width .2s ease; overflow-x: hidden; }
+    .sidebar { width: var(--sidebar-width); background: #1E1B4B; display: flex; flex-direction: column; padding: 0; flex-shrink: 0; position: fixed; height: 100vh; overflow-y: auto; transition: width .2s ease; overflow-x: hidden; }
     .sidebar.collapsed { width: 64px; }
     .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
     .sidebar-logo span { font-size: 18px; font-weight: 700; color: white; }
@@ -83,18 +69,12 @@
     .user-info { flex: 1; min-width: 0; }
     .user-name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white; }
     .user-role { font-size: 11px; color: rgba(255,255,255,.5); }
-
-    /* Collapsed sidebar */
-    .sidebar.collapsed .sidebar-logo span,
-    .sidebar.collapsed .nav-label,
-    .sidebar.collapsed .user-info,
-    .sidebar.collapsed .sidebar-badge,
-    .sidebar.collapsed .nav-item .badge { display: none; }
+    .sidebar.collapsed .sidebar-logo span, .sidebar.collapsed .nav-label, .sidebar.collapsed .user-info,
+    .sidebar.collapsed .sidebar-badge, .sidebar.collapsed .nav-item .badge { display: none; }
     .sidebar.collapsed .sidebar-logo { justify-content: center; padding: 20px 0 16px; }
     .sidebar.collapsed .nav-section { padding: 16px 8px 8px; }
     .sidebar.collapsed .nav-item { justify-content: center; padding: 10px; }
     .sidebar.collapsed .sidebar-user { justify-content: center; padding: 12px; }
-
     .main { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; transition: margin-left .2s ease; min-width: 0; overflow-x: hidden; }
     .main.collapsed { margin-left: 64px; }
     .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
@@ -105,28 +85,27 @@
     .sidebar-toggle:hover { background: var(--bg); }
     .content { padding: 32px; }
 
-    /* ─── CARDS ─── */
+    /* CARDS */
     .card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); }
     .card-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .card-title { font-size: 15px; font-weight: 700; }
     .card-body { padding: 24px; }
 
-    /* ─── STAT GRID ─── */
-    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    /* STAT GRID */
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
     .stat-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 20px 24px; }
     .stat-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); margin-bottom: 8px; }
     .stat-value { font-size: 28px; font-weight: 700; }
     .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
-    .stat-alert { color: var(--red); }
 
-    /* ─── TABLE ─── */
+    /* TABLE */
     table { width: 100%; border-collapse: collapse; }
     th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); white-space: nowrap; }
     td { padding: 14px 16px; border-bottom: 1px solid var(--bg); vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: var(--bg); cursor: pointer; }
 
-    /* ─── STATUS BADGES ─── */
+    /* STATUS BADGES */
     .badge-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .badge-pending { background: #FFF7ED; color: #EA580C; }
     .badge-approved { background: #F0FDF4; color: #16A34A; }
@@ -135,8 +114,17 @@
     .badge-review { background: #EFF6FF; color: #2563EB; }
     .badge-individual { background: #F0EEFF; color: var(--purple); }
     .badge-business { background: #FFF7ED; color: #EA580C; }
+    .badge-bank { background: #EFF6FF; color: #2563EB; }
+    .badge-mobile-money { background: #F0FDF4; color: #16A34A; }
+    .badge-cash-point { background: #F5F5FA; color: #6B7280; }
+    .badge-active-pm { background: #F0FDF4; color: #16A34A; }
+    .badge-inactive-pm { background: #F5F5FA; color: #6B7280; }
+    .badge-owner { background: #F5F3FF; color: #7C3AED; }
+    .badge-admin-role { background: #FFF7ED; color: #EA580C; }
+    .badge-member-role { background: #F5F5FA; color: #6B7280; }
+    .coming-soon-tag { display: inline-flex; align-items: center; padding: 1px 7px; background: #FFF7ED; color: #EA580C; border-radius: 20px; font-size: 10px; font-weight: 600; margin-left: 4px; }
 
-    /* ─── DETAIL PANEL ─── */
+    /* DETAIL PANEL */
     .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; }
     .detail-overlay.open { display: block; }
     .detail-panel { position: fixed; top: 0; right: -600px; width: 560px; height: 100vh; background: var(--white); box-shadow: -8px 0 40px rgba(0,0,0,.12); z-index: 101; transition: right .3s ease; overflow-y: auto; display: flex; flex-direction: column; }
@@ -154,32 +142,36 @@
     .detail-value { font-weight: 600; font-size: 13px; text-align: right; max-width: 60%; }
     .detail-actions { padding: 20px 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: var(--white); }
     .detail-actions .btn { flex: 1; justify-content: center; }
-    .proof-img { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 8px; background: var(--bg); padding: 40px; text-align: center; color: var(--text-secondary); font-size: 13px; }
     .reject-reason { margin-top: 12px; display: none; }
     .reject-reason textarea { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; resize: vertical; min-height: 80px; outline: none; }
     .reject-reason textarea:focus { border-color: var(--red); }
 
-    /* ─── ALERT ─── */
+    /* ALERT */
     .alert { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; }
-    .alert-warning { background: #FFF7ED; border: 1px solid #FED7AA; color: #92400E; }
     .alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+    .alert-warning { background: #FFF7ED; border: 1px solid #FED7AA; color: #92400E; }
 
-    /* ─── FILTERS ─── */
+    /* COMPLIANCE NOTICE */
+    .compliance-notice { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 8px; padding: 12px 14px; font-size: 12px; color: #92400E; }
+
+    /* FILTERS */
     .filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
     .filter-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all .15s; }
     .filter-btn:hover { border-color: var(--purple-mid); color: var(--purple); }
     .filter-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+    .filter-btn:disabled { opacity: .55; cursor: not-allowed; }
+    .filter-btn:disabled:hover { border-color: var(--border); color: var(--text-secondary); background: var(--white); }
     .search-input { padding: 7px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; width: 220px; }
     .search-input:focus { border-color: var(--purple); }
 
-    /* ─── TOAST ─── */
+    /* TOAST */
     .notification-toast { position: fixed; top: 20px; right: 20px; background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; box-shadow: 0 8px 32px rgba(0,0,0,.12); z-index: 200; display: flex; align-items: flex-start; gap: 12px; max-width: 340px; transform: translateX(400px); transition: transform .3s ease; }
     .notification-toast.show { transform: translateX(0); }
     .toast-icon { font-size: 20px; flex-shrink: 0; }
     .toast-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
     .toast-body { font-size: 12px; color: var(--text-secondary); }
 
-    /* ─── RATE TABLE ─── */
+    /* RATE TABLE */
     .rate-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--bg); gap: 16px; }
     .rate-row:last-child { border-bottom: none; }
     .rate-corridor { font-weight: 700; font-size: 15px; }
@@ -188,71 +180,58 @@
     .rate-input { width: 120px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif; outline: none; text-align: right; }
     .rate-input:focus { border-color: var(--purple); }
 
-    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-secondary); }
-    .empty-icon { font-size: 40px; margin-bottom: 12px; }
-    .empty-title { font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+    .empty-icon { font-size: 32px; margin-bottom: 10px; }
+    .empty-title { font-weight: 600; color: var(--text); margin-bottom: 4px; }
 
-    /* ─── STATUS BADGES (matches business portal) ─── */
+    /* STATUS BADGES (tx) */
     .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
     .status-initiated { background: #F5F3FF; color: #7C3AED; }
     .status-pending-review { background: #EFF6FF; color: #2563EB; }
     .status-approved { background: #FFF7ED; color: #EA580C; }
     .status-completed { background: #F0FDF4; color: #16A34A; }
     .status-rejected { background: #FEF2F2; color: #DC2626; }
-    .status-submitted { background: #EFF6FF; color: #3B82F6; }
-    .status-pending { background: #FFF7ED; color: #EA580C; }
 
-    /* ─── AUDIT LOG PAGE ─── */
-    .audit-entry { padding: 16px 20px; border-bottom: 1px solid var(--bg); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
-    .audit-entry:last-child { border-bottom: none; }
-    .audit-meta { font-size: 12px; color: var(--text-secondary); white-space: nowrap; text-align: right; }
+    /* AUDIT LOG */
     .audit-user { display: inline-flex; align-items: center; gap: 4px; background: var(--purple-light); color: var(--purple); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; margin-top: 5px; }
 
-    /* ─── APPROVE TX MODAL ─── */
-    .approve-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
-    .approve-modal-overlay.open { display: flex; }
-    .approve-modal { background: var(--white); border-radius: 16px; padding: 32px; width: 460px; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
-    .approve-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-    .approve-modal-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
-    .approve-modal label { display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .4px; }
-    .approve-modal input[type="text"] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; box-sizing: border-box; }
-    .approve-modal input[type="text"]:focus { border-color: var(--purple); }
-    .approve-upload-zone { border: 1.5px dashed var(--border); border-radius: 10px; padding: 18px; text-align: center; margin-top: 16px; cursor: pointer; transition: border-color .2s; }
+    /* MODALS */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--white); border-radius: 16px; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+    .rate-modal-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
+    .rate-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+    .rate-modal-body { font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 8px; }
+    .rate-modal-change { background: var(--bg); border-radius: 10px; padding: 14px; margin: 16px 0; text-align: center; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+    .modal-actions .btn { flex: 1; justify-content: center; }
+
+    /* MEMBER ROW */
+    .member-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; }
+    .member-name { font-size: 13px; font-weight: 600; }
+
+    /* BANK ACCOUNT ITEM */
+    .bank-account-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; }
+    .bank-account-info { font-size: 13px; }
+    .bank-account-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* APPROVE MODAL */
+    .approve-upload-zone { border: 1.5px dashed var(--border); border-radius: 10px; padding: 18px; text-align: center; cursor: pointer; transition: border-color .2s; }
     .approve-upload-zone:hover { border-color: var(--purple); }
     .approve-upload-zone input { display: none; }
     .approve-upload-label { font-size: 13px; color: var(--text-secondary); }
     .approve-upload-label span { color: var(--purple); font-weight: 600; cursor: pointer; }
     .approve-upload-filename { font-size: 12px; color: var(--purple); margin-top: 6px; font-weight: 600; display: none; }
-    .approve-modal-actions { display: flex; gap: 12px; margin-top: 24px; }
-    .approve-modal-actions .btn { flex: 1; justify-content: center; }
-
-    /* ─── RATE CONFIRM MODAL ─── */
-    .rate-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
-    .rate-modal-overlay.open { display: flex; }
-    .rate-modal { background: var(--white); border-radius: 16px; padding: 32px; width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
-    .rate-modal-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
-    .rate-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; text-align: center; }
-    .rate-modal-body { font-size: 14px; color: var(--text-secondary); text-align: center; margin-bottom: 8px; }
-    .rate-modal-change { background: var(--bg); border-radius: 10px; padding: 14px; margin: 16px 0; text-align: center; }
-    .rate-modal-actions { display: flex; gap: 12px; margin-top: 20px; }
-    .rate-modal-actions .btn { flex: 1; justify-content: center; }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════
-     LOGIN SCREEN
-═══════════════════════════════════════════════ -->
+<!-- LOGIN -->
 <div id="screen-login" class="screen active">
   <div class="login-card" id="login-step-1">
     <div class="login-logo">
-      <svg viewBox="0 0 30 30" fill="none">
-        <circle cx="15" cy="15" r="15" fill="#6B47FF"/>
-        <path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/>
-        <circle cx="15" cy="14" r="3.5" fill="#6B47FF"/>
-      </svg>
-      <span>ejara</span>
-      <span class="sidebar-badge">Admin</span>
+      <svg viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="15" fill="#6B47FF"/><path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/><circle cx="15" cy="14" r="3.5" fill="#6B47FF"/></svg>
+      <span>ejara</span><span class="sidebar-badge">Admin</span>
     </div>
     <div class="login-title" style="margin-top:16px;">Admin Sign In</div>
     <div class="login-sub">Internal operations panel — restricted access</div>
@@ -268,7 +247,6 @@
     </div>
     <button class="btn btn-primary btn-lg" onclick="goTo2FA()">Continue →</button>
   </div>
-
   <div class="login-card" id="login-step-2" style="display:none;">
     <div class="twofa-icon">🔐</div>
     <div class="login-title" style="text-align:center;">Two-Factor Authentication</div>
@@ -283,44 +261,38 @@
       <input type="text" maxlength="1" oninput="nextDigit(this, 5)" onkeydown="prevDigit(event, this)">
     </div>
     <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="backToLogin()">← Back</button>
-    <button class="btn btn-primary btn-lg" id="verify-btn" onclick="verifyCode()" disabled>Verify & Sign In</button>
+    <button class="btn btn-primary btn-lg" id="verify-btn" onclick="verifyCode()" disabled>Verify &amp; Sign In</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MAIN APP
-═══════════════════════════════════════════════ -->
+<!-- MAIN APP -->
 <div id="screen-app" class="screen">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <svg viewBox="0 0 30 30" fill="none">
-        <circle cx="15" cy="15" r="15" fill="#6B47FF"/>
-        <path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/>
-        <circle cx="15" cy="14" r="3.5" fill="#6B47FF"/>
-      </svg>
+      <svg viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="15" fill="#6B47FF"/><path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/><circle cx="15" cy="14" r="3.5" fill="#6B47FF"/></svg>
       <span>ejara <span class="sidebar-badge">Admin</span></span>
     </div>
-
     <div class="nav-section">
       <div class="nav-item active" id="nav-dashboard" onclick="navigate('dashboard')">
         <span class="nav-icon">⊞</span> Dashboard
       </div>
     </div>
-
     <div class="nav-section">
       <div class="nav-label">Operations</div>
-      <div class="nav-item" id="nav-kyb" onclick="navigate('kyb')">
-        <span class="nav-icon">🪪</span> KYB Review
-        <span class="badge" id="kyb-badge">3</span>
-      </div>
       <div class="nav-item" id="nav-transactions" onclick="navigate('transactions')">
         <span class="nav-icon">↗</span> Transactions
         <span class="badge" id="tx-badge">2</span>
       </div>
     </div>
-
+    <div class="nav-section">
+      <div class="nav-label">Management</div>
+      <div class="nav-item" id="nav-payment-methods" onclick="navigate('payment-methods')">
+        <span class="nav-icon">💳</span> Payment Methods
+      </div>
+      <div class="nav-item" id="nav-customers" onclick="navigate('customers')">
+        <span class="nav-icon">👥</span> Customers
+      </div>
+    </div>
     <div class="nav-section">
       <div class="nav-label">Finance</div>
       <div class="nav-item" id="nav-rates" onclick="navigate('rates')">
@@ -330,7 +302,6 @@
         <span class="nav-icon">📋</span> Rate Change Log
       </div>
     </div>
-
     <div class="sidebar-user">
       <div class="avatar" style="background:var(--purple);">K</div>
       <div class="user-info">
@@ -340,7 +311,6 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
   <main class="main" id="main">
     <div class="topbar">
       <div class="topbar-left">
@@ -362,19 +332,13 @@
       </div>
     </div>
 
-    <!-- ─── DASHBOARD ─── -->
+    <!-- DASHBOARD -->
     <div id="page-dashboard" class="content" style="display:block">
       <div style="margin-bottom:24px;">
         <div style="font-size:20px;font-weight:700;">Good morning, Kevin 👋</div>
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Ejara FX Operations Panel</div>
       </div>
-
       <div class="stat-grid">
-        <div class="stat-card">
-          <div class="stat-label">KYB Pending</div>
-          <div class="stat-value" style="color:var(--orange);">3</div>
-          <div class="stat-sub">Awaiting review</div>
-        </div>
         <div class="stat-card">
           <div class="stat-label">Transactions to Review</div>
           <div class="stat-value" style="color:var(--purple);">2</div>
@@ -391,20 +355,10 @@
           <div class="stat-sub" style="color:var(--green);">↑ Last 24 hours</div>
         </div>
       </div>
-
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
         <div class="card">
-          <div class="card-header">
-            <div class="card-title">🔴 Action Required</div>
-          </div>
+          <div class="card-header"><div class="card-title">🔴 Action Required</div></div>
           <div class="card-body" style="padding:0;">
-            <div style="padding:16px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="navigate('kyb')">
-              <div>
-                <div style="font-weight:600;">3 KYB submissions pending</div>
-                <div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Oldest: 2 days ago</div>
-              </div>
-              <span class="badge-pill badge-pending">Review →</span>
-            </div>
             <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="navigate('transactions')">
               <div>
                 <div style="font-weight:600;">2 transactions with proof uploaded</div>
@@ -414,7 +368,6 @@
             </div>
           </div>
         </div>
-
         <div class="card">
           <div class="card-header">
             <div class="card-title">📈 Current Rates</div>
@@ -422,118 +375,32 @@
           </div>
           <div class="card-body" style="padding:0;">
             <div style="padding:14px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-weight:600;">XAF → NGN</span>
-              <span style="font-weight:700;color:var(--purple);">1 XAF = 2.48 NGN</span>
+              <span style="font-weight:600;">XAF → NGN</span><span style="font-weight:700;color:var(--purple);">1 XAF = 2.48 NGN</span>
             </div>
             <div style="padding:14px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-weight:600;">XAF → CNY</span>
-              <span style="font-weight:700;color:var(--purple);">1 XAF = 0.0112 CNY</span>
+              <span style="font-weight:600;">XAF → CNY</span><span style="font-weight:700;color:var(--purple);">1 XAF = 0.0112 CNY</span>
             </div>
             <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-weight:600;">XAF → AED</span>
-              <span style="font-weight:700;color:var(--purple);">1 XAF = 0.0061 AED</span>
+              <span style="font-weight:600;">XAF → AED</span><span style="font-weight:700;color:var(--purple);">1 XAF = 0.0061 AED</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ─── KYB REVIEW ─── -->
-    <div id="page-kyb" class="content" style="display:none">
-      <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div style="font-size:20px;font-weight:700;">KYB Review</div>
-          <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Review and action identity verification submissions</div>
-        </div>
-      </div>
-
-      <div class="filters">
-        <button class="filter-btn active" onclick="filterKYB('all', this)">All (5)</button>
-        <button class="filter-btn" onclick="filterKYB('pending', this)">Pending (3)</button>
-        <button class="filter-btn" onclick="filterKYB('approved', this)">Approved (1)</button>
-        <button class="filter-btn" onclick="filterKYB('rejected', this)">Rejected (1)</button>
-        <input class="search-input" type="text" placeholder="🔍 Search by name or email…">
-      </div>
-
-      <div class="card">
-        <div style="overflow-x:auto;">
-          <table>
-            <thead><tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Submitted</th>
-              <th>Action</th>
-            </tr></thead>
-            <tbody id="kyb-tbody">
-              <tr onclick="openKYB('kyb-001')">
-                <td style="font-weight:600;">Aminata Diallo</td>
-                <td style="color:var(--text-secondary);">aminata@techimport.cm</td>
-                <td><span class="badge-pill badge-business">Business</span></td>
-                <td><span class="badge-pill badge-pending">● Pending</span></td>
-                <td style="color:var(--text-secondary);font-size:12px;">Mar 24, 10:12</td>
-                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-001')">Review</button></td>
-              </tr>
-              <tr onclick="openKYB('kyb-002')">
-                <td style="font-weight:600;">Martin Foka</td>
-                <td style="color:var(--text-secondary);">martin@tekstile.cm</td>
-                <td><span class="badge-pill badge-business">Business</span></td>
-                <td><span class="badge-pill badge-pending">● Pending</span></td>
-                <td style="color:var(--text-secondary);font-size:12px;">Mar 25, 09:44</td>
-                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-002')">Review</button></td>
-              </tr>
-              <tr onclick="openKYB('kyb-003')">
-                <td style="font-weight:600;">Alice Mbarga</td>
-                <td style="color:var(--text-secondary);">alice.mbarga@gmail.com</td>
-                <td><span class="badge-pill badge-individual">Individual</span></td>
-                <td><span class="badge-pill badge-pending">● Pending</span></td>
-                <td style="color:var(--text-secondary);font-size:12px;">Mar 26, 08:30</td>
-                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-003')">Review</button></td>
-              </tr>
-              <tr onclick="openKYB('kyb-004')">
-                <td style="font-weight:600;">Jean-Pierre Nkeng</td>
-                <td style="color:var(--text-secondary);">jp.nkeng@logistics.cm</td>
-                <td><span class="badge-pill badge-business">Business</span></td>
-                <td><span class="badge-pill badge-approved">✓ Approved</span></td>
-                <td style="color:var(--text-secondary);font-size:12px;">Mar 22, 14:05</td>
-                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-004')">View</button></td>
-              </tr>
-              <tr onclick="openKYB('kyb-005')">
-                <td style="font-weight:600;">Sandra Eto'o</td>
-                <td style="color:var(--text-secondary);">sandra@etootrading.cm</td>
-                <td><span class="badge-pill badge-business">Business</span></td>
-                <td><span class="badge-pill badge-rejected">Rejected</span></td>
-                <td style="color:var(--text-secondary);font-size:12px;">Mar 20, 16:22</td>
-                <td><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="event.stopPropagation();openKYB('kyb-005')">View</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ─── TRANSACTIONS ─── -->
+    <!-- TRANSACTIONS -->
     <div id="page-transactions" class="content" style="display:none">
       <div style="margin-bottom:24px;">
         <div style="font-size:20px;font-weight:700;">Transactions</div>
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Review proof of payment and approve or reject transfers</div>
       </div>
-
       <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
         <select class="form-input" style="max-width:180px;padding:8px 12px;font-size:13px;">
-          <option>All statuses</option>
-          <option>Initiated</option>
-          <option>Pending Review</option>
-          <option>Approved</option>
-          <option>Completed</option>
-          <option>Rejected</option>
+          <option>All statuses</option><option>Initiated</option><option>Pending Review</option>
+          <option>Approved</option><option>Completed</option><option>Rejected</option>
         </select>
         <select class="form-input" style="max-width:160px;padding:8px 12px;font-size:13px;">
-          <option>All corridors</option>
-          <option>XAF → NGN</option>
-          <option>XAF → CNY</option>
-          <option>XAF → AED</option>
+          <option>All corridors</option><option>XAF → NGN</option><option>XAF → CNY</option><option>XAF → AED</option>
         </select>
         <div style="display:flex;align-items:center;gap:6px;">
           <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">From</span>
@@ -543,19 +410,16 @@
         </div>
         <button class="btn btn-secondary" style="margin-left:auto;white-space:nowrap;">↓ Export CSV</button>
       </div>
-
       <div class="card">
         <div style="overflow-x:auto;">
-          <table style="min-width:1100px;">
+          <table style="min-width:900px;">
             <thead><tr>
               <th>Reference</th>
               <th>Customer</th>
               <th>Beneficiary</th>
-              <th>Bank</th>
               <th>Amount Deposited</th>
               <th>Amount to Receive</th>
               <th>Crypto</th>
-              <th>Rate</th>
               <th>Corridor</th>
               <th>Status</th>
               <th>Validated by</th>
@@ -567,11 +431,9 @@
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260001</td>
                 <td style="font-weight:600;white-space:nowrap;">Aminata Diallo</td>
                 <td style="font-weight:600;white-space:nowrap;">Chukwudi Electronics</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">GTBank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">3,360 USDT</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td id="tx-row-status-tx-001"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td id="tx-row-validated-tx-001" style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
@@ -582,11 +444,9 @@
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260002</td>
                 <td style="font-weight:600;white-space:nowrap;">Martin Foka</td>
                 <td style="font-weight:600;white-space:nowrap;">Adeola Suppliers Ltd</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Zenith Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">6,720 USDT</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td id="tx-row-status-tx-002"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td id="tx-row-validated-tx-002" style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
@@ -597,11 +457,9 @@
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260003</td>
                 <td style="font-weight:600;white-space:nowrap;">Alice Mbarga</td>
                 <td style="font-weight:600;white-space:nowrap;">Emeka Traders</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Access Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">806,452 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">2,000,000 NGN</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1,344 USDT</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td id="tx-row-status-tx-003"><span class="status-badge status-completed">Completed</span></td>
                 <td id="tx-row-validated-tx-003" style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
@@ -612,11 +470,9 @@
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260004</td>
                 <td style="font-weight:600;white-space:nowrap;">Fatima Bello</td>
                 <td style="font-weight:600;white-space:nowrap;">Lagos Goods Ltd</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">First Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">1,209,677 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">3,000,000 NGN</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">2,016 USDT</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td id="tx-row-status-tx-004"><span class="status-badge status-rejected">Rejected</span></td>
                 <td id="tx-row-validated-tx-004" style="font-size:12px;white-space:nowrap;">Ousseyni Maiga</td>
@@ -627,11 +483,9 @@
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260005</td>
                 <td style="font-weight:600;white-space:nowrap;">Paul Nguemo</td>
                 <td style="font-weight:600;white-space:nowrap;">Kemi Supplies Ltd</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">UBA Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">2,419,355 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">6,000,000 NGN</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">4,032 USDT</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td id="tx-row-status-tx-005"><span class="status-badge status-approved">Approved</span></td>
                 <td id="tx-row-validated-tx-005" style="font-size:12px;white-space:nowrap;">recitKevin</td>
@@ -642,11 +496,9 @@
                 <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260006</td>
                 <td style="font-weight:600;white-space:nowrap;">Hervé Tchinda</td>
                 <td style="font-weight:600;white-space:nowrap;">Biodun Trading Co.</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Fidelity Bank Nigeria</td>
                 <td style="font-weight:600;white-space:nowrap;">1,612,903 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">4,000,000 NGN</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">2,688 USDT</td>
-                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = 2.48 NGN</td>
                 <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">CMR → NGA</span></td>
                 <td id="tx-row-status-tx-006"><span class="status-badge status-initiated">Initiated</span></td>
                 <td id="tx-row-validated-tx-006" style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">—</td>
@@ -659,21 +511,17 @@
       </div>
     </div>
 
-    <!-- ─── EXCHANGE RATES ─── -->
+    <!-- EXCHANGE RATES -->
     <div id="page-rates" class="content" style="display:none">
       <div style="margin-bottom:24px;">
         <div style="font-size:20px;font-weight:700;">Exchange Rates</div>
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Set retail rates per corridor. Changes apply to all new quotes immediately.</div>
       </div>
-
       <div class="card">
         <div class="card-header"><div class="card-title">Retail Rates</div><a href="#" onclick="navigate('auditlog');return false;" style="font-size:13px;color:var(--purple);">View change log →</a></div>
         <div class="card-body">
           <div class="rate-row">
-            <div>
-              <div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div>
-              <div class="rate-sub">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div>
-            </div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div><div class="rate-sub">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div></div>
             <div class="rate-input-wrap">
               <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
               <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn">
@@ -682,10 +530,7 @@
             </div>
           </div>
           <div class="rate-row">
-            <div>
-              <div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div>
-              <div class="rate-sub">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div>
-            </div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div><div class="rate-sub">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div></div>
             <div class="rate-input-wrap">
               <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
               <input class="rate-input" type="number" value="0.0112" step="0.0001" id="rate-cny">
@@ -694,10 +539,7 @@
             </div>
           </div>
           <div class="rate-row">
-            <div>
-              <div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div>
-              <div class="rate-sub">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div>
-            </div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div><div class="rate-sub">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div></div>
             <div class="rate-input-wrap">
               <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
               <input class="rate-input" type="number" value="0.0061" step="0.0001" id="rate-aed">
@@ -709,7 +551,7 @@
       </div>
     </div>
 
-    <!-- ─── RATE CHANGE LOG ─── -->
+    <!-- RATE CHANGE LOG -->
     <div id="page-auditlog" class="content" style="display:none">
       <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
         <div>
@@ -722,52 +564,146 @@
         <div class="card-header">
           <div class="card-title">All Changes</div>
           <select class="form-input" style="max-width:160px;padding:7px 12px;font-size:13px;">
-            <option>All corridors</option>
-            <option>XAF → NGN</option>
-            <option>XAF → CNY</option>
-            <option>XAF → AED</option>
+            <option>All corridors</option><option>XAF → NGN</option><option>XAF → CNY</option><option>XAF → AED</option>
           </select>
         </div>
         <div style="overflow-x:auto;">
-        <table id="audit-log">
-          <thead><tr>
-            <th>Corridor</th>
-            <th>Old Rate</th>
-            <th>New Rate</th>
-            <th>Updated By</th>
-            <th>Date &amp; Time</th>
-          </tr></thead>
-          <tbody id="audit-tbody">
-            <tr>
-              <td style="font-weight:600;white-space:nowrap;">XAF → NGN</td>
-              <td style="color:var(--text-secondary);white-space:nowrap;">2.45 NGN</td>
-              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">2.48 NGN</td>
-              <td><span class="audit-user">👤 recitKevin</span></td>
-              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 2026 · 09:00</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;white-space:nowrap;">XAF → CNY</td>
-              <td style="color:var(--text-secondary);white-space:nowrap;">0.0110 CNY</td>
-              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">0.0112 CNY</td>
-              <td><span class="audit-user">👤 recitKevin</span></td>
-              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 2026 · 14:30</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;white-space:nowrap;">XAF → AED</td>
-              <td style="color:var(--text-secondary);white-space:nowrap;">0.0059 AED</td>
-              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">0.0061 AED</td>
-              <td><span class="audit-user">👤 recitKevin</span></td>
-              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 24, 2026 · 11:15</td>
-            </tr>
-            <tr>
-              <td style="font-weight:600;white-space:nowrap;">XAF → NGN</td>
-              <td style="color:var(--text-secondary);white-space:nowrap;">2.42 NGN</td>
-              <td style="font-weight:700;color:var(--purple);white-space:nowrap;">2.45 NGN</td>
-              <td><span class="audit-user">👤 recitKevin</span></td>
-              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 23, 2026 · 08:45</td>
-            </tr>
-          </tbody>
-        </table>
+          <table id="audit-log">
+            <thead><tr>
+              <th>Corridor</th><th>Old Rate</th><th>New Rate</th><th>Updated By</th><th>Date &amp; Time</th>
+            </tr></thead>
+            <tbody id="audit-tbody">
+              <tr><td style="font-weight:600;white-space:nowrap;">XAF → NGN</td><td style="color:var(--text-secondary);white-space:nowrap;">2.45 NGN</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">2.48 NGN</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 2026 · 09:00</td></tr>
+              <tr><td style="font-weight:600;white-space:nowrap;">XAF → CNY</td><td style="color:var(--text-secondary);white-space:nowrap;">0.0110 CNY</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">0.0112 CNY</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 2026 · 14:30</td></tr>
+              <tr><td style="font-weight:600;white-space:nowrap;">XAF → AED</td><td style="color:var(--text-secondary);white-space:nowrap;">0.0059 AED</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">0.0061 AED</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 24, 2026 · 11:15</td></tr>
+              <tr><td style="font-weight:600;white-space:nowrap;">XAF → NGN</td><td style="color:var(--text-secondary);white-space:nowrap;">2.42 NGN</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">2.45 NGN</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 23, 2026 · 08:45</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT METHODS -->
+    <div id="page-payment-methods" class="content" style="display:none">
+      <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:20px;font-weight:700;">Payment Methods</div>
+          <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Bank accounts and mobile money numbers available for customer deposits</div>
+        </div>
+        <button class="btn btn-primary" onclick="openAddPM()">+ Add Payment Method</button>
+      </div>
+      <div class="alert alert-info">
+        ℹ️ Customers see only payment methods matching their deposit country. Inactive methods are hidden from the customer portal.
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterPM('all', this)">All (3)</button>
+        <button class="filter-btn" onclick="filterPM('bank', this)">Bank (2)</button>
+        <button class="filter-btn" onclick="filterPM('mobile_money', this)">Mobile Money (1)</button>
+        <button class="filter-btn" disabled>Cash Point <span class="coming-soon-tag">Coming soon</span></button>
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr>
+              <th>Name</th><th>Type</th><th>Country</th><th>Currency</th><th>Account Number</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="pm-tbody">
+              <tr id="pm-row-pm-001" onclick="openPM('pm-001')" style="cursor:pointer;">
+                <td style="font-weight:600;">Afriland First Bank — Douala</td>
+                <td><span class="badge-pill badge-bank">Bank</span></td>
+                <td>Cameroon</td><td>XAF</td>
+                <td style="font-family:monospace;font-size:12px;">****0072</td>
+                <td id="pm-status-pm-001"><span class="badge-pill badge-active-pm">● Active</span></td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('pm-001')">View</button></td>
+              </tr>
+              <tr id="pm-row-pm-002" onclick="openPM('pm-002')" style="cursor:pointer;">
+                <td style="font-weight:600;">Société Générale Cameroun</td>
+                <td><span class="badge-pill badge-bank">Bank</span></td>
+                <td>Cameroon</td><td>XAF</td>
+                <td style="font-family:monospace;font-size:12px;">****3841</td>
+                <td id="pm-status-pm-002"><span class="badge-pill badge-active-pm">● Active</span></td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('pm-002')">View</button></td>
+              </tr>
+              <tr id="pm-row-pm-003" onclick="openPM('pm-003')" style="cursor:pointer;">
+                <td style="font-weight:600;">MTN Mobile Money</td>
+                <td><span class="badge-pill badge-mobile-money">Mobile Money</span></td>
+                <td>Cameroon</td><td>XAF</td>
+                <td style="font-family:monospace;font-size:12px;">237 6XX XXX XXX</td>
+                <td id="pm-status-pm-003"><span class="badge-pill badge-active-pm">● Active</span></td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('pm-003')">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="page-customers" class="content" style="display:none">
+      <div style="margin-bottom:24px;">
+        <div style="font-size:20px;font-weight:700;">Customers</div>
+        <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">View customer profiles and manage their linked bank accounts</div>
+      </div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterCustomers('all', this)">All (5)</button>
+        <button class="filter-btn" onclick="filterCustomers('business', this)">Business (4)</button>
+        <button class="filter-btn" onclick="filterCustomers('individual', this)">Individual (1)</button>
+        <input class="search-input" type="text" placeholder="🔍 Search by name or email…" style="margin-left:auto;">
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr>
+              <th>Name</th><th>Email</th><th>Type</th><th>Country</th><th>KYB Status</th><th>Date Joined</th><th>Action</th>
+            </tr></thead>
+            <tbody>
+              <tr onclick="openCustomer('cust-001')" style="cursor:pointer;">
+                <td style="font-weight:600;">Aminata Diallo</td>
+                <td style="color:var(--text-secondary);font-size:12px;">aminata@techimport.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td>Cameroon</td>
+                <td><span class="badge-pill badge-pending">● Pending</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 10, 2026</td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-001')">View</button></td>
+              </tr>
+              <tr onclick="openCustomer('cust-002')" style="cursor:pointer;">
+                <td style="font-weight:600;">Martin Foka</td>
+                <td style="color:var(--text-secondary);font-size:12px;">martin@tekstile.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td>Cameroon</td>
+                <td><span class="badge-pill badge-pending">● Pending</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 15, 2026</td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-002')">View</button></td>
+              </tr>
+              <tr onclick="openCustomer('cust-003')" style="cursor:pointer;">
+                <td style="font-weight:600;">Alice Mbarga</td>
+                <td style="color:var(--text-secondary);font-size:12px;">alice.mbarga@gmail.com</td>
+                <td><span class="badge-pill badge-individual">Individual</span></td>
+                <td>Cameroon</td>
+                <td><span class="badge-pill badge-pending">● Pending</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 18, 2026</td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-003')">View</button></td>
+              </tr>
+              <tr onclick="openCustomer('cust-004')" style="cursor:pointer;">
+                <td style="font-weight:600;">Jean-Pierre Nkeng</td>
+                <td style="color:var(--text-secondary);font-size:12px;">jp.nkeng@logistics.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td>Cameroon</td>
+                <td><span class="badge-pill badge-approved">✓ Approved</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 05, 2026</td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-004')">View</button></td>
+              </tr>
+              <tr onclick="openCustomer('cust-005')" style="cursor:pointer;">
+                <td style="font-weight:600;">Hervé Tchinda</td>
+                <td style="color:var(--text-secondary);font-size:12px;">herve@tchinda-trading.cm</td>
+                <td><span class="badge-pill badge-business">Business</span></td>
+                <td>Cameroon</td>
+                <td><span class="badge-pill badge-approved">✓ Approved</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;">Mar 08, 2026</td>
+                <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-005')">View</button></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -775,85 +711,29 @@
   </main>
 </div>
 
-<!-- ─── RATE CONFIRMATION MODAL ─── -->
-<div class="rate-modal-overlay" id="rate-modal-overlay">
-  <div class="rate-modal">
+<!-- RATE CONFIRMATION MODAL -->
+<div class="modal-overlay" id="rate-modal-overlay">
+  <div class="modal-box" style="width:420px;">
     <div class="rate-modal-icon">📈</div>
     <div class="rate-modal-title">Confirm Rate Change</div>
     <div class="rate-modal-body">You are about to update the exchange rate for:</div>
     <div class="rate-modal-change">
       <div style="font-weight:700;font-size:15px;margin-bottom:10px;" id="modal-corridor-label">XAF → NGN</div>
       <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
-        <div>
-          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">Current rate</div>
-          <div style="font-size:18px;font-weight:700;color:var(--text-secondary);" id="modal-old-rate">—</div>
-        </div>
+        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">Current rate</div><div style="font-size:18px;font-weight:700;color:var(--text-secondary);" id="modal-old-rate">—</div></div>
         <div style="font-size:20px;color:var(--text-light);">→</div>
-        <div>
-          <div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">New rate</div>
-          <div style="font-size:18px;font-weight:700;color:var(--purple);" id="modal-new-rate">—</div>
-        </div>
+        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">New rate</div><div style="font-size:18px;font-weight:700;color:var(--purple);" id="modal-new-rate">—</div></div>
       </div>
     </div>
     <div style="font-size:12px;color:var(--text-secondary);text-align:center;">This change applies to all new transactions. Locked rates are not affected.</div>
-    <div class="rate-modal-actions">
+    <div class="modal-actions">
       <button class="btn btn-secondary btn-lg" onclick="cancelRateModal()">Cancel</button>
       <button class="btn btn-primary btn-lg" onclick="confirmSaveRate()">Confirm Update</button>
     </div>
   </div>
 </div>
 
-<!-- ─── KYB DETAIL PANEL ─── -->
-<div class="detail-overlay" id="kyb-overlay" onclick="closeKYB()"></div>
-<div class="detail-panel" id="kyb-panel">
-  <div class="detail-header">
-    <div class="detail-title" id="kyb-panel-title">KYB Review</div>
-    <button class="detail-close" onclick="closeKYB()">✕</button>
-  </div>
-  <div class="detail-body">
-    <div class="detail-section">
-      <div class="detail-section-title">Applicant</div>
-      <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-value" id="kyb-name">—</span></div>
-      <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value" id="kyb-email">—</span></div>
-      <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value" id="kyb-type">—</span></div>
-      <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value" id="kyb-date">—</span></div>
-      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="kyb-status">—</span></div>
-    </div>
-    <div class="detail-section" id="kyb-docs-section">
-      <div class="detail-section-title">Documents submitted via Dotfile</div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:13px;">📄 Company Registration Certificate</span>
-          <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">View</button>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:13px;">🪪 Director National ID</span>
-          <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">View</button>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border-radius:8px;">
-          <span style="font-size:13px;">🏠 Proof of Business Address</span>
-          <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;">View</button>
-        </div>
-      </div>
-    </div>
-    <div class="detail-section" id="kyb-rejection-note" style="display:none;">
-      <div class="detail-section-title">Rejection Reason</div>
-      <div style="padding:12px 16px;background:#FEF2F2;border-radius:8px;font-size:13px;color:var(--red);" id="kyb-rejection-text">—</div>
-    </div>
-    <div class="detail-section" style="background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:14px 16px;">
-      <div style="font-size:13px;color:#856404;">
-        <strong>Review and approval are handled on Dotfile.</strong><br>
-        Open the applicant's case on Dotfile to approve, reject, or request additional documents. The status here will update automatically via webhook.
-      </div>
-    </div>
-  </div>
-  <div class="detail-actions" id="kyb-actions">
-    <button class="btn btn-secondary" onclick="closeKYB()">Close</button>
-    <a id="kyb-dotfile-link" href="https://app.dotfile.com" target="_blank" class="btn btn-primary" style="text-decoration:none;">Open in Dotfile ↗</a>
-  </div>
-</div>
-
-<!-- ─── TRANSACTION DETAIL PANEL ─── -->
+<!-- TX DETAIL PANEL -->
 <div class="detail-overlay" id="tx-overlay" onclick="closeTX()"></div>
 <div class="detail-panel" id="tx-panel">
   <div class="detail-header">
@@ -867,6 +747,7 @@
       <div class="detail-row"><span class="detail-label">Customer</span><span class="detail-value" id="tx-customer">—</span></div>
       <div class="detail-row"><span class="detail-label">Amount Sent</span><span class="detail-value" id="tx-amount">—</span></div>
       <div class="detail-row"><span class="detail-label">Amount Received</span><span class="detail-value" id="tx-dest" style="color:var(--green);">—</span></div>
+      <div class="detail-row"><span class="detail-label">Crypto Amount</span><span class="detail-value" id="tx-crypto" style="color:var(--text-secondary);">—</span></div>
       <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value" id="tx-rate">—</span></div>
       <div class="detail-row"><span class="detail-label">Corridor</span><span class="detail-value" id="tx-corridor">—</span></div>
       <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value" id="tx-date">—</span></div>
@@ -880,13 +761,11 @@
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Proof of Payment</div>
-      <!-- Empty state: shown when status is initiated -->
       <div id="tx-proof-empty" style="display:none;padding:24px 16px;text-align:center;border:1.5px dashed var(--border);border-radius:10px;color:var(--text-secondary);">
         <div style="font-size:22px;margin-bottom:8px;">📂</div>
         <div style="font-size:13px;font-weight:600;margin-bottom:4px;">No proof of payment yet</div>
         <div style="font-size:12px;">The customer hasn't uploaded their proof of payment.</div>
       </div>
-      <!-- Receipt: shown when proof has been uploaded -->
       <div id="tx-proof-uploaded" style="display:none;">
         <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Uploaded by customer · Mar 26, 2026 · 11:32 AM</div>
         <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden;background:white;">
@@ -897,7 +776,7 @@
           <div style="padding:16px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;">
               <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Transaction Ref</div><div style="font-weight:600;font-family:monospace;">SGC2026032600441</div></div>
-              <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Date & Time</div><div style="font-weight:600;">26/03/2026 · 11:28</div></div>
+              <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Date &amp; Time</div><div style="font-weight:600;">26/03/2026 · 11:28</div></div>
               <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">From Account</div><div style="font-weight:600;">****4821 — Aminata Diallo</div></div>
               <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">To Account</div><div style="font-weight:600;">****0072 — Ejara Finance SA</div></div>
               <div><div style="color:var(--text-secondary);font-size:11px;margin-bottom:2px;">Amount</div><div style="font-weight:700;font-size:15px;color:#003087;">2,016,129 XAF</div></div>
@@ -926,11 +805,11 @@
   </div>
 </div>
 
-<!-- Complete TX Modal -->
-<div class="approve-modal-overlay" id="approve-modal-overlay">
-  <div class="approve-modal">
-    <div class="approve-modal-title">Complete Transaction</div>
-    <div class="approve-modal-sub">Confirm that the beneficiary has received the funds. Enter the payment reference and optionally attach proof of payment.</div>
+<!-- COMPLETE TX MODAL -->
+<div class="modal-overlay" id="approve-modal-overlay">
+  <div class="modal-box" style="width:460px;">
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px;">Complete Transaction</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-bottom:20px;">Confirm that the beneficiary has received the funds.</div>
     <div style="margin-bottom:16px;">
       <label style="display:block;font-size:13px;font-weight:600;margin-bottom:6px;">Transaction Reference <span style="color:#DC2626;">*</span></label>
       <input type="text" id="admin-tx-reference" placeholder="e.g. TRF-20260326-00441" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;" oninput="this.style.borderColor=this.value.trim()?'var(--purple)':'var(--border)'" />
@@ -945,27 +824,161 @@
         <div class="approve-upload-filename" id="admin-proof-filename"></div>
       </div>
     </div>
-    <div class="approve-modal-actions">
+    <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeApproveModal()">Cancel</button>
-      <button class="btn btn-success" onclick="completeTX()">✓ Confirm & Complete</button>
+      <button class="btn btn-success" onclick="completeTX()">✓ Confirm &amp; Complete</button>
     </div>
   </div>
 </div>
 
-<!-- Toast -->
+<!-- PM DETAIL PANEL -->
+<div class="detail-overlay" id="pm-overlay" onclick="closePM()"></div>
+<div class="detail-panel" id="pm-panel">
+  <div class="detail-header">
+    <div class="detail-title" id="pm-panel-title">Payment Method</div>
+    <button class="detail-close" onclick="closePM()">✕</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <div class="detail-section-title">Details</div>
+      <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value" id="pm-name">—</span></div>
+      <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value" id="pm-type">—</span></div>
+      <div class="detail-row"><span class="detail-label">Country</span><span class="detail-value" id="pm-country">—</span></div>
+      <div class="detail-row"><span class="detail-label">Currency</span><span class="detail-value" id="pm-currency">—</span></div>
+      <div class="detail-row"><span class="detail-label">Account Name</span><span class="detail-value" id="pm-account-name">—</span></div>
+      <div class="detail-row"><span class="detail-label">Account Number</span><span class="detail-value" id="pm-account-number" style="font-family:monospace;">—</span></div>
+      <div class="detail-row" id="pm-branch-row"><span class="detail-label">Branch Address</span><span class="detail-value" id="pm-branch">—</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="pm-status-panel">—</span></div>
+    </div>
+    <div class="alert alert-info" style="font-size:12px;">
+      Customers in <strong id="pm-country-note">Cameroon</strong> will see this payment method when initiating a deposit.
+    </div>
+  </div>
+  <div class="detail-actions">
+    <button class="btn btn-secondary" onclick="closePM()">Close</button>
+    <button class="btn btn-secondary" id="pm-toggle-btn" onclick="togglePMStatus()">Deactivate</button>
+    <button class="btn btn-danger" onclick="deletePM()">Delete</button>
+  </div>
+</div>
+
+<!-- ADD PM MODAL -->
+<div class="modal-overlay" id="add-pm-overlay">
+  <div class="modal-box" style="width:500px;">
+    <div style="font-size:18px;font-weight:700;margin-bottom:20px;">Add Payment Method</div>
+    <div style="margin-bottom:14px;">
+      <label class="form-label">Type</label>
+      <select class="form-input" id="add-pm-type" onchange="toggleBranchField()">
+        <option value="bank">Bank</option>
+        <option value="mobile_money">Mobile Money</option>
+        <option value="" disabled>Cash Point — Coming soon</option>
+      </select>
+    </div>
+    <div style="margin-bottom:14px;">
+      <label class="form-label">Bank / Provider Name</label>
+      <input class="form-input" id="add-pm-name" placeholder="e.g. Afriland First Bank">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label class="form-label">Account Name</label>
+      <input class="form-input" id="add-pm-account-name" placeholder="e.g. Ejara Finance SA">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label class="form-label">Account Number</label>
+      <input class="form-input" id="add-pm-account-number" placeholder="e.g. 00441200072">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div>
+        <label class="form-label">Country <span style="color:var(--red);">*</span></label>
+        <input class="form-input" id="add-pm-country" placeholder="e.g. Cameroon">
+      </div>
+      <div>
+        <label class="form-label">Currency</label>
+        <input class="form-input" id="add-pm-currency" placeholder="e.g. XAF">
+      </div>
+    </div>
+    <div id="add-pm-branch-field" style="margin-bottom:14px;">
+      <label class="form-label">Branch Address <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+      <input class="form-input" id="add-pm-branch" placeholder="e.g. Rue Joss, Douala, Cameroon">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeAddPM()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAddPM()">Add Method</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER DETAIL PANEL -->
+<div class="detail-overlay" id="customer-overlay" onclick="closeCustomer()"></div>
+<div class="detail-panel" id="customer-panel">
+  <div class="detail-header">
+    <div class="detail-title" id="customer-panel-title">Customer</div>
+    <button class="detail-close" onclick="closeCustomer()">✕</button>
+  </div>
+  <div class="detail-body">
+    <div class="detail-section">
+      <div class="detail-section-title">Profile</div>
+      <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-value" id="cust-name">—</span></div>
+      <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value" id="cust-email">—</span></div>
+      <div class="detail-row"><span class="detail-label">Account Type</span><span class="detail-value" id="cust-type">—</span></div>
+      <div class="detail-row" id="cust-business-row"><span class="detail-label">Business Name</span><span class="detail-value" id="cust-business-name">—</span></div>
+      <div class="detail-row"><span class="detail-label">Country</span><span class="detail-value" id="cust-country">—</span></div>
+      <div class="detail-row"><span class="detail-label">KYB Status</span><span class="detail-value" id="cust-kyb">—</span></div>
+      <div class="detail-row"><span class="detail-label">Date Joined</span><span class="detail-value" id="cust-joined">—</span></div>
+    </div>
+
+    <div class="detail-section" id="cust-members-section" style="display:none;">
+      <div class="detail-section-title">Account Members</div>
+      <div id="cust-members-list"></div>
+    </div>
+
+    <div class="detail-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="detail-section-title" style="margin-bottom:0;">Bank Accounts</div>
+        <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="showAddBankForm()">+ Add</button>
+      </div>
+      <div id="cust-bank-accounts"></div>
+
+      <div id="add-bank-form" style="display:none;margin-top:12px;padding:16px;background:var(--bg);border-radius:10px;">
+        <div class="compliance-notice" style="margin-bottom:14px;">
+          ⚠️ Make sure the account owner name matches the name of the customer profile to be compliant.
+        </div>
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Bank Name</label>
+          <input class="form-input" id="new-bank-name" placeholder="e.g. Afriland First Bank">
+        </div>
+        <div style="margin-bottom:10px;">
+          <label class="form-label">Account Name</label>
+          <input class="form-input" id="new-account-name" placeholder="Must match the customer's registered name">
+        </div>
+        <div style="margin-bottom:14px;">
+          <label class="form-label">Account Number</label>
+          <input class="form-input" id="new-account-number" placeholder="e.g. 00441200072">
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="cancelAddBank()">Cancel</button>
+          <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveAddBank()">Save Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="detail-actions">
+    <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="closeCustomer()">Close</button>
+  </div>
+</div>
+
+<!-- TOAST -->
 <div class="notification-toast" id="toast">
   <div class="toast-icon" id="toast-icon">✅</div>
   <div><div class="toast-title" id="toast-title"></div><div class="toast-body" id="toast-body"></div></div>
 </div>
 
 <script>
-  // ─── SIDEBAR TOGGLE ───
+  // ─── SIDEBAR ───
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('collapsed');
     document.getElementById('main').classList.toggle('collapsed');
   }
 
-  // ─── LOGIN FLOW ───
+  // ─── LOGIN ───
   function goTo2FA() {
     const u = document.getElementById('username-input').value;
     const p = document.getElementById('password-input').value;
@@ -974,26 +987,21 @@
     document.getElementById('login-step-2').style.display = 'block';
     setTimeout(() => document.querySelector('.twofa-digits input').focus(), 100);
   }
-
   function backToLogin() {
     document.getElementById('login-step-1').style.display = 'block';
     document.getElementById('login-step-2').style.display = 'none';
   }
-
   function nextDigit(el, idx) {
     el.value = el.value.replace(/\D/g, '');
     const inputs = document.querySelectorAll('.twofa-digits input');
     if (el.value && idx < 5) inputs[idx + 1].focus();
-    const filled = [...inputs].every(i => i.value);
-    document.getElementById('verify-btn').disabled = !filled;
+    document.getElementById('verify-btn').disabled = ![...inputs].every(i => i.value);
   }
-
   function prevDigit(e, el) {
     const inputs = document.querySelectorAll('.twofa-digits input');
     const idx = [...inputs].indexOf(el);
     if (e.key === 'Backspace' && !el.value && idx > 0) inputs[idx - 1].focus();
   }
-
   function verifyCode() {
     document.getElementById('screen-login').classList.remove('active');
     document.getElementById('screen-app').classList.add('active');
@@ -1008,68 +1016,44 @@
     if (pageEl) pageEl.style.display = 'block';
     const navEl = document.getElementById('nav-' + page);
     if (navEl) navEl.classList.add('active');
-    const titles = { dashboard: 'Dashboard', kyb: 'KYB Review', transactions: 'Transactions', rates: 'Exchange Rates', auditlog: 'Rate Change Log' };
+    const titles = {
+      dashboard: 'Dashboard', transactions: 'Transactions',
+      rates: 'Exchange Rates', auditlog: 'Rate Change Log',
+      'payment-methods': 'Payment Methods', customers: 'Customers'
+    };
     document.getElementById('topbar-title').textContent = titles[page] || page;
   }
 
-  // ─── KYB DATA ───
-  const kybData = {
-    'kyb-001': { name: 'Aminata Diallo', email: 'aminata@techimport.cm', type: 'Business', date: 'Mar 24, 2026 · 10:12', status: 'pending' },
-    'kyb-002': { name: 'Martin Foka', email: 'martin@tekstile.cm', type: 'Business', date: 'Mar 25, 2026 · 09:44', status: 'pending' },
-    'kyb-003': { name: 'Alice Mbarga', email: 'alice.mbarga@gmail.com', type: 'Individual', date: 'Mar 26, 2026 · 08:30', status: 'pending' },
-    'kyb-004': { name: 'Jean-Pierre Nkeng', email: 'jp.nkeng@logistics.cm', type: 'Business', date: 'Mar 22, 2026 · 14:05', status: 'approved' },
-    'kyb-005': { name: 'Sandra Eto\'o', email: 'sandra@etootrading.cm', type: 'Business', date: 'Mar 20, 2026 · 16:22', status: 'rejected', rejectionReason: 'Company registration document is expired. Please provide a valid certificate issued within the last 12 months.' },
-  };
-
-  let currentKYB = null;
-
-  function openKYB(id) {
-    const d = kybData[id];
-    currentKYB = id;
-    document.getElementById('kyb-panel-title').textContent = 'KYB — ' + d.name;
-    document.getElementById('kyb-name').textContent = d.name;
-    document.getElementById('kyb-email').textContent = d.email;
-    document.getElementById('kyb-type').innerHTML = `<span class="badge-pill badge-${d.type === 'Business' ? 'business' : 'individual'}">${d.type}</span>`;
-    document.getElementById('kyb-date').textContent = d.date;
-    const statusMap = { pending: '<span class="badge-pill badge-pending">● Pending</span>', approved: '<span class="badge-pill badge-approved">✓ Approved</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
-    document.getElementById('kyb-status').innerHTML = statusMap[d.status];
-    document.getElementById('kyb-rejection-note').style.display = d.status === 'rejected' ? 'block' : 'none';
-    if (d.rejectionReason) document.getElementById('kyb-rejection-text').textContent = d.rejectionReason;
-    document.getElementById('kyb-overlay').classList.add('open');
-    document.getElementById('kyb-panel').classList.add('open');
-  }
-
-  function closeKYB() {
-    document.getElementById('kyb-overlay').classList.remove('open');
-    document.getElementById('kyb-panel').classList.remove('open');
-  }
-
-  // ─── TRANSACTION DATA ───
+  // ─── TX DATA ───
   const txData = {
-    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789' },
-    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421' },
-    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122' },
-    'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833' },
-    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390' },
-    'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714' },
+    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', crypto: '3,360 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789' },
+    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', crypto: '6,720 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421' },
+    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', crypto: '1,344 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122' },
+    'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', crypto: '2,016 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833' },
+    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', crypto: '4,032 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390' },
+    'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', crypto: '2,688 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714' },
   };
 
-  let currentTX = null;
-  let rejectTXMode = false;
+  let currentTX = null, rejectTXMode = false;
 
   function openTX(id) {
-    const d = txData[id];
-    currentTX = id;
-    rejectTXMode = false;
+    const d = txData[id]; currentTX = id; rejectTXMode = false;
     document.getElementById('tx-panel-title').textContent = d.ref;
     document.getElementById('tx-ref').textContent = d.ref;
     document.getElementById('tx-customer').textContent = d.customer;
     document.getElementById('tx-amount').textContent = d.amount;
     document.getElementById('tx-dest').textContent = d.dest;
+    document.getElementById('tx-crypto').textContent = d.crypto;
     document.getElementById('tx-rate').textContent = d.rate;
     document.getElementById('tx-corridor').textContent = d.corridor;
     document.getElementById('tx-date').textContent = d.date;
-    const statusMap = { initiated: '<span class="status-badge status-initiated">Initiated</span>', pending: '<span class="badge-pill badge-review">Pending Review</span>', approved: '<span class="status-badge status-approved">Approved</span>', completed: '<span class="badge-pill badge-approved">✓ Completed</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
+    const statusMap = {
+      initiated: '<span class="status-badge status-initiated">Initiated</span>',
+      pending: '<span class="badge-pill badge-review">Pending Review</span>',
+      approved: '<span class="status-badge status-approved">Approved</span>',
+      completed: '<span class="badge-pill badge-approved">✓ Completed</span>',
+      rejected: '<span class="badge-pill badge-rejected">Rejected</span>'
+    };
     document.getElementById('tx-status').innerHTML = statusMap[d.status];
     document.getElementById('tx-bene-name').textContent = d.beneName;
     document.getElementById('tx-bene-bank').textContent = d.beneBank;
@@ -1080,24 +1064,18 @@
     document.getElementById('tx-proof-uploaded').style.display = hasProof ? 'block' : 'none';
     document.getElementById('tx-actions-pending').style.display = d.status === 'pending' ? 'flex' : 'none';
     document.getElementById('tx-actions-approved').style.display = d.status === 'approved' ? 'flex' : 'none';
-
     document.getElementById('tx-overlay').classList.add('open');
     document.getElementById('tx-panel').classList.add('open');
   }
-
   function closeTX() {
     document.getElementById('tx-overlay').classList.remove('open');
     document.getElementById('tx-panel').classList.remove('open');
   }
-
   function approveTX() {
     txData[currentTX].status = 'approved';
-    updateTXRow(currentTX);
-    closeTX();
-    updateBadges();
+    updateTXRow(currentTX); closeTX(); updateBadges();
     showToast('✅', 'Transaction Approved', txData[currentTX].ref + ' — payout routing initiated.');
   }
-
   function openCompleteModal() {
     document.getElementById('admin-proof-input').value = '';
     document.getElementById('admin-proof-filename').style.display = 'none';
@@ -1107,125 +1085,33 @@
     document.getElementById('admin-tx-reference-error').style.display = 'none';
     document.getElementById('approve-modal-overlay').classList.add('open');
   }
-
-  function closeApproveModal() {
-    document.getElementById('approve-modal-overlay').classList.remove('open');
-  }
-
+  function closeApproveModal() { document.getElementById('approve-modal-overlay').classList.remove('open'); }
   function handleAdminProofUpload(input) {
-    const file = input.files[0];
-    if (!file) return;
-    const maxMB = 10;
-    if (file.size > maxMB * 1024 * 1024) {
-      alert('File is too large. Maximum size is 10 MB.');
-      input.value = '';
-      return;
-    }
-    const allowed = ['image/jpeg', 'image/png', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    if (!allowed.includes(file.type)) {
-      alert('Invalid file type. Accepted formats: JPG, PNG, PDF, DOC.');
-      input.value = '';
-      return;
-    }
-    const filename = document.getElementById('admin-proof-filename');
-    filename.textContent = '✓ ' + file.name;
-    filename.style.display = 'block';
+    const file = input.files[0]; if (!file) return;
+    if (file.size > 10 * 1024 * 1024) { alert('File too large. Max 10 MB.'); input.value = ''; return; }
+    const el = document.getElementById('admin-proof-filename');
+    el.textContent = '✓ ' + file.name; el.style.display = 'block';
   }
-
   function completeTX() {
     const ref = document.getElementById('admin-tx-reference').value.trim();
     if (!ref) {
       document.getElementById('admin-tx-reference-error').style.display = 'block';
       document.getElementById('admin-tx-reference').style.borderColor = '#DC2626';
-      document.getElementById('admin-tx-reference').focus();
-      return;
+      document.getElementById('admin-tx-reference').focus(); return;
     }
     txData[currentTX].status = 'completed';
-    closeApproveModal();
-    updateTXRow(currentTX);
-    closeTX();
-    updateBadges();
+    closeApproveModal(); updateTXRow(currentTX); closeTX(); updateBadges();
     showToast('✅', 'Transaction Completed', txData[currentTX].ref + ' — beneficiary payment confirmed.');
   }
-
   function rejectTX() {
     const form = document.getElementById('tx-reject-form');
-    if (!rejectTXMode) {
-      rejectTXMode = true;
-      form.style.display = 'block';
-      return;
-    }
+    if (!rejectTXMode) { rejectTXMode = true; form.style.display = 'block'; return; }
     const reason = document.getElementById('tx-reject-reason').value;
     if (!reason.trim()) { alert('Please enter a rejection reason.'); return; }
     txData[currentTX].status = 'rejected';
-    updateTXRow(currentTX);
-    closeTX();
-    updateBadges();
-    showToast('↩️', 'Transaction Rejected', txData[currentTX].customer + ' has been notified with the reason.');
+    updateTXRow(currentTX); closeTX(); updateBadges();
+    showToast('↩️', 'Transaction Rejected', txData[currentTX].customer + ' has been notified.');
   }
-
-  // ─── FILTERS ───
-  function filterKYB(status, btn) {
-    document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  function filterTX(status, btn) {
-    document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-  }
-
-  // ─── RATES ───
-  let _pendingRate = null; // { corridor, inputId, oldVal, newVal }
-
-  function saveRate(corridor, inputId) {
-    const input = document.getElementById(inputId);
-    const newVal = parseFloat(input.value);
-    // Store old value from data attribute (set after first save) or the original input default
-    const oldVal = parseFloat(input.dataset.committed || input.defaultValue);
-
-    _pendingRate = { corridor, inputId, oldVal, newVal };
-
-    // Populate modal
-    document.getElementById('modal-corridor-label').textContent = `XAF → ${corridor}`;
-    document.getElementById('modal-old-rate').textContent = `${oldVal} ${corridor}`;
-    document.getElementById('modal-new-rate').textContent = `${newVal} ${corridor}`;
-    document.getElementById('rate-modal-overlay').classList.add('open');
-  }
-
-  function cancelRateModal() {
-    document.getElementById('rate-modal-overlay').classList.remove('open');
-    _pendingRate = null;
-  }
-
-  function confirmSaveRate() {
-    if (!_pendingRate) return;
-    const { corridor, inputId, oldVal, newVal } = _pendingRate;
-
-    // Commit the new value as the baseline for next change
-    const input = document.getElementById(inputId);
-    input.dataset.committed = newVal;
-
-    // Insert row at top of audit table
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    const tbody = document.getElementById('audit-tbody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="font-weight:600;white-space:nowrap;">XAF → ${corridor}</td>
-      <td style="color:var(--text-secondary);white-space:nowrap;">${oldVal} ${corridor}</td>
-      <td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newVal} ${corridor}</td>
-      <td><span class="audit-user">👤 recitKevin</span></td>
-      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>
-    `;
-    tbody.insertBefore(tr, tbody.firstChild);
-
-    document.getElementById('rate-modal-overlay').classList.remove('open');
-    _pendingRate = null;
-    showToast('📈', 'Rate updated', `XAF → ${corridor} is now ${newVal}`);
-  }
-
-  // ─── BADGES ───
   function updateTXRow(id) {
     const statusEl = document.getElementById('tx-row-status-' + id);
     const actionEl = document.getElementById('tx-row-action-' + id);
@@ -1234,28 +1120,250 @@
     const status = txData[id].status;
     const statusMap = {
       initiated: '<span class="status-badge status-initiated">Initiated</span>',
-      pending:   '<span class="status-badge status-pending-review">Pending Review</span>',
-      approved:  '<span class="status-badge status-approved">Approved</span>',
+      pending: '<span class="status-badge status-pending-review">Pending Review</span>',
+      approved: '<span class="status-badge status-approved">Approved</span>',
       completed: '<span class="status-badge status-completed">Completed</span>',
-      rejected:  '<span class="status-badge status-rejected">Rejected</span>'
+      rejected: '<span class="status-badge status-rejected">Rejected</span>'
     };
     statusEl.innerHTML = statusMap[status] || '';
-    if (validatedEl) {
-      validatedEl.textContent = status === 'pending' ? '—' : 'recitKevin';
-    }
+    if (validatedEl) validatedEl.textContent = (status === 'pending' || status === 'initiated') ? '—' : 'recitKevin';
     const btnClass = status === 'pending' ? 'btn-primary' : status === 'approved' ? 'btn-success' : 'btn-secondary';
     const btnLabel = status === 'pending' ? 'Review' : status === 'approved' ? 'Complete' : 'View';
-
     actionEl.innerHTML = `<button class="btn ${btnClass}" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('${id}')">${btnLabel}</button>`;
   }
 
+  // ─── PM DATA ───
+  const pmData = {
+    'pm-001': { name: 'Afriland First Bank — Douala', type: 'bank', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance SA', accountNumber: '****0072', branchAddress: 'Rue Joss, Douala, Cameroon', active: true },
+    'pm-002': { name: 'Société Générale Cameroun', type: 'bank', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance SA', accountNumber: '****3841', branchAddress: 'Boulevard de la Liberté, Douala', active: true },
+    'pm-003': { name: 'MTN Mobile Money', type: 'mobile_money', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance', accountNumber: '237 6XX XXX XXX', branchAddress: '', active: true },
+  };
+  let currentPM = null;
+
+  function openPM(id) {
+    const d = pmData[id]; currentPM = id;
+    document.getElementById('pm-panel-title').textContent = d.name;
+    document.getElementById('pm-name').textContent = d.name;
+    const typeLabels = { bank: '<span class="badge-pill badge-bank">Bank</span>', mobile_money: '<span class="badge-pill badge-mobile-money">Mobile Money</span>' };
+    document.getElementById('pm-type').innerHTML = typeLabels[d.type] || d.type;
+    document.getElementById('pm-country').textContent = d.country;
+    document.getElementById('pm-currency').textContent = d.currency;
+    document.getElementById('pm-account-name').textContent = d.accountName;
+    document.getElementById('pm-account-number').textContent = d.accountNumber;
+    const branchRow = document.getElementById('pm-branch-row');
+    branchRow.style.display = d.type === 'bank' ? 'flex' : 'none';
+    document.getElementById('pm-branch').textContent = d.branchAddress || '—';
+    document.getElementById('pm-status-panel').innerHTML = d.active ? '<span class="badge-pill badge-active-pm">● Active</span>' : '<span class="badge-pill badge-inactive-pm">Inactive</span>';
+    document.getElementById('pm-toggle-btn').textContent = d.active ? 'Deactivate' : 'Activate';
+    document.getElementById('pm-country-note').textContent = d.country;
+    document.getElementById('pm-overlay').classList.add('open');
+    document.getElementById('pm-panel').classList.add('open');
+  }
+  function closePM() {
+    document.getElementById('pm-overlay').classList.remove('open');
+    document.getElementById('pm-panel').classList.remove('open');
+  }
+  function togglePMStatus() {
+    const d = pmData[currentPM];
+    d.active = !d.active;
+    document.getElementById('pm-status-' + currentPM).innerHTML = d.active ? '<span class="badge-pill badge-active-pm">● Active</span>' : '<span class="badge-pill badge-inactive-pm">Inactive</span>';
+    document.getElementById('pm-status-panel').innerHTML = d.active ? '<span class="badge-pill badge-active-pm">● Active</span>' : '<span class="badge-pill badge-inactive-pm">Inactive</span>';
+    document.getElementById('pm-toggle-btn').textContent = d.active ? 'Deactivate' : 'Activate';
+    showToast(d.active ? '✅' : '⏸️', d.active ? 'Method Activated' : 'Method Deactivated', d.name + ' is now ' + (d.active ? 'visible to customers.' : 'hidden from the customer portal.'));
+  }
+  function deletePM() {
+    if (!confirm('Delete this payment method? Customers will no longer see it.')) return;
+    const row = document.getElementById('pm-row-' + currentPM);
+    if (row) row.remove();
+    delete pmData[currentPM];
+    closePM();
+    showToast('🗑️', 'Payment Method Deleted', 'The method has been removed.');
+  }
+  function filterPM(type, btn) {
+    document.querySelectorAll('#page-payment-methods .filter-btn:not(:disabled)').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function openAddPM() {
+    document.getElementById('add-pm-name').value = '';
+    document.getElementById('add-pm-account-name').value = '';
+    document.getElementById('add-pm-account-number').value = '';
+    document.getElementById('add-pm-country').value = '';
+    document.getElementById('add-pm-currency').value = '';
+    document.getElementById('add-pm-branch').value = '';
+    document.getElementById('add-pm-type').value = 'bank';
+    document.getElementById('add-pm-branch-field').style.display = 'block';
+    document.getElementById('add-pm-overlay').classList.add('open');
+  }
+  function closeAddPM() { document.getElementById('add-pm-overlay').classList.remove('open'); }
+  function toggleBranchField() {
+    const type = document.getElementById('add-pm-type').value;
+    document.getElementById('add-pm-branch-field').style.display = type === 'bank' ? 'block' : 'none';
+  }
+  function saveAddPM() {
+    const name = document.getElementById('add-pm-name').value.trim();
+    const country = document.getElementById('add-pm-country').value.trim();
+    if (!name || !country) { alert('Name and Country are required.'); return; }
+    const type = document.getElementById('add-pm-type').value;
+    const id = 'pm-' + Date.now();
+    pmData[id] = {
+      name, type, country,
+      currency: document.getElementById('add-pm-currency').value.trim() || 'XAF',
+      accountName: document.getElementById('add-pm-account-name').value.trim(),
+      accountNumber: document.getElementById('add-pm-account-number').value.trim(),
+      branchAddress: document.getElementById('add-pm-branch').value.trim(),
+      active: true
+    };
+    const typeLabels = { bank: '<span class="badge-pill badge-bank">Bank</span>', mobile_money: '<span class="badge-pill badge-mobile-money">Mobile Money</span>' };
+    const tbody = document.getElementById('pm-tbody');
+    const tr = document.createElement('tr');
+    tr.id = 'pm-row-' + id; tr.style.cursor = 'pointer';
+    tr.onclick = () => openPM(id);
+    tr.innerHTML = `
+      <td style="font-weight:600;">${name}</td>
+      <td>${typeLabels[type] || type}</td>
+      <td>${country}</td>
+      <td>${pmData[id].currency}</td>
+      <td style="font-family:monospace;font-size:12px;">${pmData[id].accountNumber || '—'}</td>
+      <td id="pm-status-${id}"><span class="badge-pill badge-active-pm">● Active</span></td>
+      <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('${id}')">View</button></td>
+    `;
+    tbody.appendChild(tr);
+    closeAddPM();
+    showToast('✅', 'Payment Method Added', name + ' is now active.');
+  }
+
+  // ─── CUSTOMER DATA ───
+  const customersData = {
+    'cust-001': { name: 'Aminata Diallo', email: 'aminata@techimport.cm', type: 'Business', businessName: 'TechImport SARL', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 10, 2026', members: [{ name: 'Aminata Diallo', role: 'owner' }, { name: 'Ibrahim Koné', role: 'admin' }, { name: 'Berthe Essama', role: 'member' }], bankAccounts: [] },
+    'cust-002': { name: 'Martin Foka', email: 'martin@tekstile.cm', type: 'Business', businessName: 'Tekstile & Co.', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 15, 2026', members: [{ name: 'Martin Foka', role: 'owner' }, { name: 'Cécile Ateba', role: 'member' }], bankAccounts: [] },
+    'cust-003': { name: 'Alice Mbarga', email: 'alice.mbarga@gmail.com', type: 'Individual', businessName: '', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 18, 2026', members: [], bankAccounts: [] },
+    'cust-004': { name: 'Jean-Pierre Nkeng', email: 'jp.nkeng@logistics.cm', type: 'Business', businessName: 'Nkeng Logistics', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 05, 2026', members: [{ name: 'Jean-Pierre Nkeng', role: 'owner' }], bankAccounts: [{ bankName: 'Afriland First Bank', accountName: 'Nkeng Logistics SARL', accountNumber: '****2211' }] },
+    'cust-005': { name: 'Hervé Tchinda', email: 'herve@tchinda-trading.cm', type: 'Business', businessName: 'Tchinda Trading SA', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 08, 2026', members: [{ name: 'Hervé Tchinda', role: 'owner' }, { name: 'Pauline Ndongo', role: 'admin' }], bankAccounts: [] },
+  };
+  let currentCustomer = null;
+
+  function openCustomer(id) {
+    const d = customersData[id]; currentCustomer = id;
+    document.getElementById('customer-panel-title').textContent = d.name;
+    document.getElementById('cust-name').textContent = d.name;
+    document.getElementById('cust-email').textContent = d.email;
+    const typeMap = { Business: '<span class="badge-pill badge-business">Business</span>', Individual: '<span class="badge-pill badge-individual">Individual</span>' };
+    document.getElementById('cust-type').innerHTML = typeMap[d.type] || d.type;
+    const bizRow = document.getElementById('cust-business-row');
+    bizRow.style.display = d.type === 'Business' ? 'flex' : 'none';
+    document.getElementById('cust-business-name').textContent = d.businessName;
+    document.getElementById('cust-country').textContent = d.country;
+    const kybMap = { pending: '<span class="badge-pill badge-pending">● Pending</span>', approved: '<span class="badge-pill badge-approved">✓ Approved</span>', rejected: '<span class="badge-pill badge-rejected">Rejected</span>' };
+    document.getElementById('cust-kyb').innerHTML = kybMap[d.kybStatus] || d.kybStatus;
+    document.getElementById('cust-joined').textContent = d.joined;
+
+    // Members
+    const membersSection = document.getElementById('cust-members-section');
+    const membersList = document.getElementById('cust-members-list');
+    if (d.type === 'Business' && d.members.length > 0) {
+      membersSection.style.display = 'block';
+      const roleMap = { owner: 'badge-owner', admin: 'badge-admin-role', member: 'badge-member-role' };
+      membersList.innerHTML = d.members.map(m => `
+        <div class="member-row">
+          <span class="member-name">${m.name}</span>
+          <span class="badge-pill ${roleMap[m.role] || 'badge-member-role'}">${m.role.charAt(0).toUpperCase() + m.role.slice(1)}</span>
+        </div>
+      `).join('');
+    } else {
+      membersSection.style.display = 'none';
+    }
+
+    // Bank accounts
+    renderBankAccounts(id);
+    document.getElementById('add-bank-form').style.display = 'none';
+    document.getElementById('customer-overlay').classList.add('open');
+    document.getElementById('customer-panel').classList.add('open');
+  }
+
+  function renderBankAccounts(id) {
+    const d = customersData[id];
+    const container = document.getElementById('cust-bank-accounts');
+    if (!d.bankAccounts || d.bankAccounts.length === 0) {
+      container.innerHTML = '<div style="font-size:13px;color:var(--text-secondary);padding:8px 0;">No bank accounts linked yet.</div>';
+    } else {
+      container.innerHTML = d.bankAccounts.map((acct, i) => `
+        <div class="bank-account-item">
+          <div>
+            <div class="bank-account-info" style="font-weight:600;">${acct.bankName}</div>
+            <div class="bank-account-sub">${acct.accountName} · ${acct.accountNumber}</div>
+          </div>
+          <button class="btn btn-danger" style="padding:4px 10px;font-size:11px;" onclick="removeBank('${id}', ${i})">Remove</button>
+        </div>
+      `).join('');
+    }
+  }
+
+  function closeCustomer() {
+    document.getElementById('customer-overlay').classList.remove('open');
+    document.getElementById('customer-panel').classList.remove('open');
+  }
+  function filterCustomers(type, btn) {
+    document.querySelectorAll('#page-customers .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  function showAddBankForm() {
+    document.getElementById('new-bank-name').value = '';
+    document.getElementById('new-account-name').value = '';
+    document.getElementById('new-account-number').value = '';
+    document.getElementById('add-bank-form').style.display = 'block';
+  }
+  function cancelAddBank() { document.getElementById('add-bank-form').style.display = 'none'; }
+  function saveAddBank() {
+    const bankName = document.getElementById('new-bank-name').value.trim();
+    const accountName = document.getElementById('new-account-name').value.trim();
+    const accountNumber = document.getElementById('new-account-number').value.trim();
+    if (!bankName || !accountName || !accountNumber) { alert('All fields are required.'); return; }
+    customersData[currentCustomer].bankAccounts.push({ bankName, accountName, accountNumber });
+    renderBankAccounts(currentCustomer);
+    document.getElementById('add-bank-form').style.display = 'none';
+    showToast('✅', 'Bank Account Added', bankName + ' linked to ' + customersData[currentCustomer].name + '.');
+  }
+  function removeBank(id, idx) {
+    if (!confirm('Remove this bank account?')) return;
+    customersData[id].bankAccounts.splice(idx, 1);
+    renderBankAccounts(id);
+    showToast('🗑️', 'Bank Account Removed', 'The account has been unlinked.');
+  }
+
+  // ─── RATES ───
+  let _pendingRate = null;
+  function saveRate(corridor, inputId) {
+    const input = document.getElementById(inputId);
+    const newVal = parseFloat(input.value);
+    const oldVal = parseFloat(input.dataset.committed || input.defaultValue);
+    _pendingRate = { corridor, inputId, oldVal, newVal };
+    document.getElementById('modal-corridor-label').textContent = `XAF → ${corridor}`;
+    document.getElementById('modal-old-rate').textContent = `${oldVal} ${corridor}`;
+    document.getElementById('modal-new-rate').textContent = `${newVal} ${corridor}`;
+    document.getElementById('rate-modal-overlay').classList.add('open');
+  }
+  function cancelRateModal() { document.getElementById('rate-modal-overlay').classList.remove('open'); _pendingRate = null; }
+  function confirmSaveRate() {
+    if (!_pendingRate) return;
+    const { corridor, inputId, oldVal, newVal } = _pendingRate;
+    document.getElementById(inputId).dataset.committed = newVal;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const tbody = document.getElementById('audit-tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="font-weight:600;white-space:nowrap;">XAF → ${corridor}</td><td style="color:var(--text-secondary);white-space:nowrap;">${oldVal} ${corridor}</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newVal} ${corridor}</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>`;
+    tbody.insertBefore(tr, tbody.firstChild);
+    document.getElementById('rate-modal-overlay').classList.remove('open');
+    _pendingRate = null;
+    showToast('📈', 'Rate updated', `XAF → ${corridor} is now ${newVal}`);
+  }
+
+  // ─── BADGES ───
   function updateBadges() {
-    const kybPending = Object.values(kybData).filter(k => k.status === 'pending').length;
     const txPending = Object.values(txData).filter(t => t.status === 'pending').length;
-    document.getElementById('kyb-badge').textContent = kybPending;
-    document.getElementById('tx-badge').textContent = txPending;
-    if (kybPending === 0) document.getElementById('kyb-badge').style.display = 'none';
-    if (txPending === 0) document.getElementById('tx-badge').style.display = 'none';
+    const el = document.getElementById('tx-badge');
+    el.textContent = txPending;
+    el.style.display = txPending === 0 ? 'none' : '';
   }
 
   // ─── TOAST ───

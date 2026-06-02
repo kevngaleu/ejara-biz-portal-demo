@@ -617,6 +617,7 @@
         <button class="filter-btn" onclick="filterPM('bank', this)">Bank (2)</button>
         <button class="filter-btn" onclick="filterPM('mobile_money', this)">Mobile Money (1)</button>
         <button class="filter-btn" disabled>Cash Point <span class="coming-soon-tag">Coming soon</span></button>
+        <input class="search-input" type="text" placeholder="🔍 Search…" style="margin-left:auto;width:180px;">
       </div>
       <div class="card">
         <div style="overflow-x:auto;">
@@ -625,27 +626,27 @@
               <th>Name</th><th>Type</th><th>Country</th><th>Currency</th><th>Account Number</th><th>Status</th><th>Actions</th>
             </tr></thead>
             <tbody id="pm-tbody">
-              <tr id="pm-row-pm-001" onclick="openPM('pm-001')" style="cursor:pointer;">
+              <tr id="pm-row-pm-001" data-pm-type="bank" onclick="openPM('pm-001')" style="cursor:pointer;">
                 <td style="font-weight:600;">Afriland First Bank — Douala</td>
                 <td><span class="badge-pill badge-bank">Bank</span></td>
                 <td>Cameroon</td><td>XAF</td>
-                <td style="font-family:monospace;font-size:12px;">****0072</td>
+                <td style="font-size:12px;">00441200072XAF</td>
                 <td id="pm-status-pm-001"><span class="badge-pill badge-active-pm">● Active</span></td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('pm-001')">View</button></td>
               </tr>
-              <tr id="pm-row-pm-002" onclick="openPM('pm-002')" style="cursor:pointer;">
+              <tr id="pm-row-pm-002" data-pm-type="bank" onclick="openPM('pm-002')" style="cursor:pointer;">
                 <td style="font-weight:600;">Société Générale Cameroun</td>
                 <td><span class="badge-pill badge-bank">Bank</span></td>
                 <td>Cameroon</td><td>XAF</td>
-                <td style="font-family:monospace;font-size:12px;">****3841</td>
+                <td style="font-size:12px;">00441200384XAF</td>
                 <td id="pm-status-pm-002"><span class="badge-pill badge-active-pm">● Active</span></td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('pm-002')">View</button></td>
               </tr>
-              <tr id="pm-row-pm-003" onclick="openPM('pm-003')" style="cursor:pointer;">
+              <tr id="pm-row-pm-003" data-pm-type="mobile_money" onclick="openPM('pm-003')" style="cursor:pointer;">
                 <td style="font-weight:600;">MTN Mobile Money</td>
                 <td><span class="badge-pill badge-mobile-money">Mobile Money</span></td>
                 <td>Cameroon</td><td>XAF</td>
-                <td style="font-family:monospace;font-size:12px;">237 6XX XXX XXX</td>
+                <td style="font-size:12px;">237 677 000 072</td>
                 <td id="pm-status-pm-003"><span class="badge-pill badge-active-pm">● Active</span></td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('pm-003')">View</button></td>
               </tr>
@@ -858,12 +859,12 @@
   <div class="detail-body">
     <div class="detail-section">
       <div class="detail-section-title">Details</div>
-      <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value" id="pm-name">—</span></div>
       <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value" id="pm-type">—</span></div>
+      <div class="detail-row"><span class="detail-label" id="pm-name-label">Bank Name</span><span class="detail-value" id="pm-name">—</span></div>
       <div class="detail-row"><span class="detail-label">Country</span><span class="detail-value" id="pm-country">—</span></div>
       <div class="detail-row"><span class="detail-label">Currency</span><span class="detail-value" id="pm-currency">—</span></div>
       <div class="detail-row"><span class="detail-label">Account Name</span><span class="detail-value" id="pm-account-name">—</span></div>
-      <div class="detail-row"><span class="detail-label">Account Number</span><span class="detail-value" id="pm-account-number" style="font-family:monospace;">—</span></div>
+      <div class="detail-row"><span class="detail-label" id="pm-number-label">Account Number</span><span class="detail-value" id="pm-account-number">—</span></div>
       <div class="detail-row" id="pm-branch-row"><span class="detail-label">Branch Address</span><span class="detail-value" id="pm-branch">—</span></div>
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="pm-status-panel">—</span></div>
     </div>
@@ -872,7 +873,6 @@
     </div>
   </div>
   <div class="detail-actions">
-    <button class="btn btn-secondary" onclick="closePM()">Close</button>
     <button class="btn btn-secondary" id="pm-toggle-btn" onclick="togglePMStatus()">Deactivate</button>
     <button class="btn btn-danger" onclick="deletePM()">Delete</button>
   </div>
@@ -884,24 +884,50 @@
     <div style="font-size:18px;font-weight:700;margin-bottom:20px;">Add Payment Method</div>
     <div style="margin-bottom:14px;">
       <label class="form-label">Type</label>
-      <select class="form-input" id="add-pm-type" onchange="toggleBranchField()">
+      <select class="form-input" id="add-pm-type" onchange="updatePMFormFields()">
         <option value="bank">Bank</option>
         <option value="mobile_money">Mobile Money</option>
         <option value="" disabled>Cash Point — Coming soon</option>
       </select>
     </div>
-    <div style="margin-bottom:14px;">
-      <label class="form-label">Bank / Provider Name</label>
-      <input class="form-input" id="add-pm-name" placeholder="e.g. Afriland First Bank">
+
+    <!-- Bank fields -->
+    <div id="add-pm-bank-fields">
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Bank Name</label>
+        <input class="form-input" id="add-pm-bank-name" placeholder="e.g. Afriland First Bank">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Account Name</label>
+        <input class="form-input" id="add-pm-bank-account-name" placeholder="e.g. Ejara Finance SA">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Account Number</label>
+        <input class="form-input" id="add-pm-bank-account-number" placeholder="e.g. 00441200072XAF">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Branch Address <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+        <input class="form-input" id="add-pm-branch" placeholder="e.g. Rue Joss, Douala, Cameroon">
+      </div>
     </div>
-    <div style="margin-bottom:14px;">
-      <label class="form-label">Account Name</label>
-      <input class="form-input" id="add-pm-account-name" placeholder="e.g. Ejara Finance SA">
+
+    <!-- Mobile Money fields -->
+    <div id="add-pm-mm-fields" style="display:none;">
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Operator</label>
+        <input class="form-input" id="add-pm-mm-operator" placeholder="e.g. MTN Mobile Money">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Account Name</label>
+        <input class="form-input" id="add-pm-mm-account-name" placeholder="e.g. Ejara Finance">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Phone / MSISDN</label>
+        <input class="form-input" id="add-pm-mm-phone" placeholder="e.g. 237 6 77 00 00 00">
+      </div>
     </div>
-    <div style="margin-bottom:14px;">
-      <label class="form-label">Account Number</label>
-      <input class="form-input" id="add-pm-account-number" placeholder="e.g. 00441200072">
-    </div>
+
+    <!-- Shared fields -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
       <div>
         <label class="form-label">Country <span style="color:var(--red);">*</span></label>
@@ -911,10 +937,6 @@
         <label class="form-label">Currency</label>
         <input class="form-input" id="add-pm-currency" placeholder="e.g. XAF">
       </div>
-    </div>
-    <div id="add-pm-branch-field" style="margin-bottom:14px;">
-      <label class="form-label">Branch Address <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
-      <input class="form-input" id="add-pm-branch" placeholder="e.g. Rue Joss, Douala, Cameroon">
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary" onclick="closeAddPM()">Cancel</button>
@@ -1151,21 +1173,24 @@
 
   // ─── PM DATA ───
   const pmData = {
-    'pm-001': { name: 'Afriland First Bank — Douala', type: 'bank', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance SA', accountNumber: '****0072', branchAddress: 'Rue Joss, Douala, Cameroon', active: true },
-    'pm-002': { name: 'Société Générale Cameroun', type: 'bank', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance SA', accountNumber: '****3841', branchAddress: 'Boulevard de la Liberté, Douala', active: true },
-    'pm-003': { name: 'MTN Mobile Money', type: 'mobile_money', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance', accountNumber: '237 6XX XXX XXX', branchAddress: '', active: true },
+    'pm-001': { name: 'Afriland First Bank — Douala', type: 'bank', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance SA', accountNumber: '00441200072XAF', branchAddress: 'Rue Joss, Douala, Cameroon', active: true },
+    'pm-002': { name: 'Société Générale Cameroun', type: 'bank', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance SA', accountNumber: '00441200384XAF', branchAddress: 'Boulevard de la Liberté, Douala', active: true },
+    'pm-003': { name: 'MTN Mobile Money', type: 'mobile_money', country: 'Cameroon', currency: 'XAF', accountName: 'Ejara Finance', accountNumber: '237 677 000 072', branchAddress: '', active: true },
   };
   let currentPM = null;
+
+  const pmTypeLabels = { bank: '<span class="badge-pill badge-bank">Bank</span>', mobile_money: '<span class="badge-pill badge-mobile-money">Mobile Money</span>' };
 
   function openPM(id) {
     const d = pmData[id]; currentPM = id;
     document.getElementById('pm-panel-title').textContent = d.name;
+    document.getElementById('pm-type').innerHTML = pmTypeLabels[d.type] || d.type;
+    document.getElementById('pm-name-label').textContent = d.type === 'bank' ? 'Bank Name' : 'Operator';
     document.getElementById('pm-name').textContent = d.name;
-    const typeLabels = { bank: '<span class="badge-pill badge-bank">Bank</span>', mobile_money: '<span class="badge-pill badge-mobile-money">Mobile Money</span>' };
-    document.getElementById('pm-type').innerHTML = typeLabels[d.type] || d.type;
     document.getElementById('pm-country').textContent = d.country;
     document.getElementById('pm-currency').textContent = d.currency;
     document.getElementById('pm-account-name').textContent = d.accountName;
+    document.getElementById('pm-number-label').textContent = d.type === 'bank' ? 'Account Number' : 'Phone / MSISDN';
     document.getElementById('pm-account-number').textContent = d.accountNumber;
     const branchRow = document.getElementById('pm-branch-row');
     branchRow.style.display = d.type === 'bank' ? 'flex' : 'none';
@@ -1197,50 +1222,56 @@
     showToast('🗑️', 'Payment Method Deleted', 'The method has been removed.');
   }
   function filterPM(type, btn) {
-    document.querySelectorAll('#page-payment-methods .filter-btn:not(:disabled)').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#page-payment-methods .filter-btn:not([disabled])').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    document.querySelectorAll('#pm-tbody tr').forEach(row => {
+      const rowType = row.dataset.pmType;
+      row.style.display = (type === 'all' || rowType === type) ? '' : 'none';
+    });
   }
   function openAddPM() {
-    document.getElementById('add-pm-name').value = '';
-    document.getElementById('add-pm-account-name').value = '';
-    document.getElementById('add-pm-account-number').value = '';
-    document.getElementById('add-pm-country').value = '';
-    document.getElementById('add-pm-currency').value = '';
-    document.getElementById('add-pm-branch').value = '';
+    ['add-pm-bank-name','add-pm-bank-account-name','add-pm-bank-account-number','add-pm-branch',
+     'add-pm-mm-operator','add-pm-mm-account-name','add-pm-mm-phone',
+     'add-pm-country','add-pm-currency'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
     document.getElementById('add-pm-type').value = 'bank';
-    document.getElementById('add-pm-branch-field').style.display = 'block';
+    updatePMFormFields();
     document.getElementById('add-pm-overlay').classList.add('open');
   }
   function closeAddPM() { document.getElementById('add-pm-overlay').classList.remove('open'); }
-  function toggleBranchField() {
+  function updatePMFormFields() {
     const type = document.getElementById('add-pm-type').value;
-    document.getElementById('add-pm-branch-field').style.display = type === 'bank' ? 'block' : 'none';
+    document.getElementById('add-pm-bank-fields').style.display = type === 'bank' ? 'block' : 'none';
+    document.getElementById('add-pm-mm-fields').style.display = type === 'mobile_money' ? 'block' : 'none';
   }
   function saveAddPM() {
-    const name = document.getElementById('add-pm-name').value.trim();
-    const country = document.getElementById('add-pm-country').value.trim();
-    if (!name || !country) { alert('Name and Country are required.'); return; }
     const type = document.getElementById('add-pm-type').value;
+    const country = document.getElementById('add-pm-country').value.trim();
+    let name, accountName, accountNumber, branchAddress = '';
+    if (type === 'bank') {
+      name = document.getElementById('add-pm-bank-name').value.trim();
+      accountName = document.getElementById('add-pm-bank-account-name').value.trim();
+      accountNumber = document.getElementById('add-pm-bank-account-number').value.trim();
+      branchAddress = document.getElementById('add-pm-branch').value.trim();
+    } else {
+      name = document.getElementById('add-pm-mm-operator').value.trim();
+      accountName = document.getElementById('add-pm-mm-account-name').value.trim();
+      accountNumber = document.getElementById('add-pm-mm-phone').value.trim();
+    }
+    if (!name || !country) { alert('Name and Country are required.'); return; }
     const id = 'pm-' + Date.now();
-    pmData[id] = {
-      name, type, country,
-      currency: document.getElementById('add-pm-currency').value.trim() || 'XAF',
-      accountName: document.getElementById('add-pm-account-name').value.trim(),
-      accountNumber: document.getElementById('add-pm-account-number').value.trim(),
-      branchAddress: document.getElementById('add-pm-branch').value.trim(),
-      active: true
-    };
-    const typeLabels = { bank: '<span class="badge-pill badge-bank">Bank</span>', mobile_money: '<span class="badge-pill badge-mobile-money">Mobile Money</span>' };
+    pmData[id] = { name, type, country, currency: document.getElementById('add-pm-currency').value.trim() || 'XAF', accountName, accountNumber, branchAddress, active: true };
     const tbody = document.getElementById('pm-tbody');
     const tr = document.createElement('tr');
-    tr.id = 'pm-row-' + id; tr.style.cursor = 'pointer';
+    tr.id = 'pm-row-' + id; tr.dataset.pmType = type; tr.style.cursor = 'pointer';
     tr.onclick = () => openPM(id);
     tr.innerHTML = `
       <td style="font-weight:600;">${name}</td>
-      <td>${typeLabels[type] || type}</td>
+      <td>${pmTypeLabels[type] || type}</td>
       <td>${country}</td>
       <td>${pmData[id].currency}</td>
-      <td style="font-family:monospace;font-size:12px;">${pmData[id].accountNumber || '—'}</td>
+      <td style="font-size:12px;">${accountNumber || '—'}</td>
       <td id="pm-status-${id}"><span class="badge-pill badge-active-pm">● Active</span></td>
       <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openPM('${id}')">View</button></td>
     `;

@@ -675,7 +675,7 @@
               <th>Name</th><th>Email</th><th>Type</th><th>Country</th><th>KYB Status</th><th>Date Joined</th><th>Action</th>
             </tr></thead>
             <tbody>
-              <tr onclick="openCustomer('cust-001')" style="cursor:pointer;">
+              <tr onclick="openCustomer('cust-001')" style="cursor:pointer;" data-cust-type="business">
                 <td style="font-weight:600;">Aminata Diallo</td>
                 <td style="color:var(--text-secondary);font-size:12px;">aminata@techimport.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -684,7 +684,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 10, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-001')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-002')" style="cursor:pointer;">
+              <tr onclick="openCustomer('cust-002')" style="cursor:pointer;" data-cust-type="business">
                 <td style="font-weight:600;">Martin Foka</td>
                 <td style="color:var(--text-secondary);font-size:12px;">martin@tekstile.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -693,7 +693,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 15, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-002')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-003')" style="cursor:pointer;">
+              <tr onclick="openCustomer('cust-003')" style="cursor:pointer;" data-cust-type="individual">
                 <td style="font-weight:600;">Alice Mbarga</td>
                 <td style="color:var(--text-secondary);font-size:12px;">alice.mbarga@gmail.com</td>
                 <td><span class="badge-pill badge-individual">Individual</span></td>
@@ -702,7 +702,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 18, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-003')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-004')" style="cursor:pointer;">
+              <tr onclick="openCustomer('cust-004')" style="cursor:pointer;" data-cust-type="business">
                 <td style="font-weight:600;">Jean-Pierre Nkeng</td>
                 <td style="color:var(--text-secondary);font-size:12px;">jp.nkeng@logistics.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -711,7 +711,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 05, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-004')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-005')" style="cursor:pointer;">
+              <tr onclick="openCustomer('cust-005')" style="cursor:pointer;" data-cust-type="business">
                 <td style="font-weight:600;">Hervé Tchinda</td>
                 <td style="color:var(--text-secondary);font-size:12px;">herve@tchinda-trading.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -1532,6 +1532,9 @@
   function filterCustomers(type, btn) {
     document.querySelectorAll('#page-customers .filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    document.querySelectorAll('#page-customers tbody tr').forEach(row => {
+      row.style.display = (type === 'all' || row.dataset.custType === type) ? '' : 'none';
+    });
   }
   function showAddBankForm() {
     document.getElementById('new-bank-region').value = 'africa';

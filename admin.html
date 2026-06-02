@@ -222,6 +222,9 @@
     .approve-upload-label { font-size: 13px; color: var(--text-secondary); }
     .approve-upload-label span { color: var(--purple); font-weight: 600; cursor: pointer; }
     .approve-upload-filename { font-size: 12px; color: var(--purple); margin-top: 6px; font-weight: 600; display: none; }
+    .base-btn { padding: 4px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all .15s; }
+    .base-btn:hover { border-color: var(--purple-mid); color: var(--purple); }
+    .base-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
   </style>
 </head>
 <body>
@@ -518,31 +521,45 @@
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Set retail rates per corridor. Changes apply to all new quotes immediately.</div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">Retail Rates</div><a href="#" onclick="navigate('auditlog');return false;" style="font-size:13px;color:var(--purple);">View change log →</a></div>
+        <div class="card-header">
+          <div class="card-title">Retail Rates</div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Display base</span>
+              <div style="display:flex;gap:4px;">
+                <button class="base-btn active" onclick="setRateBase(1, this)">1</button>
+                <button class="base-btn" onclick="setRateBase(10, this)">10</button>
+                <button class="base-btn" onclick="setRateBase(100, this)">100</button>
+                <button class="base-btn" onclick="setRateBase(1000, this)">1,000</button>
+              </div>
+            </div>
+            <a href="#" onclick="navigate('auditlog');return false;" style="font-size:13px;color:var(--purple);white-space:nowrap;">View change log →</a>
+          </div>
+        </div>
         <div class="card-body">
           <div class="rate-row">
-            <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div><div class="rate-sub">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div></div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div><div class="rate-sub" id="rate-sub-ngn">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div></div>
             <div class="rate-input-wrap">
-              <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
-              <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn">
+              <span class="rate-base-label" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">1 XAF =</span>
+              <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn" data-base-rate="2.48">
               <span style="font-size:13px;color:var(--text-secondary);">NGN</span>
               <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('NGN', 'rate-ngn')">Save</button>
             </div>
           </div>
           <div class="rate-row">
-            <div><div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div><div class="rate-sub">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div></div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div><div class="rate-sub" id="rate-sub-cny">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div></div>
             <div class="rate-input-wrap">
-              <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
-              <input class="rate-input" type="number" value="0.0112" step="0.0001" id="rate-cny">
+              <span class="rate-base-label" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">1 XAF =</span>
+              <input class="rate-input" type="number" value="0.0112" step="0.0001" id="rate-cny" data-base-rate="0.0112">
               <span style="font-size:13px;color:var(--text-secondary);">CNY</span>
               <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('CNY', 'rate-cny')">Save</button>
             </div>
           </div>
           <div class="rate-row">
-            <div><div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div><div class="rate-sub">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div></div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div><div class="rate-sub" id="rate-sub-aed">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div></div>
             <div class="rate-input-wrap">
-              <span style="font-size:13px;color:var(--text-secondary);">1 XAF =</span>
-              <input class="rate-input" type="number" value="0.0061" step="0.0001" id="rate-aed">
+              <span class="rate-base-label" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">1 XAF =</span>
+              <input class="rate-input" type="number" value="0.0061" step="0.0001" id="rate-aed" data-base-rate="0.0061">
               <span style="font-size:13px;color:var(--text-secondary);">AED</span>
               <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('AED', 'rate-aed')">Save</button>
             </div>
@@ -1332,30 +1349,63 @@
 
   // ─── RATES ───
   let _pendingRate = null;
+  let rateBase = 1;
+
+  const wholesaleRates = { NGN: 2.41, CNY: 0.0109, AED: 0.0059 };
+  const spreads = { NGN: '2.9%', CNY: '2.8%', AED: '3.4%' };
+
+  function setRateBase(base, btn) {
+    rateBase = base;
+    document.querySelectorAll('.base-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const baseLabel = base === 1 ? '1 XAF =' : `${base.toLocaleString()} XAF =`;
+    document.querySelectorAll('.rate-base-label').forEach(el => el.textContent = baseLabel);
+    [['NGN', 'rate-ngn', 2], ['CNY', 'rate-cny', 4], ['AED', 'rate-aed', 4]].forEach(([curr, id, dec]) => {
+      const input = document.getElementById(id);
+      if (!input) return;
+      const perUnit = parseFloat(input.dataset.committed || input.dataset.baseRate);
+      input.value = (perUnit * base).toFixed(dec);
+      input.step = (perUnit * base < 1) ? '0.0001' : base >= 100 ? '0.1' : '0.01';
+    });
+    ['NGN', 'CNY', 'AED'].forEach(curr => {
+      const el = document.getElementById('rate-sub-' + curr.toLowerCase());
+      if (!el) return;
+      const w = wholesaleRates[curr];
+      const wDisplay = (w * base).toFixed(curr === 'NGN' ? 2 : 4);
+      const baseStr = base === 1 ? '1 XAF' : `${base.toLocaleString()} XAF`;
+      el.textContent = `Wholesale: ${baseStr} = ${wDisplay} ${curr} · Spread: ${spreads[curr]}`;
+    });
+  }
+
   function saveRate(corridor, inputId) {
     const input = document.getElementById(inputId);
-    const newVal = parseFloat(input.value);
-    const oldVal = parseFloat(input.dataset.committed || input.defaultValue);
-    _pendingRate = { corridor, inputId, oldVal, newVal };
-    document.getElementById('modal-corridor-label').textContent = `XAF → ${corridor}`;
-    document.getElementById('modal-old-rate').textContent = `${oldVal} ${corridor}`;
-    document.getElementById('modal-new-rate').textContent = `${newVal} ${corridor}`;
+    const displayVal = parseFloat(input.value);
+    const newPerUnit = displayVal / rateBase;
+    const oldPerUnit = parseFloat(input.dataset.committed || input.dataset.baseRate);
+    _pendingRate = { corridor, inputId, oldPerUnit, newPerUnit, displayVal, oldDisplay: (oldPerUnit * rateBase) };
+    const baseStr = rateBase === 1 ? '1 XAF' : `${rateBase.toLocaleString()} XAF`;
+    document.getElementById('modal-corridor-label').textContent = `${baseStr} → ${corridor}`;
+    document.getElementById('modal-old-rate').textContent = `${_pendingRate.oldDisplay.toFixed(newPerUnit < 0.1 ? 4 : 2)} ${corridor}`;
+    document.getElementById('modal-new-rate').textContent = `${displayVal} ${corridor}`;
     document.getElementById('rate-modal-overlay').classList.add('open');
   }
   function cancelRateModal() { document.getElementById('rate-modal-overlay').classList.remove('open'); _pendingRate = null; }
   function confirmSaveRate() {
     if (!_pendingRate) return;
-    const { corridor, inputId, oldVal, newVal } = _pendingRate;
-    document.getElementById(inputId).dataset.committed = newVal;
+    const { corridor, inputId, oldPerUnit, newPerUnit } = _pendingRate;
+    const input = document.getElementById(inputId);
+    input.dataset.committed = newPerUnit;
+    input.dataset.baseRate = newPerUnit;
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
     const tbody = document.getElementById('audit-tbody');
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td style="font-weight:600;white-space:nowrap;">XAF → ${corridor}</td><td style="color:var(--text-secondary);white-space:nowrap;">${oldVal} ${corridor}</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newVal} ${corridor}</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>`;
+    const dec = newPerUnit < 0.1 ? 4 : 2;
+    tr.innerHTML = `<td style="font-weight:600;white-space:nowrap;">XAF → ${corridor}</td><td style="color:var(--text-secondary);white-space:nowrap;">${oldPerUnit.toFixed(dec)} ${corridor}</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newPerUnit.toFixed(dec)} ${corridor}</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>`;
     tbody.insertBefore(tr, tbody.firstChild);
     document.getElementById('rate-modal-overlay').classList.remove('open');
     _pendingRate = null;
-    showToast('📈', 'Rate updated', `XAF → ${corridor} is now ${newVal}`);
+    showToast('📈', 'Rate updated', `1 XAF → ${corridor} is now ${newPerUnit.toFixed(dec)}`);
   }
 
   // ─── BADGES ───

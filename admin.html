@@ -642,11 +642,23 @@
         <div style="font-size:20px;font-weight:700;">Customers</div>
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">View customer profiles and manage their linked bank accounts</div>
       </div>
-      <div class="filters">
+      <div class="filters" style="flex-wrap:wrap;gap:8px;">
         <button class="filter-btn active" onclick="filterCustomers('all', this)">All (5)</button>
         <button class="filter-btn" onclick="filterCustomers('business', this)">Business (4)</button>
         <button class="filter-btn" onclick="filterCustomers('individual', this)">Individual (1)</button>
-        <input class="search-input" type="text" placeholder="🔍 Search by name or email…" style="margin-left:auto;">
+        <select id="cust-country-filter" class="form-input" style="width:auto;padding:7px 12px;font-size:13px;" onchange="applyCustomerFilters()">
+          <option value="">All countries</option>
+          <option>Cameroon</option>
+          <option>Côte d'Ivoire</option>
+          <option>Senegal</option>
+          <option>Mali</option>
+          <option>Gabon</option>
+          <option>Congo</option>
+          <option>Chad</option>
+          <option>Burkina Faso</option>
+          <option>Algeria</option>
+        </select>
+        <input id="cust-search" class="search-input" type="text" placeholder="🔍 Search by name or email…" style="margin-left:auto;" oninput="applyCustomerFilters()">
       </div>
       <div class="card">
         <div style="overflow-x:auto;">
@@ -655,7 +667,7 @@
               <th>Name</th><th>Email</th><th>Type</th><th>Country</th><th>KYB Status</th><th>Date Joined</th><th>Action</th>
             </tr></thead>
             <tbody>
-              <tr onclick="openCustomer('cust-001')" style="cursor:pointer;" data-cust-type="business">
+              <tr onclick="openCustomer('cust-001')" style="cursor:pointer;" data-cust-type="business" data-cust-name="aminata diallo" data-cust-email="aminata@techimport.cm" data-cust-country="cameroon">
                 <td style="font-weight:600;">Aminata Diallo</td>
                 <td style="color:var(--text-secondary);font-size:12px;">aminata@techimport.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -664,7 +676,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 10, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-001')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-002')" style="cursor:pointer;" data-cust-type="business">
+              <tr onclick="openCustomer('cust-002')" style="cursor:pointer;" data-cust-type="business" data-cust-name="martin foka" data-cust-email="martin@tekstile.cm" data-cust-country="cameroon">
                 <td style="font-weight:600;">Martin Foka</td>
                 <td style="color:var(--text-secondary);font-size:12px;">martin@tekstile.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -673,7 +685,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 15, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-002')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-003')" style="cursor:pointer;" data-cust-type="individual">
+              <tr onclick="openCustomer('cust-003')" style="cursor:pointer;" data-cust-type="individual" data-cust-name="alice mbarga" data-cust-email="alice.mbarga@gmail.com" data-cust-country="cameroon">
                 <td style="font-weight:600;">Alice Mbarga</td>
                 <td style="color:var(--text-secondary);font-size:12px;">alice.mbarga@gmail.com</td>
                 <td><span class="badge-pill badge-individual">Individual</span></td>
@@ -682,7 +694,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 18, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-003')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-004')" style="cursor:pointer;" data-cust-type="business">
+              <tr onclick="openCustomer('cust-004')" style="cursor:pointer;" data-cust-type="business" data-cust-name="jean-pierre nkeng" data-cust-email="jp.nkeng@logistics.cm" data-cust-country="cameroon">
                 <td style="font-weight:600;">Jean-Pierre Nkeng</td>
                 <td style="color:var(--text-secondary);font-size:12px;">jp.nkeng@logistics.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -691,7 +703,7 @@
                 <td style="color:var(--text-secondary);font-size:12px;">Mar 05, 2026</td>
                 <td><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();openCustomer('cust-004')">View</button></td>
               </tr>
-              <tr onclick="openCustomer('cust-005')" style="cursor:pointer;" data-cust-type="business">
+              <tr onclick="openCustomer('cust-005')" style="cursor:pointer;" data-cust-type="business" data-cust-name="hervé tchinda" data-cust-email="herve@tchinda-trading.cm" data-cust-country="cameroon">
                 <td style="font-weight:600;">Hervé Tchinda</td>
                 <td style="color:var(--text-secondary);font-size:12px;">herve@tchinda-trading.cm</td>
                 <td><span class="badge-pill badge-business">Business</span></td>
@@ -1507,11 +1519,21 @@
     document.getElementById('customer-overlay').classList.remove('open');
     document.getElementById('customer-panel').classList.remove('open');
   }
+  let _custTypeFilter = 'all';
   function filterCustomers(type, btn) {
+    _custTypeFilter = type;
     document.querySelectorAll('#page-customers .filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    applyCustomerFilters();
+  }
+  function applyCustomerFilters() {
+    const query = (document.getElementById('cust-search').value || '').toLowerCase().trim();
+    const country = (document.getElementById('cust-country-filter').value || '').toLowerCase();
     document.querySelectorAll('#page-customers tbody tr').forEach(row => {
-      row.style.display = (type === 'all' || row.dataset.custType === type) ? '' : 'none';
+      const typeOk = _custTypeFilter === 'all' || row.dataset.custType === _custTypeFilter;
+      const countryOk = !country || row.dataset.custCountry === country;
+      const searchOk = !query || row.dataset.custName.includes(query) || row.dataset.custEmail.includes(query);
+      row.style.display = (typeOk && countryOk && searchOk) ? '' : 'none';
     });
   }
   function showAddBankForm() {

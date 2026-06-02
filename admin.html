@@ -623,12 +623,12 @@
         <div style="overflow-x:auto;">
           <table>
             <thead><tr>
-              <th>Name</th><th>Type</th><th>Country</th><th>Currency</th><th>Account Number</th><th>Status</th><th>Actions</th>
+              <th>Name</th><th id="pm-type-th">Type</th><th>Country</th><th>Currency</th><th>Account Number</th><th>Status</th><th>Actions</th>
             </tr></thead>
             <tbody id="pm-tbody">
               <tr id="pm-row-pm-001" data-pm-type="bank" onclick="openPM('pm-001')" style="cursor:pointer;">
                 <td style="font-weight:600;">Afriland First Bank — Douala</td>
-                <td><span class="badge-pill badge-bank">Bank</span></td>
+                <td class="pm-type-cell"><span class="badge-pill badge-bank">Bank</span></td>
                 <td>Cameroon</td><td>XAF</td>
                 <td style="font-size:12px;">00441200072XAF</td>
                 <td id="pm-status-pm-001"><span class="badge-pill badge-active-pm">● Active</span></td>
@@ -636,7 +636,7 @@
               </tr>
               <tr id="pm-row-pm-002" data-pm-type="bank" onclick="openPM('pm-002')" style="cursor:pointer;">
                 <td style="font-weight:600;">Société Générale Cameroun</td>
-                <td><span class="badge-pill badge-bank">Bank</span></td>
+                <td class="pm-type-cell"><span class="badge-pill badge-bank">Bank</span></td>
                 <td>Cameroon</td><td>XAF</td>
                 <td style="font-size:12px;">00441200384XAF</td>
                 <td id="pm-status-pm-002"><span class="badge-pill badge-active-pm">● Active</span></td>
@@ -644,7 +644,7 @@
               </tr>
               <tr id="pm-row-pm-003" data-pm-type="mobile_money" onclick="openPM('pm-003')" style="cursor:pointer;">
                 <td style="font-weight:600;">MTN Mobile Money</td>
-                <td><span class="badge-pill badge-mobile-money">Mobile Money</span></td>
+                <td class="pm-type-cell"><span class="badge-pill badge-mobile-money">Mobile Money</span></td>
                 <td>Cameroon</td><td>XAF</td>
                 <td style="font-size:12px;">237 677 000 072</td>
                 <td id="pm-status-pm-003"><span class="badge-pill badge-active-pm">● Active</span></td>
@@ -1224,9 +1224,13 @@
   function filterPM(type, btn) {
     document.querySelectorAll('#page-payment-methods .filter-btn:not([disabled])').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    const showTypeCol = type === 'all';
+    document.getElementById('pm-type-th').style.display = showTypeCol ? '' : 'none';
     document.querySelectorAll('#pm-tbody tr').forEach(row => {
       const rowType = row.dataset.pmType;
       row.style.display = (type === 'all' || rowType === type) ? '' : 'none';
+      const typeCell = row.querySelector('.pm-type-cell');
+      if (typeCell) typeCell.style.display = showTypeCol ? '' : 'none';
     });
   }
   function openAddPM() {
@@ -1268,7 +1272,7 @@
     tr.onclick = () => openPM(id);
     tr.innerHTML = `
       <td style="font-weight:600;">${name}</td>
-      <td>${pmTypeLabels[type] || type}</td>
+      <td class="pm-type-cell">${pmTypeLabels[type] || type}</td>
       <td>${country}</td>
       <td>${pmData[id].currency}</td>
       <td style="font-size:12px;">${accountNumber || '—'}</td>

@@ -999,7 +999,7 @@
 
     <div class="detail-section">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="detail-section-title" style="margin-bottom:0;">Bank Accounts</div>
+        <div class="detail-section-title" style="margin-bottom:0;">Account Details</div>
         <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="showAddBankForm()">+ Add</button>
       </div>
       <div id="cust-bank-accounts"></div>
@@ -1012,16 +1012,45 @@
           ℹ️ Remember to add or update this bank account on <strong>Dotfile</strong> as well to prevent any information mismatch between systems.
         </div>
         <div style="margin-bottom:10px;">
+          <label class="form-label">Region</label>
+          <select class="form-input" id="new-bank-region" onchange="onBankRegionChange()">
+            <option value="africa">Africa</option>
+            <option value="europe">Europe</option>
+          </select>
+        </div>
+        <div style="margin-bottom:10px;">
           <label class="form-label">Bank Name</label>
           <input class="form-input" id="new-bank-name" placeholder="e.g. Afriland First Bank">
         </div>
-        <div style="margin-bottom:10px;">
-          <label class="form-label">Account Name</label>
-          <input class="form-input" id="new-account-name" placeholder="Must match the customer's registered name">
+        <!-- Africa fields -->
+        <div id="new-bank-africa-fields">
+          <div style="margin-bottom:10px;">
+            <label class="form-label">Account Name</label>
+            <input class="form-input" id="new-account-name" placeholder="Must match the customer's registered name">
+          </div>
+          <div style="margin-bottom:14px;">
+            <label class="form-label">Account Number</label>
+            <input class="form-input" id="new-account-number" placeholder="e.g. 00441200072">
+          </div>
         </div>
-        <div style="margin-bottom:14px;">
-          <label class="form-label">Account Number</label>
-          <input class="form-input" id="new-account-number" placeholder="e.g. 00441200072">
+        <!-- Europe fields -->
+        <div id="new-bank-europe-fields" style="display:none;">
+          <div style="margin-bottom:10px;">
+            <label class="form-label">IBAN</label>
+            <input class="form-input" id="new-bank-iban" placeholder="e.g. EE60 7777 0000 9832 9687" style="font-family:monospace;">
+          </div>
+          <div style="margin-bottom:10px;">
+            <label class="form-label">BIC / SWIFT</label>
+            <input class="form-input" id="new-bank-bic" placeholder="e.g. INGBFRPP" style="font-family:monospace;">
+          </div>
+          <div style="margin-bottom:10px;">
+            <label class="form-label">Account Holder Name</label>
+            <input class="form-input" id="new-bank-holder-name" placeholder="Must match the customer's registered name">
+          </div>
+          <div style="margin-bottom:14px;">
+            <label class="form-label">Beneficiary Address <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+            <input class="form-input" id="new-bank-holder-address" placeholder="e.g. 14 Rue de la Paix, 75001 Paris, France">
+          </div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="cancelAddBank()">Cancel</button>
@@ -1378,14 +1407,14 @@
     'cust-001': { name: 'Aminata Diallo', email: 'aminata@techimport.cm', type: 'Business', businessName: 'TechImport SARL', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 10, 2026', members: [{ name: 'Aminata Diallo', role: 'owner' }, { name: 'Ibrahim Koné', role: 'admin' }, { name: 'Berthe Essama', role: 'member' }], bankAccounts: [] },
     'cust-002': { name: 'Martin Foka', email: 'martin@tekstile.cm', type: 'Business', businessName: 'Tekstile & Co.', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 15, 2026', members: [{ name: 'Martin Foka', role: 'owner' }, { name: 'Cécile Ateba', role: 'member' }], bankAccounts: [] },
     'cust-003': { name: 'Alice Mbarga', email: 'alice.mbarga@gmail.com', type: 'Individual', businessName: '', country: 'Cameroon', kybStatus: 'pending', joined: 'Mar 18, 2026', members: [], bankAccounts: [] },
-    'cust-004': { name: 'Jean-Pierre Nkeng', email: 'jp.nkeng@logistics.cm', type: 'Business', businessName: 'Nkeng Logistics', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 05, 2026', members: [{ name: 'Jean-Pierre Nkeng', role: 'owner' }], bankAccounts: [{ bankName: 'Afriland First Bank', accountName: 'Nkeng Logistics SARL', accountNumber: '****2211', source: 'dotfile' }] },
+    'cust-004': { name: 'Jean-Pierre Nkeng', email: 'jp.nkeng@logistics.cm', type: 'Business', businessName: 'Nkeng Logistics', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 05, 2026', members: [{ name: 'Jean-Pierre Nkeng', role: 'owner' }], bankAccounts: [{ bankName: 'Afriland First Bank', accountName: 'Nkeng Logistics SARL', accountNumber: '****2211', source: 'dotfile', region: 'africa' }, { bankName: 'ING Bank France', accountName: 'Nkeng Logistics SARL', iban: 'EE60 7777 0000 9832 9687', bic: 'INGBFRPP', holderName: 'Nkeng Logistics SARL', holderAddress: '14 Rue de la Paix, 75001 Paris, France', region: 'europe' }] },
     'cust-005': { name: 'Hervé Tchinda', email: 'herve@tchinda-trading.cm', type: 'Business', businessName: 'Tchinda Trading SA', country: 'Cameroon', kybStatus: 'approved', joined: 'Mar 08, 2026', members: [{ name: 'Hervé Tchinda', role: 'owner' }, { name: 'Pauline Ndongo', role: 'admin' }], bankAccounts: [] },
   };
   let currentCustomer = null;
 
   function openCustomer(id) {
     const d = customersData[id]; currentCustomer = id;
-    document.getElementById('customer-panel-title').textContent = d.name;
+    document.getElementById('customer-panel-title').textContent = 'Account Details';
     document.getElementById('cust-name').textContent = d.name;
     document.getElementById('cust-email').textContent = d.email;
     const typeMap = { Business: '<span class="badge-pill badge-business">Business</span>', Individual: '<span class="badge-pill badge-individual">Individual</span>' };
@@ -1421,25 +1450,79 @@
     document.getElementById('customer-panel').classList.add('open');
   }
 
+  function copyField(text, btnEl) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btnEl.textContent;
+      btnEl.textContent = '✓';
+      btnEl.style.color = 'var(--green)';
+      setTimeout(() => { btnEl.textContent = orig; btnEl.style.color = ''; }, 1500);
+    });
+  }
+
   function renderBankAccounts(id) {
     const d = customersData[id];
     const container = document.getElementById('cust-bank-accounts');
     if (!d.bankAccounts || d.bankAccounts.length === 0) {
       container.innerHTML = '<div style="font-size:13px;color:var(--text-secondary);padding:8px 0;">No bank accounts linked yet.</div>';
-    } else {
-      container.innerHTML = d.bankAccounts.map((acct, i) => `
+      return;
+    }
+    container.innerHTML = d.bankAccounts.map((acct, i) => {
+      const dotfileTag = acct.source === 'dotfile' ? '<span style="display:inline-flex;align-items:center;gap:4px;padding:1px 7px;background:#F5F3FF;color:#7C3AED;border-radius:20px;font-size:10px;font-weight:600;">Dotfile</span>' : '';
+      const removeBtn = `<button class="btn btn-danger" style="padding:4px 10px;font-size:11px;flex-shrink:0;" onclick="removeBank('${id}', ${i})">Remove</button>`;
+
+      if (acct.region === 'europe') {
+        return `
+        <div class="bank-account-item" style="flex-direction:column;align-items:stretch;gap:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-weight:600;">${acct.bankName}</span>
+              ${dotfileTag}
+              <span style="display:inline-flex;align-items:center;padding:1px 8px;background:#EFF6FF;color:#1D4ED8;border-radius:20px;font-size:10px;font-weight:600;">Europe</span>
+            </div>
+            ${removeBtn}
+          </div>
+          <div style="background:var(--bg);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div>
+                <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);margin-bottom:2px;">IBAN</div>
+                <div style="font-family:monospace;font-size:13px;font-weight:600;letter-spacing:.04em;">${acct.iban}</div>
+              </div>
+              <button onclick="copyField('${acct.iban.replace(/\s/g,'')}', this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-secondary);padding:4px 8px;border-radius:6px;transition:background .15s;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'" title="Copy IBAN">⧉</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div>
+                <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);margin-bottom:2px;">BIC / SWIFT</div>
+                <div style="font-family:monospace;font-size:13px;font-weight:600;letter-spacing:.04em;">${acct.bic}</div>
+              </div>
+              <button onclick="copyField('${acct.bic}', this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-secondary);padding:4px 8px;border-radius:6px;transition:background .15s;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'" title="Copy BIC">⧉</button>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:8px;margin-top:2px;">
+              <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);margin-bottom:6px;">Account Holder Details</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+                <div style="font-size:13px;">${acct.holderName}</div>
+                <button onclick="copyField('${acct.holderName}', this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-secondary);padding:4px 8px;border-radius:6px;transition:background .15s;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'" title="Copy holder name">⧉</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <div style="font-size:12px;color:var(--text-secondary);">${acct.holderAddress}</div>
+                <button onclick="copyField('${acct.holderAddress}', this)" style="background:none;border:none;cursor:pointer;font-size:13px;color:var(--text-secondary);padding:4px 8px;border-radius:6px;transition:background .15s;flex-shrink:0;" onmouseover="this.style.background='var(--border)'" onmouseout="this.style.background='none'" title="Copy address">⧉</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      } else {
+        return `
         <div class="bank-account-item">
           <div style="flex:1;min-width:0;">
             <div style="display:flex;align-items:center;gap:8px;">
               <span class="bank-account-info" style="font-weight:600;">${acct.bankName}</span>
-              ${acct.source === 'dotfile' ? '<span style="display:inline-flex;align-items:center;gap:4px;padding:1px 7px;background:#F5F3FF;color:#7C3AED;border-radius:20px;font-size:10px;font-weight:600;">Dotfile</span>' : ''}
+              ${dotfileTag}
             </div>
             <div class="bank-account-sub">${acct.accountName} · ${acct.accountNumber}</div>
           </div>
-          <button class="btn btn-danger" style="padding:4px 10px;font-size:11px;flex-shrink:0;" onclick="removeBank('${id}', ${i})">Remove</button>
-        </div>
-      `).join('');
-    }
+          ${removeBtn}
+        </div>`;
+      }
+    }).join('');
   }
 
   function closeCustomer() {
@@ -1451,18 +1534,43 @@
     btn.classList.add('active');
   }
   function showAddBankForm() {
+    document.getElementById('new-bank-region').value = 'africa';
     document.getElementById('new-bank-name').value = '';
     document.getElementById('new-account-name').value = '';
     document.getElementById('new-account-number').value = '';
+    document.getElementById('new-bank-iban').value = '';
+    document.getElementById('new-bank-bic').value = '';
+    document.getElementById('new-bank-holder-name').value = '';
+    document.getElementById('new-bank-holder-address').value = '';
+    document.getElementById('new-bank-africa-fields').style.display = '';
+    document.getElementById('new-bank-europe-fields').style.display = 'none';
     document.getElementById('add-bank-form').style.display = 'block';
+  }
+  function onBankRegionChange() {
+    const region = document.getElementById('new-bank-region').value;
+    document.getElementById('new-bank-africa-fields').style.display = region === 'africa' ? '' : 'none';
+    document.getElementById('new-bank-europe-fields').style.display = region === 'europe' ? '' : 'none';
   }
   function cancelAddBank() { document.getElementById('add-bank-form').style.display = 'none'; }
   function saveAddBank() {
+    const region = document.getElementById('new-bank-region').value;
     const bankName = document.getElementById('new-bank-name').value.trim();
-    const accountName = document.getElementById('new-account-name').value.trim();
-    const accountNumber = document.getElementById('new-account-number').value.trim();
-    if (!bankName || !accountName || !accountNumber) { alert('All fields are required.'); return; }
-    customersData[currentCustomer].bankAccounts.push({ bankName, accountName, accountNumber });
+    if (!bankName) { alert('Bank name is required.'); return; }
+    let acct = { bankName, region };
+    if (region === 'europe') {
+      const iban = document.getElementById('new-bank-iban').value.trim();
+      const bic = document.getElementById('new-bank-bic').value.trim();
+      const holderName = document.getElementById('new-bank-holder-name').value.trim();
+      const holderAddress = document.getElementById('new-bank-holder-address').value.trim();
+      if (!iban || !bic || !holderName) { alert('IBAN, BIC, and Account Holder Name are required.'); return; }
+      acct = { ...acct, iban, bic, holderName, holderAddress, accountName: holderName };
+    } else {
+      const accountName = document.getElementById('new-account-name').value.trim();
+      const accountNumber = document.getElementById('new-account-number').value.trim();
+      if (!accountName || !accountNumber) { alert('Account name and number are required.'); return; }
+      acct = { ...acct, accountName, accountNumber };
+    }
+    customersData[currentCustomer].bankAccounts.push(acct);
     renderBankAccounts(currentCustomer);
     document.getElementById('add-bank-form').style.display = 'none';
     showToast('✅', 'Bank Account Added', bankName + ' linked to ' + customersData[currentCustomer].name + '.');

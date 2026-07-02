@@ -210,10 +210,14 @@
     .bene-check { margin-left: auto; color: var(--purple); font-size: 20px; display: none; }
     .beneficiary-card.selected .bene-check { display: block; }
 
+    .otp-box { width: 48px; height: 56px; border: 2px solid var(--border); border-radius: 10px; font-size: 22px; font-weight: 700; text-align: center; color: var(--text); background: var(--bg); outline: none; transition: border-color .2s; }
+    .otp-box:focus { border-color: var(--purple); background: var(--white); }
+
     .alert { border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start; font-size: 13px; }
     .alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1D4ED8; }
     .alert-success { background: #F0FDF4; border: 1px solid #BBF7D0; color: #15803D; }
     .alert-warning { background: #FFFBEB; border: 1px solid #FDE68A; color: #92400E; }
+    .alert-danger { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; border-radius: 10px; padding: 16px; margin-top: 16px; }
 
     .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
@@ -286,6 +290,34 @@
     <button class="btn btn-primary btn-lg" onclick="login()">Sign in</button>
     <div style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-secondary);">
       Don't have an account? <span class="auth-link" onclick="showScreen('register')">Create one</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     MFA SCREEN — Email code verification
+═══════════════════════════════════════════════ -->
+<div id="screen-mfa" class="screen auth-screen">
+  <div class="login-card" style="text-align:center;">
+    <div style="width:72px;height:72px;border-radius:50%;background:#F0EEFF;border:2px solid #D4C8FF;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:28px;">✉️</div>
+    <div class="login-title" data-i18n="mfaTitle">Check your email</div>
+    <div class="login-sub" style="margin-bottom:28px;" data-i18n="mfaSubtitle">We sent a 6-digit code to your email address. Enter it below to sign in. This code expires in 3 minutes.</div>
+    <div id="mfa-timer" style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Code expires in <strong id="mfa-countdown">3:00</strong></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:24px;">
+      <input class="otp-box" id="otp-1" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(this,'otp-2')" onkeydown="otpBack(event,this,'')">
+      <input class="otp-box" id="otp-2" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(this,'otp-3')" onkeydown="otpBack(event,this,'otp-1')">
+      <input class="otp-box" id="otp-3" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(this,'otp-4')" onkeydown="otpBack(event,this,'otp-2')">
+      <span style="font-size:20px;color:var(--text-secondary);margin:0 2px;">–</span>
+      <input class="otp-box" id="otp-4" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(this,'otp-5')" onkeydown="otpBack(event,this,'otp-3')">
+      <input class="otp-box" id="otp-5" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(this,'otp-6')" onkeydown="otpBack(event,this,'otp-4')">
+      <input class="otp-box" id="otp-6" maxlength="1" type="text" inputmode="numeric" oninput="otpNext(this,'')" onkeydown="otpBack(event,this,'otp-5')">
+    </div>
+    <div id="mfa-error" style="display:none;color:#EF4444;font-size:13px;margin-bottom:12px;" data-i18n="mfaError">Invalid code. Please try again.</div>
+    <div class="prototype-note">⚡ Prototype — enter any 6-digit code to continue.</div>
+    <button class="btn btn-primary btn-lg" onclick="verifyMfaCode()" data-i18n="mfaVerify">Verify and sign in</button>
+    <div style="margin-top:16px;font-size:13px;color:var(--text-secondary);">
+      <span data-i18n="mfaNoCode">Didn't receive a code?</span>
+      <span class="auth-link" onclick="resendMfaCode()" data-i18n="mfaResend">Resend code</span>
     </div>
   </div>
 </div>
@@ -898,7 +930,13 @@
               </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div id="quote-expired-banner" style="display:none;" class="alert-danger">
+              <div style="font-weight:600;margin-bottom:4px;" data-i18n="quoteExpiredTitle">This rate has expired</div>
+              <div style="font-size:13px;margin-bottom:12px;" data-i18n="quoteExpiredSubtitle">Exchange rates refresh every 60 seconds. Get a new quote to continue.</div>
+              <button class="btn btn-primary" onclick="refreshQuote()" data-i18n="quoteExpiredBtn">Get a new quote</button>
+            </div>
+
+            <div id="quote-actions" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <button class="btn btn-secondary btn-lg" onclick="goStep(1)" data-i18n="changeAmount">← Change Amount</button>
               <button class="btn btn-primary btn-lg" onclick="acceptQuote()" data-i18n="acceptRate">Accept Rate →</button>
             </div>
@@ -1276,7 +1314,7 @@
           <option>Failed</option>
         </select>
         <select class="form-input form-select" style="max-width:160px;">
-          <option data-i18n="allCorridors">All corridors</option>
+          <option data-i18n="allCorridors">Destination</option>
           <option>XAF → NGN</option>
           <option>XAF → CNY</option>
           <option>XAF → AED</option>
@@ -1635,8 +1673,59 @@
     if (params.get('verified') === 'true') {
       showScreen('kyb-intro');
     } else {
-      enterApp();
+      showScreen('mfa');
+      startMfaTimer();
+      setTimeout(() => document.getElementById('otp-1').focus(), 100);
     }
+  }
+
+  let mfaTimerInterval = null;
+  function startMfaTimer() {
+    clearInterval(mfaTimerInterval);
+    let seconds = 180;
+    function tick() {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      const el = document.getElementById('mfa-countdown');
+      if (el) el.textContent = m + ':' + String(s).padStart(2, '0');
+      if (seconds <= 0) {
+        clearInterval(mfaTimerInterval);
+        if (el) el.textContent = '0:00';
+      }
+      seconds--;
+    }
+    tick();
+    mfaTimerInterval = setInterval(tick, 1000);
+  }
+
+  function otpNext(current, nextId) {
+    current.value = current.value.replace(/[^0-9]/g, '');
+    if (current.value && nextId) {
+      document.getElementById(nextId).focus();
+    }
+    if (!nextId) { verifyMfaCode(); }
+  }
+
+  function otpBack(event, current, prevId) {
+    if (event.key === 'Backspace' && !current.value && prevId) {
+      document.getElementById(prevId).focus();
+    }
+  }
+
+  function verifyMfaCode() {
+    const code = ['otp-1','otp-2','otp-3','otp-4','otp-5','otp-6'].map(id => document.getElementById(id).value).join('');
+    if (code.length < 6) return;
+    document.getElementById('mfa-error').style.display = 'none';
+    clearInterval(mfaTimerInterval);
+    enterApp();
+  }
+
+  function resendMfaCode() {
+    ['otp-1','otp-2','otp-3','otp-4','otp-5','otp-6'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('mfa-error').style.display = 'none';
+    document.getElementById('otp-1').focus();
+    startMfaTimer();
+    showToast('📧', 'Code resent', 'A new 6-digit code has been sent to your email address.');
   }
 
   // Check for ?verified=true on page load
@@ -1782,9 +1871,19 @@
     const el = document.getElementById('quote-timer');
     if (!el) return;
     el.textContent = state.timerSeconds + 's';
-    if (state.timerSeconds <= 15) { el.style.background = '#EF4444'; }
+    if (state.timerSeconds <= 0) {
+      el.style.background = '#EF4444';
+      document.getElementById('quote-expired-banner').style.display = 'block';
+      document.getElementById('quote-actions').style.display = 'none';
+    } else if (state.timerSeconds <= 15) { el.style.background = '#EF4444'; }
     else if (state.timerSeconds <= 30) { el.style.background = '#F59E0B'; }
     else { el.style.background = 'var(--purple)'; }
+  }
+
+  function refreshQuote() {
+    document.getElementById('quote-expired-banner').style.display = 'none';
+    document.getElementById('quote-actions').style.display = 'grid';
+    startTimer();
   }
 
   const countryCode = { NGN:'NGA', CNY:'CHN', AED:'ARE', GBP:'GBR', EUR:'EU' };
@@ -1855,6 +1954,7 @@
       <td style="font-weight:600;white-space:nowrap;">${fmt(p.xaf)} XAF</td>
       <td style="font-weight:600;color:var(--green);white-space:nowrap;">${fmt(p.dest)} ${p.currency}</td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${fmt(usdt)}</td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = ${p.rate} ${p.currency}</td>
       <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">${corridor}</span></td>
       <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
       <td><span class="status-badge status-pending" id="hist-status-001">Pending Deposit</span></td>
@@ -1872,6 +1972,7 @@
       <td style="font-weight:600;white-space:nowrap;">${fmt(p.xaf)} XAF</td>
       <td style="font-weight:600;color:var(--green);white-space:nowrap;">${fmt(p.dest)} ${p.currency}</td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${fmt(usdt)}</td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">1 XAF = ${p.rate} ${p.currency}</td>
       <td style="white-space:nowrap;"><span style="font-size:12px;font-weight:600;color:var(--text-secondary);">${corridor}</span></td>
       <td style="color:var(--text-secondary);white-space:nowrap;">Aminata D.</td>
       <td><span class="status-badge status-pending">Pending Deposit</span></td>
@@ -2148,7 +2249,16 @@
       yourQuote: 'Your Quote',
       quoteInfo: 'This rate is locked for 60 seconds. Accept it to proceed — the rate will be honored at approval.',
       exchangeRate: 'Exchange rate',
+      mfaTitle: 'Check your email',
+      mfaSubtitle: 'We sent a 6-digit code to your email address. Enter it below to sign in. This code expires in 3 minutes.',
+      mfaVerify: 'Verify and sign in',
+      mfaNoCode: 'Didn\'t receive a code?',
+      mfaResend: 'Resend code',
+      mfaError: 'Invalid code. Please try again.',
       timerLabel: 'Rate expires in',
+      quoteExpiredTitle: 'This rate has expired',
+      quoteExpiredSubtitle: 'Exchange rates refresh every 60 seconds. Get a new quote to continue.',
+      quoteExpiredBtn: 'Get a new quote',
       changeAmount: '← Change Amount',
       acceptRate: 'Accept Rate →',
       selectBeneficiary: 'Select Beneficiary',
@@ -2188,7 +2298,7 @@
       searchPlaceholder: '🔍 Search beneficiary...',
       allStatuses: 'All statuses', pendingApproval: 'Pending Approval',
       submitted: 'Submitted', completed: 'Completed', failed: 'Failed',
-      allCorridors: 'All corridors',
+      allCorridors: 'Destination',
       initiatedBy: 'Initiated by', date: 'Date', receipt: 'Receipt',
       // Beneficiaries
       savedBeneTitle: 'Saved Beneficiaries',
@@ -2259,7 +2369,16 @@
       yourQuote: 'Votre devis',
       quoteInfo: 'Ce taux est bloqué pendant 60 secondes. Acceptez-le pour continuer — il sera honoré à l\'approbation.',
       exchangeRate: 'Taux de change',
+      mfaTitle: 'Vérifiez votre boite mail',
+      mfaSubtitle: 'Nous avons envoyé un code à 6 chiffres à ton adresse email. Entre-le ci-dessous pour te connecter. Ce code expire dans 3 minutes.',
+      mfaVerify: 'Vérifier et se connecter',
+      mfaNoCode: 'Tu n\'as pas reçu de code ?',
+      mfaResend: 'Renvoyer le code',
+      mfaError: 'Code invalide. Veuillez réessayer.',
       timerLabel: 'Taux expire dans',
+      quoteExpiredTitle: 'Ce taux a expiré',
+      quoteExpiredSubtitle: 'Les taux de change sont mis à jour toutes les 60 secondes. Obtenez un nouveau devis pour continuer.',
+      quoteExpiredBtn: 'Obtenir un nouveau devis',
       changeAmount: '← Modifier le montant',
       acceptRate: 'Accepter le taux →',
       selectBeneficiary: 'Sélectionner un bénéficiaire',
@@ -2297,7 +2416,7 @@
       searchPlaceholder: '🔍 Rechercher un bénéficiaire...',
       allStatuses: 'Tous les statuts', pendingApproval: 'En attente',
       submitted: 'Soumis', completed: 'Complété', failed: 'Échoué',
-      allCorridors: 'Tous les corridors',
+      allCorridors: 'Destination',
       initiatedBy: 'Initié par', date: 'Date', receipt: 'Reçu',
       savedBeneTitle: 'Bénéficiaires enregistrés',
       savedBeneDesc: 'Les coordonnées bancaires de vos fournisseurs — réutilisez-les pour chaque virement',

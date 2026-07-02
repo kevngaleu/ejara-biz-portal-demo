@@ -16,10 +16,12 @@
       --text: #111827;
       --text-secondary: #6B7280;
       --green: #10B981;
+      --orange: #F59E0B;
     }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
     .card { background: var(--white); border-radius: 16px; padding: 48px 40px; width: 440px; box-shadow: 0 4px 24px rgba(107,71,255,0.08); text-align: center; }
     .check-circle { width: 64px; height: 64px; border-radius: 50%; background: #F0FDF4; border: 2px solid #BBF7D0; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 24px; }
+    .check-circle.expired { background: #FFFBEB; border-color: #FDE68A; }
     .logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 32px; }
     .logo svg { width: 32px; height: 32px; }
     .logo span { font-size: 20px; font-weight: 700; color: var(--text); }
@@ -46,20 +48,45 @@
       </svg>
       <span>ejara</span>
     </div>
-    <div class="check-circle">✅</div>
-    <h1>Link confirmed</h1>
-    <p>Your email has been confirmed. We're taking you to your business verification — it takes about 10 minutes and you'll need your company documents.</p>
-    <div class="redirect-bar">
+    <div class="check-circle" id="state-icon">✅</div>
+    <h1 id="state-title">Link confirmed</h1>
+    <p id="state-subtitle">Your email has been confirmed. We're taking you to your business verification — it takes about 10 minutes and you'll need your company documents.</p>
+    <div class="redirect-bar" id="redirect-bar">
       Redirecting you to business verification…
       <div class="progress-track"><div class="progress-fill"></div></div>
     </div>
-    <a href="index.html?verified=true" class="btn">Start business verification →</a>
-    <div class="skip">Taking too long? <a href="index.html?verified=true">Click here</a></div>
+    <a href="index.html?verified=true" class="btn" id="state-btn">Start business verification →</a>
+    <div class="skip" id="state-skip">Taking too long? <a href="index.html?verified=true">Click here</a></div>
   </div>
   <script>
-    setTimeout(function() {
-      window.location.href = 'index.html?verified=true';
-    }, 2500);
+    var strings = {
+      en: {
+        expiredTitle: 'This invitation link has expired',
+        expiredSubtitle: 'This link is no longer valid. Ask the person who invited you to send a new invitation.'
+      },
+      fr: {
+        expiredTitle: 'Ce lien d\'invitation a expiré',
+        expiredSubtitle: 'Ce lien n\'est plus valide. Demande à la personne qui t\'a invité(e) de t\'envoyer une nouvelle invitation.'
+      }
+    };
+
+    var params = new URLSearchParams(window.location.search);
+    var lang = params.get('lang') === 'fr' ? 'fr' : 'en';
+
+    if (params.get('state') === 'expired') {
+      var icon = document.getElementById('state-icon');
+      icon.textContent = '⏰';
+      icon.classList.add('expired');
+      document.getElementById('state-title').textContent = strings[lang].expiredTitle;
+      document.getElementById('state-subtitle').textContent = strings[lang].expiredSubtitle;
+      document.getElementById('redirect-bar').style.display = 'none';
+      document.getElementById('state-btn').style.display = 'none';
+      document.getElementById('state-skip').style.display = 'none';
+    } else {
+      setTimeout(function() {
+        window.location.href = 'index.html?verified=true';
+      }, 2500);
+    }
   </script>
 </body>
 </html>

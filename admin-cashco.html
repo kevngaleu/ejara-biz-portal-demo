@@ -1,0 +1,2445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ejara — Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --purple: #6B47FF; --purple-light: #F0EEFF; --purple-mid: #D4C8FF;
+      --bg: #F5F5FA; --white: #FFFFFF; --border: #E5E5EF;
+      --text: #111827; --text-secondary: #6B7280; --text-light: #9CA3AF;
+      --green: #10B981; --orange: #F59E0B; --red: #EF4444;
+      --sidebar-width: 240px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { overflow-x: hidden; height: 100%; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
+    .screen { display: none; }
+    .screen.active { display: flex; }
+
+    /* ── LOGIN ── */
+    #screen-login { min-height: 100vh; align-items: center; justify-content: center; background: #1E1B4B; flex-direction: column; gap: 24px; }
+    .login-card { background: var(--white); border-radius: 16px; padding: 40px; width: 400px; box-shadow: 0 8px 40px rgba(0,0,0,.25); }
+    .login-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .login-logo svg { width: 32px; height: 32px; }
+    .login-logo-name { font-size: 20px; font-weight: 700; }
+    .login-admin-tag { background: #EA580C; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: 6px; }
+    .login-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .login-sub { color: var(--text-secondary); font-size: 13px; margin-bottom: 28px; }
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text); background: var(--white); outline: none; transition: border .15s; }
+    .form-input:focus { border-color: var(--purple); }
+    .form-hint { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+    .proto-note { background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #856404; margin-bottom: 20px; }
+    .twofa-digits { display: flex; gap: 8px; justify-content: center; margin: 20px 0; }
+    .twofa-digits input { width: 44px; height: 52px; text-align: center; font-size: 22px; font-weight: 700; border: 2px solid var(--border); border-radius: 10px; outline: none; transition: border .15s; }
+    .twofa-digits input:focus { border-color: var(--purple); }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; font-family: 'Inter', sans-serif; }
+    .btn-primary { background: var(--purple); color: white; }
+    .btn-primary:hover { background: #5A38E8; }
+    .btn-secondary { background: var(--white); color: var(--text); border: 1.5px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--purple-mid); background: var(--purple-light); }
+    .btn-danger { background: #FEF2F2; color: var(--red); border: 1.5px solid #FECACA; }
+    .btn-danger:hover { background: #FEE2E2; }
+    .btn-success { background: #F0FDF4; color: var(--green); border: 1.5px solid #BBF7D0; }
+    .btn-success:hover { background: #DCFCE7; }
+    .btn-warning { background: #FFF7ED; color: #EA580C; border: 1.5px solid #FED7AA; }
+    .btn-warning:hover { background: #FFEDD5; }
+    .btn-lg { padding: 12px 28px; font-size: 15px; width: 100%; justify-content: center; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── PRODUCT SELECT ── */
+    #screen-product { min-height: 100vh; align-items: center; justify-content: center; background: #1E1B4B; flex-direction: column; gap: 0; }
+    .product-header { text-align: center; margin-bottom: 40px; }
+    .product-header-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 16px; }
+    .product-header-logo span { font-size: 22px; font-weight: 700; color: white; }
+    .product-header-title { font-size: 26px; font-weight: 700; color: white; margin-bottom: 8px; }
+    .product-header-sub { color: rgba(255,255,255,.55); font-size: 14px; }
+    .product-cards { display: flex; gap: 20px; }
+    .product-card { background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12); border-radius: 20px; padding: 36px 32px; width: 300px; cursor: pointer; transition: all .2s; text-align: center; }
+    .product-card:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.3); transform: translateY(-3px); }
+    .product-card-icon { font-size: 40px; margin-bottom: 16px; }
+    .product-card-name { font-size: 17px; font-weight: 700; color: white; margin-bottom: 8px; line-height: 1.3; }
+    .product-card-desc { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.5; margin-bottom: 24px; }
+    .product-card-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; font-family: 'Inter', sans-serif; width: 100%; transition: all .2s; }
+    .product-card-btn-cashco { background: var(--purple); color: white; }
+    .product-card-btn-cashco:hover { background: #5A38E8; }
+    .product-card-btn-fx { background: #EA580C; color: white; }
+    .product-card-btn-fx:hover { background: #C2410C; }
+    .product-card.cashco { border-color: rgba(107,71,255,.4); }
+    .product-card.cashco:hover { border-color: var(--purple); }
+    .product-card.fx { border-color: rgba(234,88,12,.4); }
+    .product-card.fx:hover { border-color: #EA580C; }
+
+    /* ── APP SHELL ── */
+    #screen-app { min-height: 100vh; flex-direction: row; }
+    .sidebar { width: var(--sidebar-width); background: #1E1B4B; display: flex; flex-direction: column; flex-shrink: 0; position: fixed; height: 100vh; overflow-y: auto; overflow-x: hidden; }
+    .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 20px 18px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+    .sidebar-logo svg { width: 26px; height: 26px; flex-shrink: 0; }
+    .sidebar-logo-name { font-size: 17px; font-weight: 700; color: white; }
+    .sidebar-module-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-left: 4px; }
+    .tag-cashco-sidebar { background: rgba(107,71,255,.35); color: #A78BFA; }
+    .tag-fx-sidebar { background: rgba(234,88,12,.3); color: #FB923C; }
+    .nav-section { padding: 14px 10px 4px; }
+    .nav-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.35); padding: 0 8px; margin-bottom: 4px; }
+    .nav-item { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,.6); font-weight: 500; transition: all .15s; margin-bottom: 1px; white-space: nowrap; font-size: 13px; }
+    .nav-item:hover { background: rgba(255,255,255,.08); color: white; }
+    .nav-item.active { background: var(--purple); color: white; }
+    .nav-item .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+    .nav-item .nav-badge { margin-left: auto; background: #EF4444; color: white; border-radius: 10px; font-size: 10px; font-weight: 700; padding: 2px 7px; }
+    .nav-sub { padding-left: 28px; }
+    .nav-sub .nav-item { font-size: 12px; padding: 7px 10px; }
+    .nav-sub .nav-item.active { background: rgba(107,71,255,.25); color: #A78BFA; }
+    .nav-sub .nav-item:hover:not(.active) { background: rgba(255,255,255,.06); }
+    .nav-sub-parent { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border-radius: 8px; cursor: default; color: rgba(255,255,255,.45); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 1px; white-space: nowrap; }
+    .nav-sub-parent .nav-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer { margin-top: auto; border-top: 1px solid rgba(255,255,255,.1); }
+    .sidebar-switch { display: flex; align-items: center; gap: 9px; padding: 13px 18px; cursor: pointer; color: rgba(255,255,255,.4); font-size: 12px; font-weight: 500; transition: color .15s; }
+    .sidebar-switch:hover { color: rgba(255,255,255,.7); }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-top: 1px solid rgba(255,255,255,.08); }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: white; flex-shrink: 0; }
+    .user-name { font-weight: 600; font-size: 13px; color: white; }
+    .user-role { font-size: 11px; color: rgba(255,255,255,.45); }
+
+    /* ── TOPBAR + MAIN ── */
+    .main { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; min-width: 0; overflow-x: hidden; }
+    .topbar { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 28px; height: 58px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-title { font-size: 15px; font-weight: 600; }
+    .topbar-sep { color: var(--border); font-size: 16px; }
+    .topbar-sub { font-size: 13px; color: var(--text-secondary); }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .content { padding: 28px 32px; }
+
+    /* ── CARDS ── */
+    .card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); }
+    .card-header { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 14px; font-weight: 700; }
+    .card-body { padding: 22px; }
+
+    /* ── STAT GRID ── */
+    .stat-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+    .stat-grid-4 { grid-template-columns: repeat(4,1fr); }
+    .stat-grid-3 { grid-template-columns: repeat(3,1fr); }
+    .stat-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); padding: 18px 20px; }
+    .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-secondary); margin-bottom: 8px; }
+    .stat-value { font-size: 26px; font-weight: 700; }
+    .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 11px 16px; font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 13px 16px; border-bottom: 1px solid var(--bg); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr.clickable:hover td { background: #FAFAFE; cursor: pointer; }
+
+    /* ── BADGES ── */
+    .bp { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; gap: 4px; }
+    .bp-pending { background: #EFF6FF; color: #2563EB; }
+    .bp-approved { background: #FFF7ED; color: #EA580C; }
+    .bp-completed { background: #F0FDF4; color: #16A34A; }
+    .bp-rejected { background: #FEF2F2; color: #DC2626; }
+    .bp-initiated { background: #F5F3FF; color: #7C3AED; }
+    .bp-onsite { background: #FDF4FF; color: #9333EA; }
+    .bp-refund { background: #FFF7ED; color: #EA580C; }
+    .bp-refund-done { background: #F0FDF4; color: #16A34A; }
+    .bp-business { background: #FFF7ED; color: #EA580C; }
+    .bp-individual { background: var(--purple-light); color: var(--purple); }
+    .bp-bank { background: #EFF6FF; color: #2563EB; }
+    .bp-mobile-money { background: #F0FDF4; color: #16A34A; }
+    .bp-inactive { background: #F5F5FA; color: #6B7280; }
+    .bp-owner { background: #F5F3FF; color: #7C3AED; }
+    .bp-admin-role { background: #FFF7ED; color: #EA580C; }
+    .bp-member-role { background: #F5F5FA; color: #6B7280; }
+    .coming-soon-tag { display: inline-flex; align-items: center; padding: 1px 7px; background: #FFF7ED; color: #EA580C; border-radius: 20px; font-size: 10px; font-weight: 600; margin-left: 4px; }
+
+    /* ── MEMBER / BANK ACCOUNT ROWS ── */
+    .member-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; }
+    .member-name { font-size: 13px; font-weight: 600; }
+    .bank-account-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; }
+    .bank-account-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .compliance-notice { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 8px; padding: 12px 14px; font-size: 12px; color: #92400E; }
+
+    /* ── ALERTS ── */
+    .alert { display: flex; align-items: flex-start; gap: 11px; padding: 12px 14px; border-radius: 10px; font-size: 13px; margin-bottom: 18px; }
+    .alert-info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+    .alert-warn { background: #FFF7ED; border: 1px solid #FED7AA; color: #92400E; }
+    .alert-compliance { background: #FDF4FF; border: 1px solid #E9D5FF; color: #7E22CE; }
+    .alert-usdt { background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; }
+
+    /* ── FILTERS ── */
+    .filters { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+    .filter-btn { padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all .15s; font-family: 'Inter', sans-serif; }
+    .filter-btn:hover { border-color: var(--purple-mid); color: var(--purple); }
+    .filter-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+    .search-input { padding: 7px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; width: 220px; }
+    .search-input:focus { border-color: var(--purple); }
+
+    /* ── DETAIL PANEL ── */
+    .detail-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; }
+    .detail-overlay.open { display: block; }
+    .detail-panel { position: fixed; top: 0; right: -600px; width: 560px; height: 100vh; background: var(--white); box-shadow: -8px 0 40px rgba(0,0,0,.12); z-index: 101; transition: right .3s ease; overflow-y: auto; display: flex; flex-direction: column; }
+    .detail-panel.open { right: 0; }
+    .detail-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--white); z-index: 1; }
+    .detail-title { font-size: 15px; font-weight: 700; }
+    .detail-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary); padding: 4px 8px; border-radius: 6px; line-height: 1; }
+    .detail-close:hover { background: var(--bg); }
+    .detail-body { padding: 22px 24px; flex: 1; }
+    .detail-section { margin-bottom: 22px; }
+    .detail-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text-secondary); margin-bottom: 10px; }
+    .detail-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid var(--bg); }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: var(--text-secondary); font-size: 13px; }
+    .detail-value { font-weight: 600; font-size: 13px; text-align: right; max-width: 60%; }
+    .detail-actions { padding: 16px 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--white); flex-wrap: wrap; }
+    .detail-actions .btn { flex: 1; justify-content: center; font-size: 13px; }
+
+    /* ── DOCUMENT ITEM ── */
+    .doc-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--bg); border-radius: 8px; margin-bottom: 6px; cursor: pointer; border: 1.5px solid transparent; transition: border-color .15s; }
+    .doc-item:hover { border-color: var(--purple-mid); }
+    .doc-item-left { display: flex; align-items: center; gap: 10px; }
+    .doc-icon { font-size: 20px; }
+    .doc-name { font-size: 13px; font-weight: 500; }
+    .doc-size { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .doc-view-btn { font-size: 11px; font-weight: 600; color: var(--purple); background: var(--purple-light); padding: 3px 9px; border-radius: 6px; }
+
+    /* ── DOCUMENT VIEWER MODAL ── */
+    .docviewer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 300; align-items: center; justify-content: center; }
+    .docviewer-overlay.open { display: flex; }
+    .docviewer-box { background: #2D2D2D; border-radius: 12px; width: 720px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+    .docviewer-toolbar { background: #3A3A3A; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; }
+    .docviewer-filename { color: white; font-size: 13px; font-weight: 600; }
+    .docviewer-toolbar-right { display: flex; align-items: center; gap: 10px; }
+    .docviewer-tool-btn { background: rgba(255,255,255,.1); border: none; color: white; font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background .15s; }
+    .docviewer-tool-btn:hover { background: rgba(255,255,255,.2); }
+    .docviewer-close { background: none; border: none; color: rgba(255,255,255,.6); font-size: 20px; cursor: pointer; padding: 2px 6px; border-radius: 4px; line-height: 1; }
+    .docviewer-close:hover { color: white; }
+    .docviewer-content { flex: 1; overflow-y: auto; padding: 24px; display: flex; justify-content: center; background: #1A1A1A; }
+    .docviewer-page { background: white; width: 580px; min-height: 820px; border-radius: 4px; padding: 48px 52px; box-shadow: 0 4px 24px rgba(0,0,0,.5); }
+    .docviewer-page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; padding-bottom: 16px; border-bottom: 2px solid #1E1B4B; }
+    .docviewer-logo { display: flex; align-items: center; gap: 8px; }
+    .docviewer-logo svg { width: 24px; height: 24px; }
+    .docviewer-logo-name { font-size: 16px; font-weight: 700; color: #1E1B4B; }
+    .docviewer-doc-title { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 6px; }
+    .docviewer-doc-ref { font-size: 12px; color: #6B7280; margin-bottom: 28px; }
+    .docviewer-field { margin-bottom: 18px; }
+    .docviewer-field-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: #9CA3AF; margin-bottom: 4px; }
+    .docviewer-field-value { font-size: 14px; color: #111827; font-weight: 500; }
+    .docviewer-divider { border: none; border-top: 1px solid #E5E5EF; margin: 24px 0; }
+    .docviewer-line { height: 10px; background: #F3F4F6; border-radius: 3px; margin-bottom: 8px; }
+    .docviewer-line-sm { width: 60%; }
+    .docviewer-line-md { width: 80%; }
+    .docviewer-line-lg { width: 100%; }
+    .docviewer-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    .docviewer-table th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: white; background: #1E1B4B; }
+    .docviewer-table td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid #F3F4F6; }
+    .docviewer-stamp { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 2px solid #10B981; border-radius: 6px; color: #10B981; font-size: 13px; font-weight: 700; margin-top: 24px; transform: rotate(-3deg); }
+    .docviewer-footer { padding: 16px 18px; background: #3A3A3A; display: flex; justify-content: space-between; align-items: center; }
+    .docviewer-pages { color: rgba(255,255,255,.5); font-size: 12px; }
+    .docviewer-pagenav { display: flex; align-items: center; gap: 10px; }
+    .docviewer-page-btn { background: rgba(255,255,255,.1); border: none; color: white; font-size: 13px; font-weight: 700; width: 26px; height: 26px; border-radius: 6px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background .15s; }
+    .docviewer-page-btn:hover:not(:disabled) { background: rgba(255,255,255,.2); }
+    .docviewer-page-btn:disabled { opacity: .3; cursor: default; }
+
+    /* ── RATE INPUTS ── */
+    .rate-row { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid var(--border); gap: 16px; }
+    .rate-row:last-child { border-bottom: none; }
+    .rate-corridor { font-weight: 700; font-size: 15px; }
+    .rate-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+    .rate-input { width: 130px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif; outline: none; text-align: right; }
+    .rate-input:focus { border-color: var(--purple); }
+
+    /* ── MODAL ── */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal-box { background: var(--white); border-radius: 16px; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,.15); width: 400px; }
+    .modal-icon { font-size: 36px; text-align: center; margin-bottom: 12px; }
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+    .modal-body { font-size: 13px; color: var(--text-secondary); text-align: center; }
+    .modal-highlight { background: var(--bg); border-radius: 10px; padding: 14px; margin: 16px 0; text-align: center; font-weight: 600; font-size: 14px; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 20px; }
+    .modal-actions .btn { flex: 1; justify-content: center; }
+    .countdown { font-size: 36px; font-weight: 700; color: var(--purple); text-align: center; margin: 12px 0 4px; }
+    .countdown-label { font-size: 12px; color: var(--text-secondary); text-align: center; margin-bottom: 4px; }
+
+    /* ── TOAST ── */
+    .toast { position: fixed; top: 20px; right: 20px; background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; box-shadow: 0 8px 32px rgba(0,0,0,.12); z-index: 500; display: flex; align-items: flex-start; gap: 12px; max-width: 320px; transform: translateX(400px); transition: transform .3s ease; }
+    .toast.show { transform: translateX(0); }
+    .toast-icon { font-size: 20px; flex-shrink: 0; }
+    .toast-title { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+    .toast-body { font-size: 12px; color: var(--text-secondary); }
+
+    /* ── MISC ── */
+    .empty-state { text-align: center; padding: 48px 20px; color: var(--text-secondary); }
+    .mm-ref-input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; margin-top: 8px; }
+    .mm-ref-input:focus { border-color: var(--purple); }
+    .mm-ref-input.error { border-color: var(--red); }
+    .onsite-yes { color: #9333EA; font-weight: 600; font-size: 12px; }
+    .onsite-no { color: var(--text-secondary); font-size: 12px; }
+
+    /* ── FILTER BAR (select + date) ── */
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
+    .filter-select { padding: 7px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; background: var(--white); color: var(--text); cursor: pointer; }
+    .filter-select:focus { border-color: var(--purple); }
+    .filter-date { padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 12px; font-family: 'Inter', sans-serif; outline: none; color: var(--text); }
+    .filter-date:focus { border-color: var(--purple); }
+    .filter-date-label { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .filter-export { margin-left: auto; white-space: nowrap; }
+    .filter-search { padding: 7px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; outline: none; color: var(--text); width: 220px; }
+    .filter-search:focus { border-color: var(--purple); }
+    .kyc-level-pill { display: inline-block; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--purple-light); color: var(--purple); }
+    .kyc-level-pill.pending { background: #EFF6FF; color: #2563EB; }
+
+    /* ── INLINE PROOF CARD ── */
+    .proof-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+    .proof-card-header { background: #1E1B4B; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+    .proof-card-bank { color: white; font-weight: 700; font-size: 13px; }
+    .proof-card-type { color: rgba(255,255,255,.55); font-size: 11px; }
+    .proof-card-body { padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .proof-field-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 2px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+    .proof-field-value { font-size: 12px; font-weight: 600; font-family: monospace; }
+    .proof-card-footer { padding: 8px 14px; border-top: 1px dashed var(--border); font-size: 11px; color: var(--text-secondary); text-align: center; }
+    .verify-banner { background: #EFF6FF; border-radius: 8px; padding: 10px 13px; font-size: 12px; color: #1E40AF; margin-top: 4px; }
+
+    /* ── COMPLETE TX MODAL ── */
+    .upload-zone { border: 1.5px dashed var(--border); border-radius: 10px; padding: 18px; text-align: center; cursor: pointer; transition: border-color .2s; }
+    .upload-zone:hover { border-color: var(--purple); }
+    .upload-zone input { display: none; }
+    .upload-zone-label { font-size: 13px; color: var(--text-secondary); }
+    .upload-zone-label span { color: var(--purple); font-weight: 600; cursor: pointer; }
+    .upload-filename { font-size: 12px; color: var(--purple); margin-top: 6px; font-weight: 600; display: none; }
+
+    /* ── RATE BASE TOGGLE ── */
+    .rate-base-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+    .rate-base-label-text { font-size: 12px; color: var(--text-secondary); white-space: nowrap; }
+    .base-btn { padding: 4px 10px; border-radius: 6px; border: 1.5px solid var(--border); background: var(--white); font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); transition: all .15s; font-family: 'Inter', sans-serif; }
+    .base-btn:hover { border-color: var(--purple-mid); color: var(--purple); }
+    .base-btn.active { border-color: var(--purple); background: var(--purple-light); color: var(--purple); }
+    .rate-base-label { white-space: nowrap; }
+
+    /* ── RATE CHANGE LOG ── */
+    .audit-user-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--purple-light); color: var(--purple); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+
+    /* ── ACCESS DENIED ── */
+    .access-denied-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 58px); padding: 40px; text-align: center; }
+    .access-denied-shield { width: 80px; height: 80px; background: #FEF2F2; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 24px; }
+    .access-denied-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+    .access-denied-sub { font-size: 14px; color: var(--text-secondary); max-width: 400px; line-height: 1.7; margin-bottom: 28px; }
+    .access-denied-contact-box { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; padding: 18px 28px; margin-bottom: 28px; text-align: left; min-width: 320px; }
+    .access-denied-contact-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-secondary); margin-bottom: 6px; }
+    .access-denied-contact-value { font-size: 14px; font-weight: 600; color: var(--purple); }
+    .access-denied-contact-hint { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+
+    /* ── LOCKED PRODUCT CARD ── */
+    .product-card.locked { opacity: 1; cursor: default; border-color: rgba(255,255,255,.08) !important; }
+    .product-card.locked:hover { transform: none; background: rgba(255,255,255,.04); }
+    .product-card.locked .product-card-name,
+    .product-card.locked .product-card-desc { opacity: .45; }
+    .product-card-lock-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(239,68,68,.15); color: #FCA5A5; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-top: 4px; margin-bottom: 12px; }
+    .product-card-btn-locked { background: rgba(255,255,255,.06); color: rgba(255,255,255,.25); cursor: not-allowed; width: 100%; justify-content: center; border: 1.5px solid rgba(255,255,255,.08); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN 1 — LOGIN
+════════════════════════════════════════════════════════════════════ -->
+<div id="screen-login" class="screen active">
+  <!-- Step 1: credentials -->
+  <div class="login-card" id="step-credentials">
+    <div class="login-logo">
+      <svg viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="15" fill="#6B47FF"/><path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/><circle cx="15" cy="14" r="3.5" fill="#6B47FF"/></svg>
+      <span class="login-logo-name">ejara <span class="login-admin-tag">Admin</span></span>
+    </div>
+    <div class="login-title" style="margin-top:16px;">Admin Sign In</div>
+    <div class="login-sub">Internal operations panel — restricted access</div>
+    <div class="proto-note">⚡ Prototype — two demo users:<br>
+      <strong>recitKevin</strong> — Super Admin, full access to both modules<br>
+      <strong>recitMarie</strong> — Admin, Cash Co only (no FX Business access)
+    </div>
+    <div class="form-group">
+      <label class="form-label">Username</label>
+      <input class="form-input" id="username-input" type="text" value="recitKevin">
+      <div class="form-hint">Try recitMarie to see the restricted-access experience</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input class="form-input" type="password" value="password">
+    </div>
+    <button class="btn btn-primary btn-lg" onclick="goTo2FA()">Continue →</button>
+  </div>
+
+  <!-- Step 2: 2FA -->
+  <div class="login-card" id="step-2fa" style="display:none;">
+    <div style="font-size:40px;text-align:center;margin-bottom:12px;">🔐</div>
+    <div class="login-title" style="text-align:center;">Two-Factor Authentication</div>
+    <div class="login-sub" style="text-align:center;">Enter the 6-digit code from your Google Authenticator app</div>
+    <div class="proto-note">⚡ Prototype — enter any 6 digits</div>
+    <div class="twofa-digits">
+      <input type="text" maxlength="1" oninput="nextDigit(this,0)" onkeydown="prevDigit(event,this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this,1)" onkeydown="prevDigit(event,this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this,2)" onkeydown="prevDigit(event,this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this,3)" onkeydown="prevDigit(event,this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this,4)" onkeydown="prevDigit(event,this)">
+      <input type="text" maxlength="1" oninput="nextDigit(this,5)" onkeydown="prevDigit(event,this)">
+    </div>
+    <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-bottom:10px;" onclick="backToCredentials()">← Back</button>
+    <button class="btn btn-primary btn-lg" id="verify-btn" onclick="goToProductSelect()" disabled>Verify &amp; Continue</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN 2 — PRODUCT SELECTION
+════════════════════════════════════════════════════════════════════ -->
+<div id="screen-product" class="screen">
+  <div class="product-header">
+    <div class="product-header-logo">
+      <svg viewBox="0 0 30 30" fill="none" width="32" height="32"><circle cx="15" cy="15" r="15" fill="#6B47FF"/><path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/><circle cx="15" cy="14" r="3.5" fill="#6B47FF"/></svg>
+      <span>Ejara Transfer for Bill Payment</span>
+    </div>
+    <div class="product-header-title" id="product-welcome">Welcome</div>
+    <div class="product-header-sub">Choose the product you want to manage today</div>
+  </div>
+
+  <div class="product-cards" id="product-cards-container">
+    <!-- rendered dynamically by renderProductCards() -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SCREEN 3 — APP SHELL (single module at a time)
+════════════════════════════════════════════════════════════════════ -->
+<div id="screen-app" class="screen">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="15" fill="#6B47FF"/><path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/><circle cx="15" cy="14" r="3.5" fill="#6B47FF"/></svg>
+      <span class="sidebar-logo-name">ejara</span>
+      <span class="sidebar-module-tag" id="module-tag">Admin</span>
+    </div>
+
+    <!-- Cash Co nav -->
+    <div id="nav-cashco" style="display:none;">
+      <div class="nav-section">
+        <div class="nav-item active" id="nav-cc-dashboard" onclick="navigate('cc-dashboard')">
+          <span class="nav-icon">⊞</span><span>Dashboard</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Operations</div>
+        <div class="nav-item" id="nav-cc-transactions" onclick="navigate('cc-transactions')">
+          <span class="nav-icon">↗</span><span>Transactions</span>
+          <span class="nav-badge" id="badge-cc-tx">3</span>
+        </div>
+        <div class="nav-item" id="nav-cc-refunds" onclick="navigate('cc-refunds')">
+          <span class="nav-icon">↩</span><span>Refunds</span>
+          <span class="nav-badge" id="badge-cc-refund">1</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">KYC Management</div>
+        <div class="nav-item" id="nav-cc-customers" onclick="navigate('cc-customers')">
+          <span class="nav-icon">👥</span><span>Customers</span>
+        </div>
+        <div class="nav-item" id="nav-cc-kyc2" onclick="navigate('cc-kyc2')">
+          <span class="nav-icon">🪪</span><span>KYC Level 2</span>
+          <span class="nav-badge" id="badge-cc-kyc2">2</span>
+        </div>
+        <div class="nav-item" id="nav-cc-kyc3" onclick="tryKYC3()">
+          <span class="nav-icon">🪪</span><span>KYC Level 3</span>
+          <span class="nav-badge" id="badge-cc-kyc3">1</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <div class="nav-item" id="nav-cc-rates" onclick="navigate('cc-rates')">
+          <span class="nav-icon">📈</span><span>Exchange Rates</span>
+        </div>
+        <div class="nav-item" id="nav-cc-rate-log" onclick="navigate('cc-rate-log')">
+          <span class="nav-icon">📋</span><span>Change Log</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FX Business nav -->
+    <div id="nav-fx" style="display:none;">
+      <div class="nav-section">
+        <div class="nav-item active" id="nav-fx-dashboard" onclick="navigate('fx-dashboard')">
+          <span class="nav-icon">⊞</span><span>Dashboard</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Operations</div>
+        <div class="nav-item" id="nav-fx-transactions" onclick="navigate('fx-transactions')">
+          <span class="nav-icon">↗</span><span>Transactions</span>
+          <span class="nav-badge" id="badge-fx-tx">2</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Management</div>
+        <div class="nav-item" id="nav-fx-payment-methods" onclick="navigate('fx-payment-methods')">
+          <span class="nav-icon">💳</span><span>Payment Methods</span>
+        </div>
+        <div class="nav-item" id="nav-fx-customers" onclick="navigate('fx-customers')">
+          <span class="nav-icon">👥</span><span>Customers</span>
+        </div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">Finance</div>
+        <div class="nav-item" id="nav-fx-rates" onclick="navigate('fx-rates')">
+          <span class="nav-icon">📈</span><span>Exchange Rates</span>
+        </div>
+        <div class="nav-item" id="nav-fx-rate-log" onclick="navigate('fx-rate-log')">
+          <span class="nav-icon">📋</span><span>Rate Change Log</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-switch" onclick="switchProduct()">
+        <span>←</span><span>Switch product</span>
+      </div>
+      <div class="sidebar-user">
+        <div class="avatar" style="background:var(--purple);" id="sidebar-user-avatar">K</div>
+        <div>
+          <div class="user-name" id="sidebar-user-name">recitKevin</div>
+          <div class="user-role" id="sidebar-user-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main" id="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <span class="topbar-sep" id="topbar-sep" style="display:none;">/</span>
+        <div class="topbar-sub" id="topbar-sub"></div>
+      </div>
+      <div class="topbar-right">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="avatar" style="background:var(--purple);width:30px;height:30px;font-size:11px;" id="topbar-user-avatar">K</div>
+          <div>
+            <div style="font-weight:600;font-size:13px;" id="topbar-user-name">recitKevin</div>
+            <div style="font-size:11px;color:var(--text-secondary);" id="topbar-user-role">Super Admin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO DASHBOARD ·· -->
+    <div id="page-cc-dashboard" class="content" style="display:none;">
+      <div class="alert alert-usdt"><span>⚠️</span><div><strong>USDT alert:</strong> Stock at 62% of threshold. Monitor and replenish if needed.</div></div>
+      <div class="stat-grid stat-grid-4">
+        <div class="stat-card"><div class="stat-label">Transactions — Pending</div><div class="stat-value" style="color:var(--purple);">3</div><div class="stat-sub">Awaiting approval</div></div>
+        <div class="stat-card"><div class="stat-label">KYC Upgrades</div><div class="stat-value" style="color:#EA580C;">3</div><div class="stat-sub">2 Level 2 · 1 Level 3</div></div>
+        <div class="stat-card"><div class="stat-label">Refunds Pending</div><div class="stat-value" style="color:var(--red);">1</div><div class="stat-sub">Customer to contact</div></div>
+        <div class="stat-card"><div class="stat-label">Completed Today</div><div class="stat-value" style="color:var(--green);">7</div><div class="stat-sub">XAF 28.4M processed</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="card">
+            <div class="card-header"><div class="card-title">🔴 Action Required</div></div>
+            <div style="padding:0;">
+              <div style="padding:13px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bg);cursor:pointer;" onclick="navigate('cc-transactions')">
+                <div><div style="font-weight:600;font-size:13px;">3 transfers pending review</div><div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Agents awaiting approval</div></div>
+                <span class="bp bp-pending">Review →</span>
+              </div>
+              <div style="padding:13px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bg);cursor:pointer;" onclick="navigate('cc-refunds')">
+                <div><div style="font-weight:600;font-size:13px;">1 refund awaiting mobile money</div><div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Contact customer, send payment</div></div>
+                <span class="bp bp-refund">Action →</span>
+              </div>
+              <div style="padding:13px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="navigate('cc-kyc3')">
+                <div><div style="font-weight:600;font-size:13px;">1 Level 3 KYC pending</div><div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Compliance review required</div></div>
+                <span class="bp" style="background:#FDF4FF;color:#9333EA;">Compliance →</span>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">📈 Current Rates</div>
+              <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('cc-rates')">Edit</button>
+            </div>
+            <div style="padding:0;">
+              <div style="padding:12px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;"><span style="font-weight:600;">XAF → NGN</span><span style="font-weight:700;color:var(--purple);">1 XAF = 2.48 NGN</span></div>
+              <div style="padding:12px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;"><span style="font-weight:600;">XAF → CNY</span><span style="font-weight:700;color:var(--purple);">1 XAF = 0.0112 CNY</span></div>
+              <div style="padding:12px 20px;display:flex;justify-content:space-between;"><span style="font-weight:600;">XAF → AED</span><span style="font-weight:700;color:var(--purple);">1 XAF = 0.0061 AED</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="card card-body">
+            <div class="stat-label">Success Rate</div>
+            <div class="stat-value">97.8%</div>
+            <div class="stat-sub" style="color:var(--green);margin-top:4px;">↑ Last 24 hours</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO TRANSACTIONS ·· -->
+    <div id="page-cc-transactions" class="content" style="display:none;">
+      <div class="filter-bar">
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option>All statuses</option>
+          <option>Pending Review</option>
+          <option>Approved</option>
+          <option>Completed</option>
+          <option>Rejected</option>
+        </select>
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option value="">Destination</option>
+          <option value="XAF → NGN">Nigeria</option>
+          <option value="XAF → AED">Dubai</option>
+          <option value="XAF → CNY">China</option>
+        </select>
+        <span class="filter-date-label">From</span>
+        <input type="date" class="filter-date">
+        <span class="filter-date-label">To</span>
+        <input type="date" class="filter-date">
+        <button class="btn btn-secondary filter-export" onclick="showToast('📥','Export started','CSV will be ready in a few seconds.')">↓ Export CSV</button>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table style="min-width:860px;">
+          <thead><tr>
+            <th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount deposited (XAF)</th><th>Amount received</th><th>Corridor</th><th>Status</th><th>Submitted</th><th>Action</th>
+          </tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="openCCTxDetail('TXN8K2P9QR34M1','PENDING_REVIEW')">
+              <td style="font-family:monospace;font-size:12px;white-space:nowrap;font-weight:600;">TXN8K2P9QR34M1</td>
+              <td style="white-space:nowrap;">Mireille Fouda</td><td style="white-space:nowrap;">Adaeze Okafor</td>
+              <td style="font-weight:700;white-space:nowrap;">2,500,000</td>
+              <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN 6,200,000</td>
+              <td style="white-space:nowrap;">XAF → NGN</td>
+              <td><span class="bp bp-pending">Pending Review</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 09:14</td>
+              <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN8K2P9QR34M1','PENDING_REVIEW')">Review</button></td>
+            </tr>
+            <tr class="clickable" onclick="openCCTxDetail('TXN3X7LH5WC29N','PENDING_REVIEW')">
+              <td style="font-family:monospace;font-size:12px;white-space:nowrap;font-weight:600;">TXN3X7LH5WC29N</td>
+              <td style="white-space:nowrap;">Patrick Eboule</td><td style="white-space:nowrap;">Li Wei Trading Co.</td>
+              <td style="font-weight:700;white-space:nowrap;">4,800,000</td>
+              <td style="color:var(--green);font-weight:700;white-space:nowrap;">CNY 33,792</td>
+              <td style="white-space:nowrap;">XAF → CNY</td>
+              <td><span class="bp bp-pending">Pending Review</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:52</td>
+              <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN3X7LH5WC29N','PENDING_REVIEW')">Review</button></td>
+            </tr>
+            <tr class="clickable" onclick="openCCTxDetail('TXN5MQ2YD8BT6R','PENDING_REVIEW')">
+              <td style="font-family:monospace;font-size:12px;white-space:nowrap;font-weight:600;">TXN5MQ2YD8BT6R</td>
+              <td style="white-space:nowrap;">Carine Mbida</td><td style="white-space:nowrap;">Ahmed Al-Farsi</td>
+              <td style="font-weight:700;white-space:nowrap;">1,200,000</td>
+              <td style="color:var(--green);font-weight:700;white-space:nowrap;">AED 7,320</td>
+              <td style="white-space:nowrap;">XAF → AED</td>
+              <td><span class="bp bp-pending">Pending Review</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:30</td>
+              <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN5MQ2YD8BT6R','PENDING_REVIEW')">Review</button></td>
+            </tr>
+            <tr class="clickable" onclick="openCCTxDetail('TXN9AP4RN1GT7Z','APPROVED')">
+              <td style="font-family:monospace;font-size:12px;white-space:nowrap;font-weight:600;">TXN9AP4RN1GT7Z</td>
+              <td style="white-space:nowrap;">Bertrand Tabi</td><td style="white-space:nowrap;">Chinedu Okoro</td>
+              <td style="font-weight:700;white-space:nowrap;">3,100,000</td>
+              <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN 7,688,000</td>
+              <td style="white-space:nowrap;">XAF → NGN</td>
+              <td><span class="bp bp-approved">Approved</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 07:40</td>
+              <td><button class="btn btn-success" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN9AP4RN1GT7Z','APPROVED')">Complete</button></td>
+            </tr>
+            <tr class="clickable" onclick="openCCTxDetail('TXN2BC6KX3PW8L','COMPLETED')">
+              <td style="font-family:monospace;font-size:12px;white-space:nowrap;font-weight:600;">TXN2BC6KX3PW8L</td>
+              <td style="white-space:nowrap;">Sylvie Nguema</td><td style="white-space:nowrap;">Blessing Adeyemi</td>
+              <td style="font-weight:700;white-space:nowrap;">5,000,000</td>
+              <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN 12,400,000</td>
+              <td style="white-space:nowrap;">XAF → NGN</td>
+              <td><span class="bp bp-completed">Completed</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Yesterday</td>
+              <td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN2BC6KX3PW8L','COMPLETED')">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO CUSTOMERS ·· -->
+    <div id="page-cc-customers" class="content" style="display:none;">
+      <div class="filter-bar">
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option>All KYC levels</option>
+          <option>Level 1</option>
+          <option>Level 2</option>
+          <option>Level 3</option>
+        </select>
+        <input type="text" class="filter-search" placeholder="🔍 Search by name or username…" oninput="applyCCFilters(this)">
+        <span class="filter-date-label">From</span>
+        <input type="date" class="filter-date">
+        <span class="filter-date-label">To</span>
+        <input type="date" class="filter-date">
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table style="min-width:900px;">
+          <thead><tr>
+            <th>Username</th><th>Full Name</th><th>Email</th><th>Phone</th><th>KYC Level</th><th>Date Joined</th>
+          </tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="openCCCustomerDetail('mfouda_cm')">
+              <td style="font-weight:600;">@mfouda_cm</td><td>Mireille Fouda</td><td style="white-space:nowrap;">mireille.fouda@gmail.com</td><td style="white-space:nowrap;">+237 671 22 34 56</td>
+              <td><span class="kyc-level-pill pending">Level 2 pending</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">12 Jan 2026</td>
+            </tr>
+            <tr class="clickable" onclick="openCCCustomerDetail('p_tabi237')">
+              <td style="font-weight:600;">@p_tabi237</td><td>Patrick Tabi</td><td style="white-space:nowrap;">patrick.tabi@yahoo.fr</td><td style="white-space:nowrap;">+237 655 90 12 34</td>
+              <td><span class="kyc-level-pill pending">Level 2 pending</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">03 Feb 2026</td>
+            </tr>
+            <tr class="clickable" onclick="openCCCustomerDetail('sylvie_n')">
+              <td style="font-weight:600;">@sylvie_n</td><td>Sylvie Nguema</td><td style="white-space:nowrap;">sylvie.nguema@gmail.com</td><td style="white-space:nowrap;">+237 690 44 78 21</td>
+              <td><span class="kyc-level-pill">Level 2</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">18 Nov 2025</td>
+            </tr>
+            <tr class="clickable" onclick="openCCCustomerDetail('b_eboule')">
+              <td style="font-weight:600;">@b_eboule</td><td>Bernard Eboule</td><td style="white-space:nowrap;">bernard.eboule@gmail.com</td><td style="white-space:nowrap;">+237 677 12 90 45</td>
+              <td><span class="kyc-level-pill pending">Level 3 pending</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">22 Sep 2025</td>
+            </tr>
+            <tr class="clickable" onclick="openCCCustomerDetail('claire_n')">
+              <td style="font-weight:600;">@claire_n</td><td>Claire Nkono</td><td style="white-space:nowrap;">claire.nkono@outlook.com</td><td style="white-space:nowrap;">+237 699 33 67 12</td>
+              <td><span class="kyc-level-pill pending">Level 3 pending</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">05 Oct 2025</td>
+            </tr>
+            <tr class="clickable" onclick="openCCCustomerDetail('carine_mb')">
+              <td style="font-weight:600;">@carine_mb</td><td>Carine Mbida</td><td style="white-space:nowrap;">carine.mbida@gmail.com</td><td style="white-space:nowrap;">+237 654 21 09 87</td>
+              <td><span class="kyc-level-pill">Level 1</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">14 Mar 2026</td>
+            </tr>
+            <tr class="clickable" onclick="openCCCustomerDetail('jp_ondoua')">
+              <td style="font-weight:600;">@jp_ondoua</td><td>Jean-Pierre Ondoua</td><td style="white-space:nowrap;">jp.ondoua@gmail.com</td><td style="white-space:nowrap;">+237 683 45 12 90</td>
+              <td><span class="kyc-level-pill">Level 1</span></td>
+              <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">27 Dec 2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO KYC L2 ·· -->
+    <div id="page-cc-kyc2" class="content" style="display:none;">
+      <div class="alert alert-info"><span>ℹ️</span><div>Level 2 applies to transfers between <strong>XAF 5M and 30M</strong>. Any Admin or Super Admin can approve. All Admins notified by email on submission.</div></div>
+      <div class="filter-bar">
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option>All statuses</option>
+          <option>Pending</option>
+          <option>Approved</option>
+          <option>Rejected</option>
+        </select>
+        <span class="filter-date-label">From</span>
+        <input type="date" class="filter-date">
+        <span class="filter-date-label">To</span>
+        <input type="date" class="filter-date">
+        <button class="btn btn-secondary filter-export" onclick="showToast('📥','Export started','CSV will be ready in a few seconds.')">↓ Export CSV</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Customer Username</th><th>Full Name</th><th>Agent</th><th>Documents</th><th>Status</th><th>Submitted</th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="openKYC2Detail('MFOUDA')">
+              <td style="font-weight:600;">@mfouda_cm</td><td>Mireille Fouda</td><td>@agentKamga</td><td><span style="font-size:12px;font-weight:600;color:var(--purple);">2/2</span></td><td><span class="bp bp-pending">Pending</span></td><td style="color:var(--text-secondary);font-size:12px;">Today, 09:00</td>
+            </tr>
+            <tr class="clickable" onclick="openKYC2Detail('PTABI')">
+              <td style="font-weight:600;">@p_tabi237</td><td>Patrick Tabi</td><td>@agentNdongo</td><td><span style="font-size:12px;font-weight:600;color:var(--purple);">2/2</span></td><td><span class="bp bp-pending">Pending</span></td><td style="color:var(--text-secondary);font-size:12px;">Today, 08:10</td>
+            </tr>
+            <tr class="clickable" onclick="openKYC2Detail('SNGUE')">
+              <td style="font-weight:600;">@sylvie_n</td><td>Sylvie Nguema</td><td>@agentFouda</td><td><span style="font-size:12px;font-weight:600;color:var(--purple);">2/2</span></td><td><span class="bp bp-completed">Approved</span></td><td style="color:var(--text-secondary);font-size:12px;">Yesterday</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO KYC L3 ·· -->
+    <div id="page-cc-kyc3" class="content" style="display:none;">
+      <div class="alert alert-compliance"><span>🔒</span><div><strong>Compliance access only.</strong> Level 3 reviews are restricted to Compliance staff and Super Admin. Access is enforced at account creation — not via a UI role selector.</div></div>
+      <div class="filter-bar">
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option>All statuses</option>
+          <option>Pending</option>
+          <option>On-site Required</option>
+          <option>Approved</option>
+          <option>Rejected</option>
+        </select>
+        <span class="filter-date-label">From</span>
+        <input type="date" class="filter-date">
+        <span class="filter-date-label">To</span>
+        <input type="date" class="filter-date">
+        <button class="btn btn-secondary filter-export" onclick="showToast('📥','Export started','CSV will be ready in a few seconds.')">↓ Export CSV</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Customer Username</th><th>Full Name</th><th>Agent</th><th>Documents</th><th>On-site</th><th>Status</th><th>Submitted</th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="openKYC3Detail('BEBOULE')">
+              <td style="font-weight:600;">@b_eboule</td><td>Bernard Eboule</td><td>@agentKamga</td><td><span style="font-size:12px;font-weight:600;color:var(--purple);">2/2</span></td><td><span class="onsite-no">No</span></td><td><span class="bp bp-pending">Pending</span></td><td style="color:var(--text-secondary);font-size:12px;">Today, 07:30</td>
+            </tr>
+            <tr class="clickable" onclick="openKYC3Detail('CNKONO')">
+              <td style="font-weight:600;">@claire_n</td><td>Claire Nkono</td><td>@agentEssama</td><td><span style="font-size:12px;font-weight:600;color:var(--purple);">2/2</span></td><td><span class="onsite-yes">Yes</span></td><td><span class="bp bp-onsite">On-site Required</span></td><td style="color:var(--text-secondary);font-size:12px;">Yesterday</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO REFUNDS ·· -->
+    <div id="page-cc-refunds" class="content" style="display:none;">
+      <div class="alert alert-info"><span>ℹ️</span><div>When a transfer is rejected, the <strong>agent's Ejara wallet is automatically re-credited</strong> by the system. The customer refund must be sent manually via mobile money.</div></div>
+      <div class="filter-bar">
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option>All statuses</option>
+          <option>Refund Requested</option>
+          <option>Completed</option>
+        </select>
+        <span class="filter-date-label">From</span>
+        <input type="date" class="filter-date">
+        <span class="filter-date-label">To</span>
+        <input type="date" class="filter-date">
+        <button class="btn btn-secondary filter-export" onclick="showToast('📥','Export started','CSV will be ready in a few seconds.')">↓ Export CSV</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Reference</th><th>Customer</th><th>Agent</th><th>Amount (XAF)</th><th>Reason</th><th>Status</th><th>Requested</th></tr></thead>
+          <tbody>
+            <tr class="clickable" onclick="openRefundDetail('TXN4DF7GH2NL8P',true)">
+              <td style="font-weight:600;">TXN4DF7GH2NL8P</td><td>Carine Mbida</td><td>@agentEssama</td><td style="font-weight:700;">1,200,000</td><td style="color:var(--text-secondary);font-size:12px;">Suspicious documents</td><td><span class="bp bp-refund">Refund Requested</span></td><td style="color:var(--text-secondary);font-size:12px;">Today, 08:30</td>
+            </tr>
+            <tr class="clickable" onclick="openRefundDetail('TXN1AB2CD3EF4G',false)">
+              <td style="font-weight:600;">TXN1AB2CD3EF4G</td><td>Jean-Pierre Ondoua</td><td>@agentFouda</td><td style="font-weight:700;">2,700,000</td><td style="color:var(--text-secondary);font-size:12px;">Duplicate submission</td><td><span class="bp bp-refund-done">Completed</span></td><td style="color:var(--text-secondary);font-size:12px;">Yesterday</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO EXCHANGE RATES ·· -->
+    <div id="page-cc-rates" class="content" style="display:none;">
+      <div class="alert alert-warn"><span>⏱</span><div>Rate changes enter a <strong>120-second confirmation window</strong> before going live. Any in-progress transactions use the rate locked at submission time.</div></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Current Rates — Cash Co Bill Payment</div>
+          <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('cc-rate-log')">View change log →</button>
+        </div>
+        <div style="padding:10px 22px;border-bottom:1px solid var(--border);">
+          <div class="rate-base-row" style="margin-bottom:0;">
+            <span class="rate-base-label-text">Display base:</span>
+            <button class="base-btn active" id="base-1" onclick="setBase(1)">1</button>
+            <button class="base-btn" id="base-10" onclick="setBase(10)">10</button>
+            <button class="base-btn" id="base-100" onclick="setBase(100)">100</button>
+            <button class="base-btn" id="base-1000" onclick="setBase(1000)">1,000</button>
+          </div>
+        </div>
+        <div style="padding:0 22px;">
+          <div class="rate-row">
+            <div>
+              <div class="rate-corridor">XAF → NGN</div>
+              <div class="rate-sub">Wholesale: <span id="ws-ngn">1 XAF = 2.41 NGN</span> · Spread: 2.9% · Updated today 06:00</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="rate-base-label" id="lbl-ngn" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" id="rate-ngn" type="number" value="2.48" step="0.01">
+              <span style="font-size:12px;color:var(--text-secondary);">NGN</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('NGN','rate-ngn')">Save</button>
+            </div>
+          </div>
+          <div class="rate-row">
+            <div>
+              <div class="rate-corridor">XAF → CNY</div>
+              <div class="rate-sub">Wholesale: <span id="ws-cny">1 XAF = 0.0109 CNY</span> · Spread: 2.8% · Updated today 06:00</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="rate-base-label" id="lbl-cny" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" id="rate-cny" type="number" value="0.0112" step="0.0001">
+              <span style="font-size:12px;color:var(--text-secondary);">CNY</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('CNY','rate-cny')">Save</button>
+            </div>
+          </div>
+          <div class="rate-row" style="border-bottom:none;">
+            <div>
+              <div class="rate-corridor">XAF → AED</div>
+              <div class="rate-sub">Wholesale: <span id="ws-aed">1 XAF = 0.00593 AED</span> · Spread: 2.9% · Updated today 06:00</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="rate-base-label" id="lbl-aed" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" id="rate-aed" type="number" value="0.0061" step="0.0001">
+              <span style="font-size:12px;color:var(--text-secondary);">AED</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('AED','rate-aed')">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ·· CASH CO RATE CHANGE LOG ·· -->
+    <div id="page-cc-rate-log" class="content" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Exchange Rate Change Log</div>
+          <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('cc-rates')">← Back to rates</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Corridor</th><th>Old rate</th><th>New rate</th><th>Updated by</th><th>Date &amp; Time</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="white-space:nowrap;">XAF → NGN</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">2.45 NGN</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green);">2.48 NGN</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:var(--purple);color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">K</span>Kevin</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Today, 06:00</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;">XAF → AED</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">0.0058 AED</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green);">0.0061 AED</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:#0EA5E9;color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">M</span>Marie</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Yesterday, 17:30</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;">XAF → CNY</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">0.0115 CNY</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--red);">0.0112 CNY</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:var(--purple);color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">K</span>Kevin</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Yesterday, 06:00</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;">XAF → NGN</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">2.42 NGN</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green);">2.45 NGN</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:#0EA5E9;color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">M</span>Marie</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">28 Jun 2026, 06:15</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ·· FX DASHBOARD ·· -->
+    <div id="page-fx-dashboard" class="content" style="display:none;">
+      <div class="stat-grid stat-grid-3">
+        <div class="stat-card"><div class="stat-label">Transactions — Pending</div><div class="stat-value" style="color:var(--purple);">2</div><div class="stat-sub">Proof uploaded</div></div>
+        <div class="stat-card"><div class="stat-label">Completed Today</div><div class="stat-value" style="color:var(--green);">4</div><div class="stat-sub">XAF 18.8M processed</div></div>
+        <div class="stat-card"><div class="stat-label">Success Rate</div><div class="stat-value">98.2%</div><div class="stat-sub" style="color:var(--green);">↑ Last 24 hours</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🔴 Action Required</div></div>
+          <div style="padding:0;">
+            <div style="padding:13px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="navigate('fx-transactions')">
+              <div><div style="font-weight:600;font-size:13px;">2 transactions with proof uploaded</div><div style="font-size:12px;color:var(--text-secondary);margin-top:2px;">Waiting for approval</div></div>
+              <span class="bp bp-pending">Review →</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📈 Current Rates</div><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('fx-rates')">Edit</button></div>
+          <div style="padding:0;">
+            <div style="padding:11px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;"><span style="font-weight:600;">XAF → NGN</span><span style="font-weight:700;color:#EA580C;">1 XAF = 2.48 NGN</span></div>
+            <div style="padding:11px 20px;border-bottom:1px solid var(--bg);display:flex;justify-content:space-between;"><span style="font-weight:600;">XAF → CNY</span><span style="font-weight:700;color:#EA580C;">1 XAF = 0.0112 CNY</span></div>
+            <div style="padding:11px 20px;display:flex;justify-content:space-between;"><span style="font-weight:600;">XAF → AED</span><span style="font-weight:700;color:#EA580C;">1 XAF = 0.0061 AED</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ·· FX TRANSACTIONS ·· -->
+    <div id="page-fx-transactions" class="content" style="display:none;">
+      <div class="filter-bar">
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option>All statuses</option>
+          <option>Initiated</option>
+          <option>Pending Review</option>
+          <option>Approved</option>
+          <option>Completed</option>
+          <option>Rejected</option>
+        </select>
+        <select class="filter-select" onchange="applyCCFilters(this)">
+          <option value="">Destination</option>
+          <option value="XAF → NGN">Nigeria</option>
+          <option value="XAF → AED">Dubai</option>
+          <option value="XAF → CNY">China</option>
+        </select>
+        <span class="filter-date-label">From</span>
+        <input type="date" class="filter-date">
+        <span class="filter-date-label">To</span>
+        <input type="date" class="filter-date">
+        <button class="btn btn-secondary filter-export" onclick="showToast('📥','Export started','CSV will be ready in a few seconds.')">↓ Export CSV</button>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table style="min-width:820px;">
+          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
+          <tbody id="fx-tx-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· FX CUSTOMERS ·· -->
+    <div id="page-fx-customers" class="content" style="display:none;">
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterFXCustomers('all', this)">All</button>
+        <button class="filter-btn" onclick="filterFXCustomers('business', this)">Business</button>
+        <button class="filter-btn" onclick="filterFXCustomers('individual', this)">Individual</button>
+        <select id="fx-cust-country-filter" class="filter-select" onchange="applyFXCustomerFilters()">
+          <option value="">All countries</option>
+          <option>Cameroon</option>
+          <option>Côte d'Ivoire</option>
+          <option>Senegal</option>
+          <option>Mali</option>
+          <option>Gabon</option>
+          <option>Congo</option>
+          <option>Chad</option>
+          <option>Burkina Faso</option>
+          <option>Algeria</option>
+        </select>
+        <input id="fx-cust-search" class="filter-search" type="text" placeholder="🔍 Search by name or email…" style="margin-left:auto;" oninput="applyFXCustomerFilters()">
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table style="min-width:760px;">
+          <thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Country</th><th>KYB Status</th><th>Date Joined</th></tr></thead>
+          <tbody id="fx-cust-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· FX PAYMENT METHODS ·· -->
+    <div id="page-fx-payment-methods" class="content" style="display:none;">
+      <div class="alert alert-info"><span>ℹ️</span><div>Customers see only payment methods matching their deposit country. Inactive methods are hidden from the customer portal.</div></div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterFXPM('all', this)">All</button>
+        <button class="filter-btn" onclick="filterFXPM('bank', this)">Bank</button>
+        <button class="filter-btn" onclick="filterFXPM('mobile_money', this)">Mobile Money</button>
+        <button class="filter-btn" disabled>Cash Point <span class="coming-soon-tag">Coming soon</span></button>
+        <button class="btn btn-primary" style="margin-left:auto;" onclick="openAddFXPM()">+ Add Payment Method</button>
+      </div>
+      <div class="card" style="overflow-x:auto;">
+        <table style="min-width:700px;">
+          <thead><tr><th>Bank Name</th><th id="fx-pm-type-th">Type</th><th>Country</th><th>Currency</th><th>Account Number</th><th>Status</th></tr></thead>
+          <tbody id="fx-pm-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ·· FX RATES ·· -->
+    <div id="page-fx-rates" class="content" style="display:none;">
+      <div class="alert alert-warn"><span>⏱</span><div>Rate changes enter a <strong>120-second confirmation window</strong> before going live. Any in-progress transactions use the rate locked at submission time.</div></div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Current Rates — FX Business</div>
+          <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('fx-rate-log')">View change log →</button>
+        </div>
+        <div style="padding:10px 22px;border-bottom:1px solid var(--border);">
+          <div class="rate-base-row" style="margin-bottom:0;">
+            <span class="rate-base-label-text">Display base:</span>
+            <button class="base-btn active" id="fx-base-1" onclick="setFXBase(1)">1</button>
+            <button class="base-btn" id="fx-base-10" onclick="setFXBase(10)">10</button>
+            <button class="base-btn" id="fx-base-100" onclick="setFXBase(100)">100</button>
+            <button class="base-btn" id="fx-base-1000" onclick="setFXBase(1000)">1,000</button>
+          </div>
+        </div>
+        <div style="padding:0 22px;">
+          <div class="rate-row">
+            <div>
+              <div class="rate-corridor">XAF → NGN</div>
+              <div class="rate-sub">Wholesale: <span id="fx-ws-ngn">1 XAF = 2.41 NGN</span> · Spread: 2.9% · Updated today 06:00</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="rate-base-label" id="fx-lbl-ngn" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" id="fx-rate-ngn" type="number" value="2.48" step="0.01">
+              <span style="font-size:12px;color:var(--text-secondary);">NGN</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('NGN','fx-rate-ngn')">Save</button>
+            </div>
+          </div>
+          <div class="rate-row">
+            <div>
+              <div class="rate-corridor">XAF → CNY</div>
+              <div class="rate-sub">Wholesale: <span id="fx-ws-cny">1 XAF = 0.0109 CNY</span> · Spread: 2.8% · Updated today 06:00</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="rate-base-label" id="fx-lbl-cny" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" id="fx-rate-cny" type="number" value="0.0112" step="0.0001">
+              <span style="font-size:12px;color:var(--text-secondary);">CNY</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('CNY','fx-rate-cny')">Save</button>
+            </div>
+          </div>
+          <div class="rate-row" style="border-bottom:none;">
+            <div>
+              <div class="rate-corridor">XAF → AED</div>
+              <div class="rate-sub">Wholesale: <span id="fx-ws-aed">1 XAF = 0.0059 AED</span> · Spread: 3.4% · Updated today 06:00</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span class="rate-base-label" id="fx-lbl-aed" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
+              <input class="rate-input" id="fx-rate-aed" type="number" value="0.0061" step="0.0001">
+              <span style="font-size:12px;color:var(--text-secondary);">AED</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('AED','fx-rate-aed')">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ·· FX RATE CHANGE LOG ·· -->
+    <div id="page-fx-rate-log" class="content" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Exchange Rate Change Log</div>
+          <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('fx-rates')">← Back to rates</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Corridor</th><th>Old rate</th><th>New rate</th><th>Updated by</th><th>Date &amp; Time</th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="white-space:nowrap;">XAF → NGN</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">2.45 NGN</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green);">2.48 NGN</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:var(--purple);color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">K</span>Kevin</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Mar 26, 2026 · 09:00</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;">XAF → CNY</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">0.0110 CNY</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green);">0.0112 CNY</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:var(--purple);color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">K</span>Kevin</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Mar 25, 2026 · 14:30</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;">XAF → AED</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">0.0059 AED</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green);">0.0061 AED</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:var(--purple);color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">K</span>Kevin</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Mar 24, 2026 · 11:15</td>
+              </tr>
+              <tr>
+                <td style="white-space:nowrap;">XAF → NGN</td>
+                <td style="font-family:monospace;color:var(--text-secondary);">2.42 NGN</td>
+                <td style="font-family:monospace;font-weight:700;color:var(--green);">2.45 NGN</td>
+                <td><span class="audit-user-pill"><span style="width:16px;height:16px;border-radius:50%;background:var(--purple);color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">K</span>Kevin</span></td>
+                <td style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Mar 23, 2026 · 08:45</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ·· ACCESS DENIED ·· -->
+    <div id="page-access-denied" class="content" style="display:none;padding:0;">
+      <div class="access-denied-wrap">
+        <div class="access-denied-shield">🔒</div>
+        <div class="access-denied-title" id="ad-title">Access Restricted</div>
+        <div class="access-denied-sub" id="ad-sub">You don't have the necessary permissions to access this section.</div>
+        <div class="access-denied-contact-box">
+          <div class="access-denied-contact-label">Contact your Ejara administrator</div>
+          <div class="access-denied-contact-value">admin@ejara.africa</div>
+          <div class="access-denied-contact-hint">An administrator can grant you access from the user management panel.</div>
+        </div>
+        <button class="btn btn-secondary" onclick="switchProduct()">← Back to product selection</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DETAIL PANEL + OVERLAY
+════════════════════════════════════════════════════════════════════ -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="detail-header">
+    <div class="detail-title" id="detail-title"></div>
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="detail-body" id="detail-body"></div>
+  <div class="detail-actions" id="detail-actions"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     DOCUMENT VIEWER MODAL
+════════════════════════════════════════════════════════════════════ -->
+<div class="docviewer-overlay" id="docviewer-overlay">
+  <div class="docviewer-box">
+    <div class="docviewer-toolbar">
+      <div class="docviewer-filename" id="dv-filename">Document.pdf</div>
+      <div class="docviewer-toolbar-right">
+        <button class="docviewer-tool-btn" onclick="window.print()">⬇ Download</button>
+        <button class="docviewer-close" onclick="closeDocViewer()">✕</button>
+      </div>
+    </div>
+    <div class="docviewer-content">
+      <div class="docviewer-page" id="dv-content">
+        <!-- populated dynamically -->
+      </div>
+    </div>
+    <div class="docviewer-footer">
+      <div class="docviewer-pagenav">
+        <button class="docviewer-page-btn" id="dv-prev" onclick="dvChangePage(-1)">‹</button>
+        <span class="docviewer-pages" id="dv-pages">Page 1 of 1</span>
+        <button class="docviewer-page-btn" id="dv-next" onclick="dvChangePage(1)">›</button>
+      </div>
+      <span style="color:rgba(255,255,255,.4);font-size:11px;">Prototype — document content is simulated</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     RATE CONFIRM MODAL
+════════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="rate-modal">
+  <div class="modal-box">
+    <div class="modal-icon">📈</div>
+    <div class="modal-title">Confirm Rate Change</div>
+    <div id="rate-modal-corridor-label" style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;text-align:center;"></div>
+    <div class="modal-highlight" style="display:flex;align-items:center;justify-content:center;gap:16px;padding:16px;">
+      <div style="text-align:center;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:4px;">Old rate</div>
+        <div id="rate-modal-old" style="font-family:monospace;font-size:18px;font-weight:700;color:var(--text-secondary);">—</div>
+      </div>
+      <div style="font-size:20px;color:var(--border);">→</div>
+      <div style="text-align:center;">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:4px;">New rate</div>
+        <div id="rate-modal-new" style="font-family:monospace;font-size:18px;font-weight:700;color:var(--purple);">—</div>
+      </div>
+    </div>
+    <div class="countdown" id="rate-countdown">120</div>
+    <div class="countdown-label">seconds remaining — cancel before the timer runs out</div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="cancelRate()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmRate()">Confirm Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Complete Transaction modal -->
+<div class="modal-overlay" id="cc-complete-modal">
+  <div class="modal-box">
+    <div class="modal-icon">✅</div>
+    <div class="modal-title">Complete Transaction</div>
+    <div class="modal-body">Enter the bank transfer reference to confirm the funds have been sent to the beneficiary.</div>
+    <div style="margin:16px 0 10px;">
+      <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Transaction Reference <span style="color:var(--red);">*</span></label>
+      <input class="mm-ref-input" id="cc-complete-ref" placeholder="e.g. SGC-2026-TRF-0044422" style="width:100%;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Proof of transfer (optional)</label>
+      <div class="upload-zone" onclick="document.getElementById('cc-upload-input').click()">
+        <input type="file" id="cc-upload-input" accept=".pdf,.jpg,.png" onchange="showUploadName(this)">
+        <div class="upload-zone-label">Drop a file here or <span>browse</span></div>
+        <div class="upload-filename" id="cc-upload-filename"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="document.getElementById('cc-complete-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-success" onclick="submitCompleteTx()">Mark as Completed</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add FX Payment Method modal -->
+<div class="modal-overlay" id="add-fx-pm-modal">
+  <div class="modal-box" style="width:460px;max-height:90vh;overflow-y:auto;text-align:left;">
+    <div style="font-size:18px;font-weight:700;margin-bottom:20px;">Add Payment Method</div>
+    <div style="margin-bottom:14px;">
+      <label class="form-label">Type</label>
+      <select class="form-input" id="add-fx-pm-type" onchange="updateFXPMFormFields()">
+        <option value="bank">Bank</option>
+        <option value="mobile_money">Mobile Money</option>
+        <option value="" disabled>Cash Point — Coming soon</option>
+      </select>
+    </div>
+
+    <div id="add-fx-pm-bank-fields">
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Country <span style="color:var(--red);">*</span></label>
+        <select class="form-input" id="add-fx-pm-bank-country" onchange="onFXBankCountryChange()">
+          <option value="">Select a country…</option>
+          <option>Cameroon</option><option>Côte d'Ivoire</option><option>Senegal</option><option>Mali</option>
+          <option>Gabon</option><option>Congo</option><option>Chad</option><option>Burkina Faso</option><option>Algeria</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Currency</label>
+        <input class="form-input" id="add-fx-pm-bank-currency" placeholder="Auto-filled by country" style="background:var(--bg);color:var(--text-secondary);" readonly>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Bank Name</label>
+        <input class="form-input" id="add-fx-pm-bank-name" placeholder="e.g. Afriland First Bank">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Account Name</label>
+        <input class="form-input" id="add-fx-pm-bank-account-name" placeholder="e.g. Ejara Finance SA">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Account Number</label>
+        <input class="form-input" id="add-fx-pm-bank-account-number" placeholder="e.g. 00441200072XAF">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Branch Address <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label>
+        <input class="form-input" id="add-fx-pm-branch" placeholder="e.g. Rue Joss, Douala, Cameroon">
+      </div>
+    </div>
+
+    <div id="add-fx-pm-mm-fields" style="display:none;">
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Country <span style="color:var(--red);">*</span></label>
+        <select class="form-input" id="add-fx-pm-mm-country" onchange="onFXMMCountryChange()">
+          <option value="">Select a country…</option>
+          <option>Cameroon</option><option>Côte d'Ivoire</option><option>Senegal</option><option>Mali</option>
+          <option>Gabon</option><option>Congo</option><option>Chad</option><option>Burkina Faso</option><option>Algeria</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Operator</label>
+        <input class="form-input" id="add-fx-pm-mm-operator" placeholder="e.g. MTN Mobile Money">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Account Name</label>
+        <input class="form-input" id="add-fx-pm-mm-account-name" placeholder="e.g. Ejara Finance">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label class="form-label">Phone / MSISDN</label>
+        <div style="display:flex;gap:8px;align-items:stretch;">
+          <div id="fx-mm-phone-prefix" style="display:flex;align-items:center;padding:0 14px;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;font-size:14px;white-space:nowrap;color:var(--text-secondary);min-width:120px;justify-content:center;">Select country</div>
+          <input class="form-input" id="add-fx-pm-mm-phone" placeholder="6 77 00 00 00" style="flex:1;">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeAddFXPM()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAddFXPM()">Add Method</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TOAST
+════════════════════════════════════════════════════════════════════ -->
+<div class="toast" id="toast">
+  <div class="toast-icon" id="toast-icon"></div>
+  <div><div class="toast-title" id="toast-title"></div><div class="toast-body" id="toast-body"></div></div>
+</div>
+
+<script>
+// ─── Users & privileges ──────────────────────────────────────────────────────
+const USERS = {
+  recitKevin: { name: 'Kevin', role: 'Super Admin', access: ['cashco','fx'], compliance: true },
+  recitMarie: { name: 'Marie', role: 'Admin',        access: ['cashco'],     compliance: false },
+};
+let currentUser = USERS['recitKevin']; // default
+let currentModule = null;
+
+// ─── Login ──────────────────────────────────────────────────────────────────
+function goTo2FA() {
+  document.getElementById('step-credentials').style.display = 'none';
+  document.getElementById('step-2fa').style.display = 'block';
+  document.querySelector('.twofa-digits input').focus();
+}
+function backToCredentials() {
+  document.getElementById('step-2fa').style.display = 'none';
+  document.getElementById('step-credentials').style.display = 'block';
+}
+function nextDigit(el, idx) {
+  if (el.value) {
+    const inputs = document.querySelectorAll('.twofa-digits input');
+    if (idx < 5) inputs[idx+1].focus();
+    document.getElementById('verify-btn').disabled = ![...inputs].every(i => i.value);
+  }
+}
+function prevDigit(e, el) {
+  if (e.key === 'Backspace' && !el.value) {
+    const inputs = [...document.querySelectorAll('.twofa-digits input')];
+    const i = inputs.indexOf(el);
+    if (i > 0) inputs[i-1].focus();
+  }
+}
+function goToProductSelect() {
+  const username = document.getElementById('username-input').value.trim();
+  currentUser = USERS[username] || USERS['recitKevin'];
+  document.getElementById('product-welcome').textContent = 'Welcome, ' + currentUser.name;
+  renderProductCards();
+  document.getElementById('screen-login').classList.remove('active');
+  document.getElementById('screen-product').classList.add('active');
+}
+
+// ─── Product picker ───────────────────────────────────────────────────────────
+function renderProductCards() {
+  const modules = [
+    { id: 'cashco', icon: '🏦', name: 'Cash Co', desc: 'Agent-assisted transfers. Review transactions, KYC upgrades, refunds, and exchange rates for the agent POS network.', btnClass: 'product-card-btn-cashco', btnText: 'Access Cash Co →', cardClass: 'cashco' },
+    { id: 'fx',     icon: '💱', name: 'Businesses',    desc: 'Manage business customer transactions, payment methods, and exchange rates.',   btnClass: 'product-card-btn-fx',    btnText: 'Access FX Business →', cardClass: 'fx' },
+  ];
+  const container = document.getElementById('product-cards-container');
+  container.innerHTML = modules.map(m => {
+    const hasAccess = currentUser.access.includes(m.id);
+    if (hasAccess) {
+      return `<div class="product-card ${m.cardClass}" onclick="enterModule('${m.id}')">
+        <div class="product-card-icon">${m.icon}</div>
+        <div class="product-card-name">${m.name}</div>
+        <div class="product-card-desc">${m.desc}</div>
+        <button class="product-card-btn ${m.btnClass}">${m.btnText}</button>
+      </div>`;
+    } else {
+      return `<div class="product-card ${m.cardClass} locked" onclick="tryLockedModule('${m.id}')">
+        <div class="product-card-icon">${m.icon}</div>
+        <div class="product-card-name">${m.name}</div>
+        <div class="product-card-lock-badge">🔒 No access</div>
+        <div class="product-card-desc">${m.desc}</div>
+        <button class="product-card-btn product-card-btn-locked" disabled>Access not granted</button>
+      </div>`;
+    }
+  }).join('');
+}
+
+function tryLockedModule(moduleId) {
+  const names = { cashco: 'Cash Co', fx: 'Businesses' };
+  enterAppShell(moduleId);
+  showAccessDenied('module', names[moduleId]);
+}
+
+function enterAppShell(module) {
+  currentModule = module;
+  document.getElementById('screen-product').classList.remove('active');
+  document.getElementById('screen-app').classList.add('active');
+  // hide both navs — access denied page has no nav
+  document.getElementById('nav-cashco').style.display = 'none';
+  document.getElementById('nav-fx').style.display = 'none';
+}
+
+function enterModule(module) {
+  currentModule = module;
+  document.getElementById('screen-product').classList.remove('active');
+  document.getElementById('screen-app').classList.add('active');
+
+  // update sidebar user info
+  document.getElementById('sidebar-user-name').textContent = 'recit' + currentUser.name;
+  document.getElementById('sidebar-user-role').textContent = currentUser.role;
+  document.getElementById('topbar-user-name').textContent = 'recit' + currentUser.name;
+  document.getElementById('topbar-user-role').textContent = currentUser.role;
+
+  if (module === 'cashco') {
+    document.getElementById('nav-cashco').style.display = 'block';
+    document.getElementById('nav-fx').style.display = 'none';
+    document.getElementById('module-tag').textContent = 'Cash Co';
+    document.getElementById('module-tag').className = 'sidebar-module-tag tag-cashco-sidebar';
+    navigate('cc-dashboard');
+  } else {
+    document.getElementById('nav-fx').style.display = 'block';
+    document.getElementById('nav-cashco').style.display = 'none';
+    document.getElementById('module-tag').textContent = 'FX Business';
+    document.getElementById('module-tag').className = 'sidebar-module-tag tag-fx-sidebar';
+    navigate('fx-dashboard');
+  }
+}
+
+function switchProduct() {
+  document.getElementById('screen-app').classList.remove('active');
+  document.getElementById('screen-product').classList.add('active');
+  closeDetail();
+}
+
+// ─── Access denied ───────────────────────────────────────────────────────────
+function showAccessDenied(type, label) {
+  const messages = {
+    module:      `You don't have the necessary permissions to access <strong>${label}</strong>. Please contact an Ejara administrator to request access to this module.`,
+    kyc3:        `You don't have the necessary permissions to access <strong>KYC Management — Level 3</strong>. Level 3 reviews are restricted to Compliance staff and Super Admin. Contact an Ejara administrator to request this access.`,
+  };
+  document.getElementById('ad-title').textContent = 'Access Restricted';
+  document.getElementById('ad-sub').innerHTML = messages[type] || messages.module;
+  navigate('access-denied');
+}
+
+// ─── Compliance gate ─────────────────────────────────────────────────────────
+function tryKYC3() {
+  if (!currentUser.compliance) {
+    showAccessDenied('kyc3');
+  } else {
+    navigate('cc-kyc3');
+  }
+}
+
+// ─── Navigation ─────────────────────────────────────────────────────────────
+const PAGE_META = {
+  'cc-dashboard':       { title: 'Dashboard',              sub: '' },
+  'cc-transactions':    { title: 'Transactions',           sub: 'Cash Co Bill Payment' },
+  'cc-customers':       { title: 'Customers',              sub: 'Cash Co Bill Payment' },
+  'cc-kyc2':           { title: 'KYC Management — Level 2', sub: 'Cash Co Bill Payment' },
+  'cc-kyc3':           { title: 'KYC Management — Level 3', sub: 'Cash Co Bill Payment' },
+  'cc-refunds':        { title: 'Refunds',                 sub: 'Cash Co Bill Payment' },
+  'cc-rates':          { title: 'Exchange Rates',          sub: 'Cash Co Bill Payment' },
+  'cc-rate-log':      { title: 'Rate Change Log',         sub: 'Cash Co Bill Payment' },
+  'fx-dashboard':      { title: 'Dashboard',              sub: 'FX Business' },
+  'fx-transactions':   { title: 'Transactions',           sub: 'FX Business' },
+  'fx-customers':      { title: 'Customers',              sub: 'FX Business' },
+  'fx-payment-methods':{ title: 'Payment Methods',        sub: 'FX Business' },
+  'fx-rates':          { title: 'Exchange Rates',         sub: 'FX Business' },
+  'fx-rate-log':       { title: 'Rate Change Log',        sub: 'FX Business' },
+  'access-denied':     { title: 'Access Restricted',      sub: '' },
+};
+
+function navigate(id) {
+  Object.keys(PAGE_META).forEach(p => {
+    const pg = document.getElementById('page-' + p);
+    if (pg) pg.style.display = 'none';
+    const nav = document.getElementById('nav-' + p);
+    if (nav) nav.classList.remove('active');
+  });
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.style.display = 'block';
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+
+  const meta = PAGE_META[id] || { title: id, sub: '' };
+  document.getElementById('topbar-title').textContent = meta.title;
+  const subEl = document.getElementById('topbar-sub');
+  const sepEl = document.getElementById('topbar-sep');
+  subEl.textContent = meta.sub;
+  sepEl.style.display = meta.sub ? 'inline' : 'none';
+  closeDetail();
+}
+
+function setFilter(btn) {
+  btn.closest('.filters').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ─── Table filter bars (status / corridor selects) ───────────────────────────
+function applyCCFilters(ctrlEl) {
+  const bar = ctrlEl.closest('.filter-bar');
+  const table = bar.nextElementSibling.querySelector('table');
+  const activeFilters = Array.from(bar.querySelectorAll('.filter-select'))
+    .map(s => s.value)
+    .filter(v => v && !/^all\b/i.test(v));
+  const searchInput = bar.querySelector('.filter-search');
+  const searchTerm = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+  const rows = Array.from(table.tBodies[0].rows).filter(r => r.id !== 'cc-filter-empty-row');
+  let visible = 0;
+  rows.forEach(row => {
+    const text = row.textContent;
+    const match = activeFilters.every(f => text.includes(f)) && (!searchTerm || text.toLowerCase().includes(searchTerm));
+    row.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+
+  let emptyRow = table.tBodies[0].querySelector('#cc-filter-empty-row');
+  if (visible === 0) {
+    if (!emptyRow) {
+      const colCount = table.tHead.rows[0].cells.length;
+      emptyRow = document.createElement('tr');
+      emptyRow.id = 'cc-filter-empty-row';
+      emptyRow.innerHTML = `<td colspan="${colCount}" style="text-align:center;padding:24px;color:var(--text-secondary);font-size:13px;">No results match these filters.</td>`;
+      table.tBodies[0].appendChild(emptyRow);
+    }
+    emptyRow.style.display = '';
+  } else if (emptyRow) {
+    emptyRow.style.display = 'none';
+  }
+}
+
+// ─── Detail panel ────────────────────────────────────────────────────────────
+function openDetail() {
+  document.getElementById('detail-overlay').classList.add('open');
+  document.getElementById('detail-panel').classList.add('open');
+}
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  document.getElementById('detail-panel').classList.remove('open');
+}
+
+// ─── Cash Co Transaction detail ──────────────────────────────────────────────
+function docItem(icon, name, size, type) {
+  return `<div class="doc-item" onclick="openDocViewer('${name}','${type}')">
+    <div class="doc-item-left"><span class="doc-icon">${icon}</span><div><div class="doc-name">${name}</div><div class="doc-size">${size}</div></div></div>
+    <span class="doc-view-btn">View</span>
+  </div>`;
+}
+
+let pendingCompleteTxRef = '';
+function openCCTxDetail(ref, status) {
+  document.getElementById('detail-title').textContent = ref;
+  const isPending = status === 'PENDING_REVIEW';
+  const isApproved = status === 'APPROVED';
+  const statusHtml = { PENDING_REVIEW:'<span class="bp bp-pending">Pending Review</span>', APPROVED:'<span class="bp bp-approved">Approved</span>', COMPLETED:'<span class="bp bp-completed">Completed</span>' }[status];
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Transaction</div>
+      <div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value" style="font-family:monospace;">${ref}</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value">${statusHtml}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount deposited</span><span class="detail-value" style="font-weight:700;">XAF 2,500,000</span></div>
+      <div class="detail-row"><span class="detail-label">Amount received</span><span class="detail-value" style="color:var(--green);font-weight:700;">NGN 6,200,000</span></div>
+      <div class="detail-row"><span class="detail-label">Crypto volume</span><span class="detail-value">4,166.67 USDT</span></div>
+      <div class="detail-row"><span class="detail-label">Corridor</span><span class="detail-value">XAF → NGN</span></div>
+      <div class="detail-row"><span class="detail-label">Rate applied</span><span class="detail-value">1 XAF = 2.48 NGN</span></div>
+      <div class="detail-row"><span class="detail-label">Reason</span><span class="detail-value">Goods — textile supplies (Invoice INV-2026-0847)</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Agent</div>
+      <div class="detail-row"><span class="detail-label">Agent</span><span class="detail-value">@agentKamga</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value">30 Jun 2026, 09:14</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Customer &amp; Beneficiary</div>
+      <div class="detail-row"><span class="detail-label">Customer</span><span class="detail-value">Mireille Fouda</span></div>
+      <div class="detail-row"><span class="detail-label">Beneficiary</span><span class="detail-value">Adaeze Okafor (NG)</span></div>
+      <div class="detail-row"><span class="detail-label">Beneficiary bank</span><span class="detail-value">GTBank Nigeria</span></div>
+      <div class="detail-row"><span class="detail-label">Beneficiary account</span><span class="detail-value">0129384756</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Proof of Deposit</div>
+      ${docItem('🧾','Invoice_2026-06-30.pdf','148 KB','invoice')}
+      ${docItem('🧾','Deposit_slip_SGC.pdf','92 KB','deposit')}
+      <div class="proof-card" style="margin-top:12px;">
+        <div class="proof-card-header">
+          <div class="proof-card-bank">Société Générale Cameroun</div>
+          <div class="proof-card-type">Deposit Slip</div>
+        </div>
+        <div class="proof-card-body">
+          <div><div class="proof-field-label">Date</div><div class="proof-field-value">30 Jun 2026</div></div>
+          <div><div class="proof-field-label">Account</div><div class="proof-field-value">•••• 4421</div></div>
+          <div><div class="proof-field-label">Amount</div><div class="proof-field-value">XAF 2,500,000</div></div>
+          <div><div class="proof-field-label">Cashier ref</div><div class="proof-field-value">SGC-2026-1103892</div></div>
+        </div>
+        <div class="proof-card-footer">For full document — click "Deposit_slip_SGC.pdf" above</div>
+      </div>
+      <div class="verify-banner">
+        ✓ Verify using: <strong>Amount</strong> (XAF 2,500,000) · <strong>Sender name</strong> (Mireille Fouda) · <strong>Timing</strong> (30 Jun 2026, 09:14) · <strong>Uploaded proof</strong> — ref match (SGC-2026-1103892) is a bonus signal, not required
+      </div>
+    </div>
+    ${isPending ? `<div id="reject-section" style="display:none;"><div class="detail-section-title" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary);margin-top:12px;">Rejection Reason</div><textarea class="mm-ref-input" id="reject-reason-text" placeholder="Enter reason for rejection…" style="min-height:80px;resize:vertical;"></textarea></div>` : ''}
+  `;
+  document.getElementById('detail-actions').innerHTML = isPending
+    ? `<button class="btn btn-success" onclick="approveCCTx('${ref}')">✓ Approve</button><button class="btn btn-danger" onclick="showRejectField()">✕ Reject</button>`
+    : isApproved
+    ? `<button class="btn btn-primary" onclick="completeCCTx('${ref}')">Mark as Completed</button>`
+    : `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
+  openDetail();
+}
+function showRejectField() {
+  document.getElementById('reject-section').style.display = 'block';
+  document.getElementById('detail-actions').innerHTML = `<button class="btn btn-secondary" onclick="cancelReject()">Cancel</button><button class="btn btn-danger" onclick="confirmRejectTx()">Confirm Rejection</button>`;
+}
+function cancelReject() {
+  document.getElementById('reject-section').style.display = 'none';
+  document.getElementById('detail-actions').innerHTML = `<button class="btn btn-success" onclick="approveCCTx()">✓ Approve</button><button class="btn btn-danger" onclick="showRejectField()">✕ Reject</button>`;
+}
+function approveCCTx(ref) { closeDetail(); decBadge('badge-cc-tx'); showToast('✅','Transaction Approved',ref + ' approved. Agent notified.'); }
+function completeCCTx(ref) {
+  pendingCompleteTxRef = ref;
+  document.getElementById('cc-complete-ref').value = '';
+  document.getElementById('cc-upload-filename').style.display = 'none';
+  document.getElementById('cc-upload-filename').textContent = '';
+  closeDetail();
+  document.getElementById('cc-complete-modal').classList.add('open');
+}
+function submitCompleteTx() {
+  const ref = document.getElementById('cc-complete-ref').value.trim();
+  if (!ref) { document.getElementById('cc-complete-ref').style.borderColor = 'var(--red)'; document.getElementById('cc-complete-ref').focus(); return; }
+  document.getElementById('cc-complete-modal').classList.remove('open');
+  if (FX_TX[pendingCompleteTxRef]) {
+    FX_TX[pendingCompleteTxRef].status = 'COMPLETED';
+    renderFXTxTable();
+    decBadge('badge-fx-tx');
+  }
+  showToast('✅','Transaction Completed', pendingCompleteTxRef + ' marked as completed. Ref: ' + ref);
+}
+function showUploadName(input) {
+  if (input.files.length) {
+    const el = document.getElementById('cc-upload-filename');
+    el.textContent = '📎 ' + input.files[0].name;
+    el.style.display = 'block';
+  }
+}
+function confirmRejectTx() { closeDetail(); decBadge('badge-cc-tx'); showToast('❌','Transaction Rejected','Agent notified. Ejara wallet will be re-credited automatically.'); }
+
+// ─── Customers ────────────────────────────────────────────────────────────────
+const CC_CUSTOMERS = {
+  mfouda_cm:  { name:'Mireille Fouda',      email:'mireille.fouda@gmail.com', phone:'+237 671 22 34 56', level:'Level 1', pendingLevel:'Level 2', joined:'12 Jan 2026', kycId:'MFOUDA' },
+  p_tabi237:  { name:'Patrick Tabi',        email:'patrick.tabi@yahoo.fr',    phone:'+237 655 90 12 34', level:'Level 1', pendingLevel:'Level 2', joined:'03 Feb 2026', kycId:'PTABI' },
+  sylvie_n:   { name:'Sylvie Nguema',       email:'sylvie.nguema@gmail.com',  phone:'+237 690 44 78 21', level:'Level 2', pendingLevel:null,      joined:'18 Nov 2025', kycId:null },
+  b_eboule:   { name:'Bernard Eboule',      email:'bernard.eboule@gmail.com', phone:'+237 677 12 90 45', level:'Level 2', pendingLevel:'Level 3', joined:'22 Sep 2025', kycId:'BEBOULE' },
+  claire_n:   { name:'Claire Nkono',        email:'claire.nkono@outlook.com', phone:'+237 699 33 67 12', level:'Level 2', pendingLevel:'Level 3', joined:'05 Oct 2025', kycId:'CNKONO' },
+  carine_mb:  { name:'Carine Mbida',        email:'carine.mbida@gmail.com',   phone:'+237 654 21 09 87', level:'Level 1', pendingLevel:null,      joined:'14 Mar 2026', kycId:null },
+  jp_ondoua:  { name:'Jean-Pierre Ondoua',  email:'jp.ondoua@gmail.com',      phone:'+237 683 45 12 90', level:'Level 1', pendingLevel:null,      joined:'27 Dec 2025', kycId:null },
+};
+function openCCCustomerDetail(id) {
+  const c = CC_CUSTOMERS[id];
+  document.getElementById('detail-title').textContent = c.name;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Profile</div>
+      <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-value">${c.name}</span></div>
+      <div class="detail-row"><span class="detail-label">Username</span><span class="detail-value">@${id}</span></div>
+      <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${c.email}</span></div>
+      <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">${c.phone}</span></div>
+      <div class="detail-row"><span class="detail-label">Date Joined</span><span class="detail-value">${c.joined}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-row"><span class="detail-label">KYC Level</span><span class="detail-value">${c.pendingLevel ? `<span class="kyc-level-pill pending">${c.pendingLevel} pending</span>` : `<span class="kyc-level-pill">${c.level}</span>`}</span></div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">KYC level upgrades are reviewed separately under KYC Management — this page only reflects the customer's current status.</div>
+    </div>
+  `;
+  document.getElementById('detail-actions').innerHTML = c.pendingLevel
+    ? `<button class="btn btn-secondary" onclick="closeDetail()">Close</button><button class="btn btn-primary" onclick="viewCustomerKycUpgrade('${id}')">View Upgrade Request →</button>`
+    : `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
+  openDetail();
+}
+function viewCustomerKycUpgrade(customerId) {
+  const c = CC_CUSTOMERS[customerId];
+  if (c.pendingLevel === 'Level 3') {
+    if (!currentUser.compliance) { closeDetail(); showAccessDenied('kyc3'); return; }
+    navigate('cc-kyc3');
+    openKYC3Detail(c.kycId);
+  } else {
+    navigate('cc-kyc2');
+    openKYC2Detail(c.kycId);
+  }
+}
+
+// ─── KYC L2 detail ──────────────────────────────────────────────────────────
+const kyc2data = {
+  MFOUDA: { handle:'@mfouda_cm', name:'Mireille Fouda', agent:'@agentKamga', pending:true },
+  PTABI:  { handle:'@p_tabi237', name:'Patrick Tabi',   agent:'@agentNdongo', pending:true },
+  SNGUE:  { handle:'@sylvie_n',  name:'Sylvie Nguema',  agent:'@agentFouda',  pending:false },
+};
+function openKYC2Detail(id) {
+  const d = kyc2data[id];
+  document.getElementById('detail-title').textContent = 'KYC Level 2 — ' + d.handle;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="alert alert-info"><span>ℹ️</span><div>Level 2 applies to transfers between <strong>XAF 5M–30M</strong>. Any Admin or Super Admin can approve.</div></div>
+    <div class="detail-section">
+      <div class="detail-section-title">Customer</div>
+      <div class="detail-row"><span class="detail-label">Username</span><span class="detail-value">${d.handle}</span></div>
+      <div class="detail-row"><span class="detail-label">Full name</span><span class="detail-value">${d.name}</span></div>
+      <div class="detail-row"><span class="detail-label">Level 1 since</span><span class="detail-value">Jan 2026</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted by agent</span><span class="detail-value">${d.agent}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Documents (2 / 2 required)</div>
+      ${docItem('📱','Mobile_money_statement_3mo.pdf','245 KB','mmstatement')}
+      ${docItem('🧾','Sales_receipt_deposit.pdf','118 KB','receipt')}
+    </div>
+  `;
+  document.getElementById('detail-actions').innerHTML = d.pending
+    ? `<button class="btn btn-success" onclick="approveKYC2()">✓ Approve Level 2</button><button class="btn btn-danger" onclick="rejectKYC2()">✕ Reject</button>`
+    : `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
+  openDetail();
+}
+function approveKYC2() { closeDetail(); decBadge('badge-cc-kyc2'); showToast('✅','KYC Level 2 Approved','Customer eligible for transfers up to XAF 30M.'); }
+function rejectKYC2()  { closeDetail(); showToast('❌','KYC Level 2 Rejected','Customer and agent notified.'); }
+
+// ─── KYC L3 detail ──────────────────────────────────────────────────────────
+function openKYC3Detail(id) {
+  const isOnsite = id === 'CNKONO';
+  const name = id === 'BEBOULE' ? 'Bernard Eboule' : 'Claire Nkono';
+  const handle = id === 'BEBOULE' ? '@b_eboule' : '@claire_n';
+  const agent  = id === 'BEBOULE' ? '@agentKamga' : '@agentEssama';
+  document.getElementById('detail-title').textContent = 'KYC Level 3 — ' + handle;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="alert alert-compliance"><span>🔒</span><div><strong>Compliance review.</strong> Restricted to Compliance staff and Super Admin only.</div></div>
+    <div class="detail-section">
+      <div class="detail-section-title">Customer</div>
+      <div class="detail-row"><span class="detail-label">Username</span><span class="detail-value">${handle}</span></div>
+      <div class="detail-row"><span class="detail-label">Full name</span><span class="detail-value">${name}</span></div>
+      <div class="detail-row"><span class="detail-label">Verified at Level 2</span><span class="detail-value">Feb 2026</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted by agent</span><span class="detail-value">${agent}</span></div>
+      <div class="detail-row"><span class="detail-label">On-site required</span><span class="detail-value">${isOnsite ? '<span class="onsite-yes">Yes</span>' : '<span class="onsite-no">No</span>'}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Documents (2 / 2 required)</div>
+      ${docItem('📄','TPPRM_document_signed.pdf','312 KB','tpprm')}
+      ${docItem('🏦','Bank_statements_6mo.pdf','547 KB','bankstmt')}
+    </div>
+  `;
+  document.getElementById('detail-actions').innerHTML = `
+    <button class="btn btn-success" onclick="approveKYC3()" style="font-size:12px;">✓ Approve Level 3</button>
+    ${!isOnsite ? '<button class="btn btn-warning" onclick="markOnsite()" style="font-size:12px;">📍 Require On-site</button>' : ''}
+    <button class="btn btn-danger" onclick="rejectKYC3()" style="font-size:12px;">✕ Reject</button>
+  `;
+  openDetail();
+}
+function approveKYC3() { closeDetail(); decBadge('badge-cc-kyc3'); showToast('✅','KYC Level 3 Approved','Customer eligible for transfers above XAF 30M.'); }
+function markOnsite()  { closeDetail(); showToast('📍','On-site Visit Required','Customer and agent notified.'); }
+function rejectKYC3()  { closeDetail(); showToast('❌','KYC Level 3 Rejected','Compliance team and agent notified.'); }
+
+// ─── Refund detail ───────────────────────────────────────────────────────────
+function openRefundDetail(ref, isPending) {
+  document.getElementById('detail-title').textContent = 'Refund — ' + ref;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="alert alert-info"><span>ℹ️</span><div><strong>Agent wallet already re-credited</strong> automatically when the transfer was rejected. This step is the customer mobile money refund only.</div></div>
+    <div class="detail-section">
+      <div class="detail-section-title">Transaction</div>
+      <div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value">${ref}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value">XAF ${isPending ? '1,200,000' : '2,700,000'}</span></div>
+      <div class="detail-row"><span class="detail-label">Rejection reason</span><span class="detail-value" style="color:var(--red);">${isPending ? 'Suspicious documents' : 'Duplicate submission'}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Customer</div>
+      <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">${isPending ? 'Carine Mbida' : 'Jean-Pierre Ondoua'}</span></div>
+      <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">+237 6XX XXX XXX</span></div>
+      <div class="detail-row"><span class="detail-label">Refund channel</span><span class="detail-value">Mobile money</span></div>
+    </div>
+    ${isPending ? `
+    <div class="detail-section">
+      <div class="detail-section-title">Mobile Money Reference (required to complete)</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Contact the customer, send the mobile money payment, then enter the payment reference below.</div>
+      <input class="mm-ref-input" id="mm-ref" placeholder="e.g. MTN-2026063001234">
+    </div>` : `
+    <div class="detail-section">
+      <div class="detail-section-title">Completed</div>
+      <div class="detail-row"><span class="detail-label">MM Reference</span><span class="detail-value" style="color:var(--green);">MTN-2026062900891</span></div>
+      <div class="detail-row"><span class="detail-label">Completed by</span><span class="detail-value">recitKevin</span></div>
+    </div>`}
+  `;
+  document.getElementById('detail-actions').innerHTML = isPending
+    ? `<button class="btn btn-primary" onclick="completeRefund('${ref}')">Mark Refund as Completed</button>`
+    : `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
+  openDetail();
+}
+function completeRefund(ref) {
+  const el = document.getElementById('mm-ref');
+  if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Mobile money reference is required'; return; }
+  closeDetail(); decBadge('badge-cc-refund');
+  showToast('✅','Refund Completed','Customer notified by SMS. Ref: ' + el.value.trim());
+}
+
+// ─── FX Transactions ──────────────────────────────────────────────────────────
+const FX_TX = {
+  'BTXR-260001': { customer:'Aminata Diallo', beneName:'Chukwudi Electronics',  beneBank:'GTBank Nigeria',        beneAcct:'0041827364', amount:'2,016,129', dest:'5,000,000',  crypto:'3,360.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 11:34', status:'PENDING_REVIEW', reason:'Payment for electronic goods — invoice #INV-2045' },
+  'BTXR-260002': { customer:'Martin Foka',    beneName:'Adeola Suppliers Ltd',  beneBank:'Zenith Bank Nigeria',    beneAcct:'0087736452', amount:'4,032,258', dest:'10,000,000', crypto:'6,720.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 10:15', status:'PENDING_REVIEW', reason:'Payment for textile supplies' },
+  'BTXR-260003': { customer:'Alice Mbarga',   beneName:'Emeka Traders',         beneBank:'Access Bank Nigeria',    beneAcct:'0019283746', amount:'806,452',   dest:'2,000,000',  crypto:'1,344.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 16:48', status:'COMPLETED', reason:'Payment for retail goods' },
+  'BTXR-260004': { customer:'Fatima Bello',   beneName:'Lagos Goods Ltd',       beneBank:'First Bank Nigeria',     beneAcct:'0038291746', amount:'1,209,677', dest:'3,000,000',  crypto:'2,016.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 14:20', status:'REJECTED', reason:'Payment for imported goods' },
+  'BTXR-260005': { customer:'Paul Nguemo',    beneName:'Kemi Supplies Ltd',     beneBank:'UBA Nigeria',            beneAcct:'0056473829', amount:'2,419,355', dest:'6,000,000',  crypto:'4,032.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 09:02', status:'APPROVED', reason:'Payment for equipment supplies' },
+  'BTXR-260006': { customer:'Hervé Tchinda',  beneName:'Biodun Trading Co.',    beneBank:'Fidelity Bank Nigeria',  beneAcct:'0072819364', amount:'1,612,903', dest:'4,000,000',  crypto:'2,688.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 13:10', status:'INITIATED', reason:'Payment for trading goods' },
+};
+const FX_TX_STATUS_LABEL = { INITIATED:'Initiated', PENDING_REVIEW:'Pending Review', APPROVED:'Approved', COMPLETED:'Completed', REJECTED:'Rejected' };
+const FX_TX_STATUS_CLASS = { INITIATED:'bp-initiated', PENDING_REVIEW:'bp-pending', APPROVED:'bp-approved', COMPLETED:'bp-completed', REJECTED:'bp-rejected' };
+const FX_TX_ACTION_LABEL = { INITIATED:'View', PENDING_REVIEW:'Review', APPROVED:'Complete', COMPLETED:'View', REJECTED:'View' };
+const FX_TX_ACTION_CLASS = { INITIATED:'btn-secondary', PENDING_REVIEW:'btn-primary', APPROVED:'btn-success', COMPLETED:'btn-secondary', REJECTED:'btn-secondary' };
+
+function renderFXTxTable() {
+  const tbody = document.getElementById('fx-tx-tbody');
+  tbody.innerHTML = Object.entries(FX_TX).map(([ref, t]) => `
+    <tr class="clickable" onclick="openFXTxDetail('${ref}')">
+      <td style="font-family:monospace;font-size:12px;white-space:nowrap;font-weight:600;">${ref}</td>
+      <td style="white-space:nowrap;">${t.customer}</td>
+      <td style="white-space:nowrap;">${t.beneName}</td>
+      <td style="font-weight:700;white-space:nowrap;">XAF ${t.amount}</td>
+      <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN ${t.dest}</td>
+      <td><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></td>
+      <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${t.date}</td>
+      <td><button class="btn ${FX_TX_ACTION_CLASS[t.status]}" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openFXTxDetail('${ref}')">${FX_TX_ACTION_LABEL[t.status]}</button></td>
+    </tr>
+  `).join('');
+}
+
+function openFXTxDetail(ref) {
+  const t = FX_TX[ref];
+  const isPending = t.status === 'PENDING_REVIEW';
+  const isApproved = t.status === 'APPROVED';
+  const hasProof = t.status !== 'INITIATED';
+  document.getElementById('detail-title').textContent = ref;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Transfer Details</div>
+      <div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value" style="font-family:monospace;">${ref}</span></div>
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value"><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></span></div>
+      <div class="detail-row"><span class="detail-label">Amount Deposited</span><span class="detail-value" style="font-weight:700;">XAF ${t.amount}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount to Receive</span><span class="detail-value" style="color:var(--green);font-weight:700;">NGN ${t.dest}</span></div>
+      <div class="detail-row"><span class="detail-label">Crypto volume (to beneficiary)</span><span class="detail-value">${t.crypto} USDT</span></div>
+      <div class="detail-row"><span class="detail-label">Corridor</span><span class="detail-value">${t.corridor}</span></div>
+      <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value">${t.rate}</span></div>
+      <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value">${t.date}</span></div>
+      <div class="detail-row"><span class="detail-label">Reason</span><span class="detail-value">${t.reason}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Customer</div>
+      <div class="detail-row"><span class="detail-label">Customer</span><span class="detail-value">${t.customer}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Beneficiary</div>
+      <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">${t.beneName}</span></div>
+      <div class="detail-row"><span class="detail-label">Bank</span><span class="detail-value">${t.beneBank}</span></div>
+      <div class="detail-row"><span class="detail-label">Account Number</span><span class="detail-value">${t.beneAcct}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Proof of Payment</div>
+      ${hasProof ? `
+      ${docItem('🏦','Bank_transfer_receipt_SGC.pdf','312 KB','bankreceipt')}
+      <div class="verify-banner">
+        ✓ Verify using: <strong>Amount</strong> (XAF ${t.amount}) · <strong>Sender name</strong> (${t.customer}) · <strong>Timing</strong> (${t.date}) · <strong>Uploaded proof</strong> — ref match (${ref}) is a bonus signal, not required
+      </div>` : `
+      <div style="padding:24px 16px;text-align:center;border:1.5px dashed var(--border);border-radius:10px;color:var(--text-secondary);">
+        <div style="font-size:22px;margin-bottom:8px;">📂</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px;">No proof of payment yet</div>
+        <div style="font-size:12px;">The customer hasn't uploaded their proof of payment.</div>
+      </div>`}
+    </div>
+    ${isPending ? `<div id="fx-reject-section" style="display:none;"><div class="detail-section-title" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary);margin-top:12px;">Rejection Reason</div><textarea class="mm-ref-input" id="fx-reject-reason-text" placeholder="Enter reason for rejection…" style="min-height:80px;resize:vertical;"></textarea></div>` : ''}
+  `;
+  document.getElementById('detail-actions').innerHTML = isPending
+    ? `<button class="btn btn-success" onclick="approveFXTx('${ref}')">✓ Approve</button><button class="btn btn-danger" onclick="startRejectFXTx('${ref}')">✕ Reject</button>`
+    : isApproved
+    ? `<button class="btn btn-danger" onclick="rejectFXTxDirect('${ref}')">✕ Reject</button><button class="btn btn-success" onclick="completeCCTx('${ref}')">✓ Complete</button>`
+    : `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
+  openDetail();
+}
+function approveFXTx(ref) {
+  FX_TX[ref].status = 'APPROVED';
+  renderFXTxTable();
+  closeDetail(); decBadge('badge-fx-tx');
+  showToast('✅','Transaction Approved', ref + ' approved — payout routing initiated.');
+}
+function startRejectFXTx(ref) {
+  const section = document.getElementById('fx-reject-section');
+  if (section.style.display === 'none') { section.style.display = 'block'; return; }
+  const reason = document.getElementById('fx-reject-reason-text').value.trim();
+  if (!reason) { document.getElementById('fx-reject-reason-text').style.borderColor = 'var(--red)'; return; }
+  FX_TX[ref].status = 'REJECTED';
+  renderFXTxTable();
+  closeDetail(); decBadge('badge-fx-tx');
+  showToast('❌','Transaction Rejected','Customer notified. Reason: ' + reason);
+}
+function rejectFXTxDirect(ref) {
+  FX_TX[ref].status = 'REJECTED';
+  renderFXTxTable();
+  closeDetail(); decBadge('badge-fx-tx');
+  showToast('❌','Transaction Rejected','Customer notified.');
+}
+
+// ─── FX Customers ─────────────────────────────────────────────────────────────
+const FX_CUSTOMERS = {
+  'cust-001': { name:'Aminata Diallo',    email:'aminata@techimport.cm',      type:'Business',   businessName:'TechImport SARL',  country:'Cameroon', kybStatus:'pending',  joined:'10 Mar 2026', members:[{name:'Aminata Diallo',role:'owner'},{name:'Ibrahim Koné',role:'admin'},{name:'Berthe Essama',role:'member'}], bankAccounts:[] },
+  'cust-002': { name:'Martin Foka',       email:'martin@tekstile.cm',         type:'Business',   businessName:'Tekstile & Co.',   country:'Cameroon', kybStatus:'pending',  joined:'15 Mar 2026', members:[{name:'Martin Foka',role:'owner'},{name:'Cécile Ateba',role:'member'}], bankAccounts:[] },
+  'cust-003': { name:'Alice Mbarga',      email:'alice.mbarga@gmail.com',     type:'Individual', businessName:'',                 country:'Cameroon', kybStatus:'pending',  joined:'18 Mar 2026', members:[], bankAccounts:[] },
+  'cust-004': { name:'Jean-Pierre Nkeng', email:'jp.nkeng@logistics.cm',      type:'Business',   businessName:'Nkeng Logistics',  country:'Cameroon', kybStatus:'approved', joined:'05 Mar 2026', members:[{name:'Jean-Pierre Nkeng',role:'owner'}], bankAccounts:[
+    { bankName:'Afriland First Bank', accountName:'Nkeng Logistics SARL', accountNumber:'0022110034', source:'dotfile', region:'africa' },
+    { bankName:'ING Bank France', accountName:'Nkeng Logistics SARL', iban:'EE60 7777 0000 9832 9687', bic:'INGBFRPP', holderName:'Nkeng Logistics SARL', holderAddress:'14 Rue de la Paix, 75001 Paris, France', region:'europe' },
+  ] },
+  'cust-005': { name:'Hervé Tchinda',     email:'herve@tchinda-trading.cm',   type:'Business',   businessName:'Tchinda Trading SA', country:'Cameroon', kybStatus:'approved', joined:'08 Mar 2026', members:[{name:'Hervé Tchinda',role:'owner'},{name:'Pauline Ndongo',role:'admin'}], bankAccounts:[] },
+};
+const FX_KYB_BADGE = { pending:'<span class="bp bp-pending">Pending</span>', approved:'<span class="bp bp-approved">✓ Approved</span>', rejected:'<span class="bp bp-rejected">Rejected</span>' };
+
+function renderFXCustomersTable() {
+  const tbody = document.getElementById('fx-cust-tbody');
+  tbody.innerHTML = Object.entries(FX_CUSTOMERS).map(([id, d]) => `
+    <tr class="clickable" onclick="openFXCustomerDetail('${id}')" data-cust-type="${d.type.toLowerCase()}" data-cust-name="${d.name.toLowerCase()}" data-cust-email="${d.email.toLowerCase()}" data-cust-country="${d.country.toLowerCase()}">
+      <td style="font-weight:600;">${d.name}</td>
+      <td style="color:var(--text-secondary);font-size:12px;">${d.email}</td>
+      <td>${d.type === 'Business' ? '<span class="bp bp-business">Business</span>' : '<span class="bp bp-individual">Individual</span>'}</td>
+      <td>${d.country}</td>
+      <td>${FX_KYB_BADGE[d.kybStatus]}</td>
+      <td style="color:var(--text-secondary);font-size:12px;">${d.joined}</td>
+    </tr>
+  `).join('');
+}
+let _fxCustTypeFilter = 'all';
+function filterFXCustomers(type, btn) {
+  _fxCustTypeFilter = type;
+  btn.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFXCustomerFilters();
+}
+function applyFXCustomerFilters() {
+  const query = (document.getElementById('fx-cust-search').value || '').toLowerCase().trim();
+  const country = (document.getElementById('fx-cust-country-filter').value || '').toLowerCase();
+  document.querySelectorAll('#fx-cust-tbody tr').forEach(row => {
+    const typeOk = _fxCustTypeFilter === 'all' || row.dataset.custType === _fxCustTypeFilter;
+    const countryOk = !country || row.dataset.custCountry === country;
+    const searchOk = !query || row.dataset.custName.includes(query) || row.dataset.custEmail.includes(query);
+    row.style.display = (typeOk && countryOk && searchOk) ? '' : 'none';
+  });
+}
+
+let currentFXCustomer = null;
+let fxAddBankFormOpen = false;
+let fxBankRegion = 'africa';
+
+function openFXCustomerDetail(id) {
+  currentFXCustomer = id;
+  fxAddBankFormOpen = false;
+  renderFXCustomerDetail();
+  openDetail();
+}
+function renderFXCustomerDetail() {
+  const id = currentFXCustomer;
+  const d = FX_CUSTOMERS[id];
+  document.getElementById('detail-title').textContent = 'Account Details';
+  const typeBadge = d.type === 'Business' ? '<span class="bp bp-business">Business</span>' : '<span class="bp bp-individual">Individual</span>';
+  const membersHtml = (d.type === 'Business' && d.members.length) ? `
+    <div class="detail-section">
+      <div class="detail-section-title">Account Members</div>
+      ${d.members.map(m => `<div class="member-row"><span class="member-name">${m.name}</span><span class="bp ${m.role==='owner'?'bp-owner':m.role==='admin'?'bp-admin-role':'bp-member-role'}">${m.role.charAt(0).toUpperCase()+m.role.slice(1)}</span></div>`).join('')}
+    </div>` : '';
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Profile</div>
+      <div class="detail-row"><span class="detail-label">Full Name</span><span class="detail-value">${d.name}</span></div>
+      <div class="detail-row"><span class="detail-label">Email</span><span class="detail-value">${d.email}</span></div>
+      <div class="detail-row"><span class="detail-label">Account Type</span><span class="detail-value">${typeBadge}</span></div>
+      ${d.type === 'Business' ? `<div class="detail-row"><span class="detail-label">Business Name</span><span class="detail-value">${d.businessName}</span></div>` : ''}
+      <div class="detail-row"><span class="detail-label">Country</span><span class="detail-value">${d.country}</span></div>
+      <div class="detail-row"><span class="detail-label">KYB Status</span><span class="detail-value">${FX_KYB_BADGE[d.kybStatus]}</span></div>
+      <div class="detail-row"><span class="detail-label">Date Joined</span><span class="detail-value">${d.joined}</span></div>
+    </div>
+    ${membersHtml}
+    <div class="detail-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="detail-section-title" style="margin-bottom:0;">Bank Accounts</div>
+        ${!fxAddBankFormOpen ? `<button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="showAddFXBankForm()">+ Add</button>` : ''}
+      </div>
+      ${renderFXBankAccountsHtml(d.bankAccounts)}
+      ${fxAddBankFormOpen ? renderAddFXBankFormHtml() : ''}
+    </div>
+  `;
+  document.getElementById('detail-actions').innerHTML = `<button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="closeDetail()">Close</button>`;
+}
+function renderFXBankAccountsHtml(accounts) {
+  if (!accounts || accounts.length === 0) return '<div style="font-size:13px;color:var(--text-secondary);padding:8px 0;">No bank accounts linked yet.</div>';
+  return accounts.map((acct, i) => {
+    const dotfileTag = acct.source === 'dotfile' ? '<span class="bp" style="background:#F5F3FF;color:#7C3AED;">Dotfile</span>' : '';
+    const removeBtn = `<button class="btn btn-danger" style="padding:4px 10px;font-size:11px;flex-shrink:0;" onclick="removeFXBank(${i})">Remove</button>`;
+    if (acct.region === 'europe') {
+      return `
+      <div class="bank-account-item" style="flex-direction:column;align-items:stretch;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-weight:600;">${acct.bankName}</span>${dotfileTag}
+            <span class="bp" style="background:#EFF6FF;color:#1D4ED8;">Europe</span>
+          </div>
+          ${removeBtn}
+        </div>
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+          <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);margin-bottom:2px;">IBAN</div><div style="font-family:monospace;font-size:13px;font-weight:600;">${acct.iban}</div></div>
+          <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);margin-bottom:2px;">BIC / SWIFT</div><div style="font-family:monospace;font-size:13px;font-weight:600;">${acct.bic}</div></div>
+          <div style="border-top:1px solid var(--border);padding-top:8px;">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-secondary);margin-bottom:6px;">Account Holder Details</div>
+            <div style="font-size:13px;">${acct.holderName}</div>
+            <div style="font-size:12px;color:var(--text-secondary);">${acct.holderAddress}</div>
+          </div>
+        </div>
+      </div>`;
+    }
+    return `
+    <div class="bank-account-item">
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:8px;"><span style="font-weight:600;">${acct.bankName}</span>${dotfileTag}</div>
+        <div class="bank-account-sub">${acct.accountName} · ${acct.accountNumber}</div>
+      </div>
+      ${removeBtn}
+    </div>`;
+  }).join('');
+}
+function renderAddFXBankFormHtml() {
+  return `
+    <div style="margin-top:12px;padding:16px;background:var(--bg);border-radius:10px;">
+      <div class="compliance-notice" style="margin-bottom:10px;">⚠️ Make sure the account owner name matches the name of the customer profile to be compliant.</div>
+      <div class="compliance-notice" style="margin-bottom:14px;background:#EFF6FF;border-color:#BFDBFE;color:#1E40AF;">ℹ️ Remember to add or update this bank account on <strong>Dotfile</strong> as well to prevent any information mismatch between systems.</div>
+      <div style="margin-bottom:10px;"><label class="form-label">Region</label>
+        <select class="form-input" id="fx-new-bank-region" onchange="onFXBankRegionChange()">
+          <option value="africa" ${fxBankRegion==='africa'?'selected':''}>Africa</option>
+          <option value="europe" ${fxBankRegion==='europe'?'selected':''}>Europe</option>
+        </select>
+      </div>
+      <div style="margin-bottom:10px;"><label class="form-label">Bank Name</label><input class="form-input" id="fx-new-bank-name" placeholder="e.g. Afriland First Bank"></div>
+      <div id="fx-new-bank-africa-fields" style="${fxBankRegion==='europe'?'display:none;':''}">
+        <div style="margin-bottom:10px;"><label class="form-label">Account Name</label><input class="form-input" id="fx-new-account-name" placeholder="Must match the customer's registered name"></div>
+        <div style="margin-bottom:14px;"><label class="form-label">Account Number</label><input class="form-input" id="fx-new-account-number" placeholder="e.g. 00441200072"></div>
+      </div>
+      <div id="fx-new-bank-europe-fields" style="${fxBankRegion==='africa'?'display:none;':''}">
+        <div style="margin-bottom:10px;"><label class="form-label">IBAN</label><input class="form-input" id="fx-new-bank-iban" placeholder="e.g. EE60 7777 0000 9832 9687" style="font-family:monospace;"></div>
+        <div style="margin-bottom:10px;"><label class="form-label">BIC / SWIFT</label><input class="form-input" id="fx-new-bank-bic" placeholder="e.g. INGBFRPP" style="font-family:monospace;"></div>
+        <div style="margin-bottom:10px;"><label class="form-label">Account Holder Name</label><input class="form-input" id="fx-new-bank-holder-name" placeholder="Must match the customer's registered name"></div>
+        <div style="margin-bottom:14px;"><label class="form-label">Beneficiary Address <span style="color:var(--text-secondary);font-weight:400;">(optional)</span></label><input class="form-input" id="fx-new-bank-holder-address" placeholder="e.g. 14 Rue de la Paix, 75001 Paris, France"></div>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="cancelAddFXBank()">Cancel</button>
+        <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveAddFXBank()">Save Account</button>
+      </div>
+    </div>`;
+}
+function showAddFXBankForm() { fxAddBankFormOpen = true; fxBankRegion = 'africa'; renderFXCustomerDetail(); }
+function cancelAddFXBank() { fxAddBankFormOpen = false; renderFXCustomerDetail(); }
+function onFXBankRegionChange() {
+  fxBankRegion = document.getElementById('fx-new-bank-region').value;
+  document.getElementById('fx-new-bank-africa-fields').style.display = fxBankRegion === 'africa' ? '' : 'none';
+  document.getElementById('fx-new-bank-europe-fields').style.display = fxBankRegion === 'europe' ? '' : 'none';
+}
+function saveAddFXBank() {
+  const region = document.getElementById('fx-new-bank-region').value;
+  const bankName = document.getElementById('fx-new-bank-name').value.trim();
+  if (!bankName) { alert('Bank name is required.'); return; }
+  let acct = { bankName, region };
+  if (region === 'europe') {
+    const iban = document.getElementById('fx-new-bank-iban').value.trim();
+    const bic = document.getElementById('fx-new-bank-bic').value.trim();
+    const holderName = document.getElementById('fx-new-bank-holder-name').value.trim();
+    const holderAddress = document.getElementById('fx-new-bank-holder-address').value.trim();
+    if (!iban || !bic || !holderName) { alert('IBAN, BIC, and Account Holder Name are required.'); return; }
+    acct = { ...acct, iban, bic, holderName, holderAddress, accountName: holderName };
+  } else {
+    const accountName = document.getElementById('fx-new-account-name').value.trim();
+    const accountNumber = document.getElementById('fx-new-account-number').value.trim();
+    if (!accountName || !accountNumber) { alert('Account name and number are required.'); return; }
+    acct = { ...acct, accountName, accountNumber };
+  }
+  FX_CUSTOMERS[currentFXCustomer].bankAccounts.push(acct);
+  fxAddBankFormOpen = false;
+  renderFXCustomerDetail();
+  showToast('✅','Bank Account Added', bankName + ' linked to ' + FX_CUSTOMERS[currentFXCustomer].name + '.');
+}
+function removeFXBank(idx) {
+  if (!confirm('Remove this bank account?')) return;
+  FX_CUSTOMERS[currentFXCustomer].bankAccounts.splice(idx, 1);
+  renderFXCustomerDetail();
+  showToast('🗑️','Bank Account Removed','The account has been unlinked.');
+}
+
+// ─── FX Payment Methods ───────────────────────────────────────────────────────
+const FX_PM = {
+  'pm-001': { name:'Afriland First Bank', type:'bank', country:'Cameroon', currency:'XAF', accountName:'Ejara Finance SA', accountNumber:'00441200072XAF', branchAddress:'Rue Joss, Douala, Cameroon', active:true },
+  'pm-002': { name:'Société Générale',    type:'bank', country:'Cameroon', currency:'XAF', accountName:'Ejara Finance SA', accountNumber:'00441200384XAF', branchAddress:'Boulevard de la Liberté, Douala', active:true },
+  'pm-003': { name:'MTN Mobile Money',    type:'mobile_money', country:'Cameroon', currency:'XAF', accountName:'Ejara Finance', accountNumber:'237 677 000 072', branchAddress:'', active:true },
+};
+let currentFXPM = null;
+let _fxPMFilter = 'all';
+const FX_PM_TYPE_BADGE = { bank:'<span class="bp bp-bank">Bank</span>', mobile_money:'<span class="bp bp-mobile-money">Mobile Money</span>' };
+
+function renderFXPMTable() {
+  const tbody = document.getElementById('fx-pm-tbody');
+  const showTypeCol = _fxPMFilter === 'all';
+  document.getElementById('fx-pm-type-th').style.display = showTypeCol ? '' : 'none';
+  tbody.innerHTML = Object.entries(FX_PM).filter(([id, d]) => _fxPMFilter === 'all' || d.type === _fxPMFilter).map(([id, d]) => `
+    <tr class="clickable" onclick="openFXPM('${id}')">
+      <td style="font-weight:600;">${d.name}</td>
+      <td style="display:${showTypeCol ? '' : 'none'};">${FX_PM_TYPE_BADGE[d.type]}</td>
+      <td>${d.country}</td>
+      <td>${d.currency}</td>
+      <td style="font-size:12px;">${d.accountNumber || '—'}</td>
+      <td>${d.active ? '<span class="bp bp-completed">Active</span>' : '<span class="bp bp-inactive">Inactive</span>'}</td>
+    </tr>
+  `).join('');
+}
+function filterFXPM(type, btn) {
+  _fxPMFilter = type;
+  btn.parentElement.querySelectorAll('.filter-btn:not([disabled])').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFXPMTable();
+}
+function openFXPM(id) {
+  currentFXPM = id;
+  const d = FX_PM[id];
+  document.getElementById('detail-title').textContent = d.name;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-section">
+      <div class="detail-section-title">Details</div>
+      <div class="detail-row"><span class="detail-label">Type</span><span class="detail-value">${FX_PM_TYPE_BADGE[d.type]}</span></div>
+      <div class="detail-row"><span class="detail-label">${d.type === 'bank' ? 'Bank Name' : 'Operator'}</span><span class="detail-value">${d.name}</span></div>
+      <div class="detail-row"><span class="detail-label">Country</span><span class="detail-value">${d.country}</span></div>
+      <div class="detail-row"><span class="detail-label">Currency</span><span class="detail-value">${d.currency}</span></div>
+      <div class="detail-row"><span class="detail-label">Account Name</span><span class="detail-value">${d.accountName}</span></div>
+      <div class="detail-row"><span class="detail-label">${d.type === 'bank' ? 'Account Number' : 'Phone / MSISDN'}</span><span class="detail-value">${d.accountNumber}</span></div>
+      ${d.type === 'bank' ? `<div class="detail-row"><span class="detail-label">Branch Address</span><span class="detail-value">${d.branchAddress || '—'}</span></div>` : ''}
+      <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value">${d.active ? '<span class="bp bp-completed">Active</span>' : '<span class="bp bp-inactive">Inactive</span>'}</span></div>
+    </div>
+    <div class="alert alert-info" style="font-size:12px;">Customers in <strong>${d.country}</strong> will see this payment method when initiating a deposit.</div>
+  `;
+  document.getElementById('detail-actions').innerHTML = `
+    <button class="btn btn-secondary" onclick="toggleFXPMStatus()">${d.active ? 'Deactivate' : 'Activate'}</button>
+    <button class="btn btn-danger" onclick="deleteFXPM()">Delete</button>
+  `;
+  openDetail();
+}
+function toggleFXPMStatus() {
+  const d = FX_PM[currentFXPM];
+  d.active = !d.active;
+  renderFXPMTable();
+  openFXPM(currentFXPM);
+  showToast(d.active ? '✅' : '⏸️', d.active ? 'Method Activated' : 'Method Deactivated', d.name + ' is now ' + (d.active ? 'visible to customers.' : 'hidden from the customer portal.'));
+}
+function deleteFXPM() {
+  if (!confirm('Delete this payment method? Customers will no longer see it.')) return;
+  const name = FX_PM[currentFXPM].name;
+  delete FX_PM[currentFXPM];
+  renderFXPMTable();
+  closeDetail();
+  showToast('🗑️','Payment Method Deleted', name + ' has been removed.');
+}
+const FX_COUNTRY_DATA = {
+  'Cameroon':       { currency: 'XAF', code: '+237', flag: '🇨🇲' },
+  'Côte d\'Ivoire': { currency: 'XOF', code: '+225', flag: '🇨🇮' },
+  'Senegal':        { currency: 'XOF', code: '+221', flag: '🇸🇳' },
+  'Mali':           { currency: 'XOF', code: '+223', flag: '🇲🇱' },
+  'Gabon':          { currency: 'XAF', code: '+241', flag: '🇬🇦' },
+  'Congo':          { currency: 'XAF', code: '+242', flag: '🇨🇬' },
+  'Chad':           { currency: 'XAF', code: '+235', flag: '🇹🇩' },
+  'Burkina Faso':   { currency: 'XOF', code: '+226', flag: '🇧🇫' },
+  'Algeria':        { currency: 'DZD', code: '+213', flag: '🇩🇿' },
+};
+function onFXBankCountryChange() {
+  const country = document.getElementById('add-fx-pm-bank-country').value;
+  const cfg = FX_COUNTRY_DATA[country];
+  const currInput = document.getElementById('add-fx-pm-bank-currency');
+  if (cfg) { currInput.value = cfg.currency; }
+  else { currInput.value = ''; currInput.placeholder = 'e.g. XAF'; }
+}
+function onFXMMCountryChange() {
+  const country = document.getElementById('add-fx-pm-mm-country').value;
+  const cfg = FX_COUNTRY_DATA[country];
+  const prefix = document.getElementById('fx-mm-phone-prefix');
+  if (cfg && cfg.code) { prefix.textContent = cfg.flag + ' ' + cfg.code; prefix.style.color = 'var(--text)'; prefix.style.fontWeight = '600'; }
+  else { prefix.textContent = 'Select country'; prefix.style.color = 'var(--text-secondary)'; prefix.style.fontWeight = ''; }
+}
+function openAddFXPM() {
+  ['add-fx-pm-bank-name','add-fx-pm-bank-account-name','add-fx-pm-bank-account-number','add-fx-pm-branch',
+   'add-fx-pm-mm-operator','add-fx-pm-mm-account-name','add-fx-pm-mm-phone'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('add-fx-pm-bank-country').value = '';
+  document.getElementById('add-fx-pm-mm-country').value = '';
+  document.getElementById('add-fx-pm-bank-currency').value = '';
+  document.getElementById('fx-mm-phone-prefix').textContent = 'Select country';
+  document.getElementById('fx-mm-phone-prefix').style.color = 'var(--text-secondary)';
+  document.getElementById('fx-mm-phone-prefix').style.fontWeight = '';
+  document.getElementById('add-fx-pm-type').value = 'bank';
+  updateFXPMFormFields();
+  document.getElementById('add-fx-pm-modal').classList.add('open');
+}
+function closeAddFXPM() { document.getElementById('add-fx-pm-modal').classList.remove('open'); }
+function updateFXPMFormFields() {
+  const type = document.getElementById('add-fx-pm-type').value;
+  document.getElementById('add-fx-pm-bank-fields').style.display = type === 'bank' ? 'block' : 'none';
+  document.getElementById('add-fx-pm-mm-fields').style.display = type === 'mobile_money' ? 'block' : 'none';
+}
+function saveAddFXPM() {
+  const type = document.getElementById('add-fx-pm-type').value;
+  let name, accountName, accountNumber, branchAddress = '', country, currency;
+  if (type === 'bank') {
+    country = document.getElementById('add-fx-pm-bank-country').value;
+    currency = document.getElementById('add-fx-pm-bank-currency').value.trim() || 'XAF';
+    name = document.getElementById('add-fx-pm-bank-name').value.trim();
+    accountName = document.getElementById('add-fx-pm-bank-account-name').value.trim();
+    accountNumber = document.getElementById('add-fx-pm-bank-account-number').value.trim();
+    branchAddress = document.getElementById('add-fx-pm-branch').value.trim();
+  } else {
+    country = document.getElementById('add-fx-pm-mm-country').value;
+    const cfg = FX_COUNTRY_DATA[country];
+    currency = cfg ? cfg.currency : 'XOF';
+    const prefix = cfg ? cfg.code + ' ' : '';
+    name = document.getElementById('add-fx-pm-mm-operator').value.trim();
+    accountName = document.getElementById('add-fx-pm-mm-account-name').value.trim();
+    accountNumber = prefix + document.getElementById('add-fx-pm-mm-phone').value.trim();
+  }
+  if (!name || !country) { alert('Name and Country are required.'); return; }
+  const id = 'pm-' + Date.now();
+  FX_PM[id] = { name, type, country, currency, accountName, accountNumber, branchAddress, active: true };
+  renderFXPMTable();
+  closeAddFXPM();
+  showToast('✅','Payment Method Added', name + ' is now active.');
+}
+
+// ─── Document viewer ─────────────────────────────────────────────────────────
+const docTemplates = {
+  invoice: {
+    title: 'Commercial Invoice',
+    rows: [['Invoice No.','INV-2026-0847'],['Date','30 June 2026'],['Sender','Mireille Fouda, Yaoundé'],['Recipient','Adaeze Okafor, Lagos, Nigeria'],['Description','Goods — textile supplies'],['Amount','XAF 2,500,000'],['Equivalent','NGN 6,200,000 (rate 2.48)']],
+    stamp: true, pages: 1
+  },
+  deposit: {
+    title: 'Deposit Slip',
+    rows: [['Bank','Société Générale Cameroun'],['Branch','Yaoundé Centre'],['Account','•••• 4421'],['Date','30 June 2026'],['Amount deposited','XAF 2,500,000'],['Cashier ref','SGC-2026-1103892']],
+    stamp: true, pages: 1
+  },
+  mmstatement: {
+    title: 'Mobile Money Statement',
+    rows: [['Account','MTN MoMo +237 6XX XXX XXX'],['Period','April – June 2026'],['Opening balance','XAF 1,240,000'],['Total credits','XAF 14,800,000'],['Total debits','XAF 13,560,000'],['Closing balance','XAF 2,480,000']],
+    stamp: false, pages: 3
+  },
+  receipt: {
+    title: 'Sales / Deposit Receipt',
+    rows: [['Merchant','Kamga General Trading'],['Date','29 June 2026'],['Item','Cash deposit for transfer'],['Amount','XAF 5,000,000'],['Receipt No.','KGT-29062026-009']],
+    stamp: true, pages: 1
+  },
+  tpprm: {
+    title: 'TPPRM Document',
+    rows: [['Document type','Third-Party Payment Risk Management'],['Customer','Bernard Eboule'],['Date issued','15 June 2026'],['Issuing authority','Ejara Compliance'],['Risk rating','Low'],['Validity','12 months']],
+    stamp: true, pages: 2
+  },
+  bankstmt: {
+    title: 'Bank Statement (6 months)',
+    rows: [['Bank','Ecobank Cameroon'],['Account holder','Bernard Eboule'],['Account','•••• 7732'],['Period','Jan – Jun 2026'],['Average monthly balance','XAF 8,200,000'],['Total inflows','XAF 98,400,000']],
+    stamp: false, pages: 4
+  },
+  bankreceipt: {
+    title: 'Bank Transfer Receipt',
+    rows: [['Bank','Société Générale Cameroun'],['Date','30 June 2026'],['Sender','Camtrade SARL'],['Amount','XAF 18,000,000'],['Beneficiary bank','GT Bank Nigeria'],['Transfer ref','SGC-2026-TRF-0044421']],
+    stamp: true, pages: 1
+  },
+};
+
+let dvType = null, dvFilename = '', dvPage = 1, dvPages = 1;
+
+function openDocViewer(filename, type) {
+  const tmpl = docTemplates[type] || { title: filename, rows: [], stamp: false, pages: 1 };
+  dvType = type;
+  dvFilename = filename;
+  dvPage = 1;
+  dvPages = tmpl.pages || 1;
+  document.getElementById('dv-filename').textContent = filename;
+  renderDocPage();
+  document.getElementById('docviewer-overlay').classList.add('open');
+}
+
+function fillerLines(n) {
+  let html = '';
+  for (let i = 0; i < n; i++) {
+    html += `
+    <div class="docviewer-line docviewer-line-lg"></div>
+    <div class="docviewer-line docviewer-line-md" style="margin-top:10px;"></div>
+    <div class="docviewer-line docviewer-line-sm" style="margin-top:10px;margin-bottom:20px;"></div>`;
+  }
+  return html;
+}
+
+function renderDocPage() {
+  const tmpl = docTemplates[dvType] || { title: dvFilename, rows: [], stamp: false, pages: 1 };
+  let bodyHtml;
+
+  if (dvPage === 1) {
+    const rowsHtml = tmpl.rows.map(([l,v]) => `
+    <div class="docviewer-field">
+      <div class="docviewer-field-label">${l}</div>
+      <div class="docviewer-field-value">${v}</div>
+    </div>`).join('');
+    bodyHtml = `
+    <div class="docviewer-doc-title">${tmpl.title}</div>
+    <div class="docviewer-doc-ref">File: ${dvFilename}</div>
+    <hr class="docviewer-divider">
+    ${rowsHtml}
+    <hr class="docviewer-divider">
+    ${fillerLines(1)}
+    ${tmpl.stamp ? '<div class="docviewer-stamp">✓ VERIFIED</div>' : ''}`;
+  } else {
+    bodyHtml = `
+    <div class="docviewer-doc-title">${tmpl.title}</div>
+    <div class="docviewer-doc-ref">File: ${dvFilename} — continued (page ${dvPage} of ${dvPages})</div>
+    <hr class="docviewer-divider">
+    ${fillerLines(4)}`;
+  }
+
+  document.getElementById('dv-content').innerHTML = `
+    <div class="docviewer-page-header">
+      <div class="docviewer-logo">
+        <svg viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="15" fill="#6B47FF"/><path d="M8 18C8 14 11 10 15 9C19 10 22 14 22 18C20 20 17.5 21 15 21C12.5 21 10 20 8 18Z" fill="white" opacity=".9"/><circle cx="15" cy="14" r="3.5" fill="#6B47FF"/></svg>
+        <span class="docviewer-logo-name">ejara</span>
+      </div>
+      <div style="font-size:11px;color:#9CA3AF;">Admin Document Review</div>
+    </div>
+    ${bodyHtml}
+  `;
+
+  document.getElementById('dv-pages').textContent = `Page ${dvPage} of ${dvPages}`;
+  document.getElementById('dv-prev').disabled = dvPage === 1;
+  document.getElementById('dv-next').disabled = dvPage === dvPages;
+}
+
+function dvChangePage(delta) {
+  const next = dvPage + delta;
+  if (next < 1 || next > dvPages) return;
+  dvPage = next;
+  renderDocPage();
+}
+
+function closeDocViewer() {
+  document.getElementById('docviewer-overlay').classList.remove('open');
+}
+document.getElementById('docviewer-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeDocViewer();
+});
+
+// ─── Display base toggle ─────────────────────────────────────────────────────
+let currentBase = 1;
+const BASE_RATES = { ngn: 2.48, cny: 0.0112, aed: 0.0061 };
+function setBase(b) {
+  currentBase = b;
+  ['ngn','cny','aed'].forEach(c => {
+    document.getElementById('lbl-' + c).textContent = (b > 1 ? b.toLocaleString() : '1') + ' XAF =';
+    const raw = BASE_RATES[c] * b;
+    document.getElementById('rate-' + c).value = parseFloat(raw.toPrecision(4));
+  });
+  document.querySelectorAll('#page-cc-rates .base-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('base-' + b).classList.add('active');
+}
+let fxCurrentBase = 1;
+function setFXBase(b) {
+  fxCurrentBase = b;
+  ['ngn','cny','aed'].forEach(c => {
+    document.getElementById('fx-lbl-' + c).textContent = (b > 1 ? b.toLocaleString() : '1') + ' XAF =';
+    const raw = BASE_RATES[c] * b;
+    document.getElementById('fx-rate-' + c).value = parseFloat(raw.toPrecision(4));
+  });
+  document.querySelectorAll('#page-fx-rates .base-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('fx-base-' + b).classList.add('active');
+}
+
+// ─── Rate modal ──────────────────────────────────────────────────────────────
+let countdownTimer = null;
+let pendingCorridorLabel = '';
+let pendingNewRate = '';
+function openRateModal(corridor, inputId) {
+  const oldRates = { NGN: '2.48 NGN', CNY: '0.0112 CNY', AED: '0.0061 AED' };
+  const newVal = parseFloat(document.getElementById(inputId).value);
+  const unit = { NGN:'NGN', CNY:'CNY', AED:'AED' }[corridor];
+  pendingCorridorLabel = 'XAF → ' + corridor;
+  pendingNewRate = newVal.toFixed(corridor === 'NGN' ? 2 : 4) + ' ' + unit;
+  document.getElementById('rate-modal-corridor-label').textContent = 'Corridor: XAF → ' + corridor;
+  document.getElementById('rate-modal-old').textContent = oldRates[corridor];
+  document.getElementById('rate-modal-new').textContent = pendingNewRate;
+  document.getElementById('rate-modal').classList.add('open');
+  let val = 120;
+  document.getElementById('rate-countdown').textContent = val;
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    val--;
+    document.getElementById('rate-countdown').textContent = val;
+    if (val <= 0) { clearInterval(countdownTimer); confirmRate(); }
+  }, 1000);
+}
+function cancelRate()  { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('ℹ️','Rate Change Cancelled','No changes applied.'); }
+function confirmRate() { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('✅','Rate Updated',pendingCorridorLabel + ' → ' + pendingNewRate + ' is now live.'); }
+
+// ─── Toast + badge helpers ────────────────────────────────────────────────────
+function showToast(icon, title, body) {
+  document.getElementById('toast-icon').textContent = icon;
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-body').textContent = body;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+function decBadge(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const v = Math.max(0, parseInt(el.textContent || '0') - 1);
+  el.textContent = v;
+  if (v === 0) el.style.display = 'none';
+}
+
+// ─── FX Business initial render ───────────────────────────────────────────────
+renderFXTxTable();
+renderFXCustomersTable();
+renderFXPMTable();
+</script>
+</body>
+</html>

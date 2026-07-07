@@ -597,9 +597,9 @@
         </select>
         <select class="filter-select" onchange="applyCCFilters(this)">
           <option value="">Destination</option>
-          <option value="XAF → NGN">Nigeria</option>
-          <option value="XAF → AED">Dubai</option>
-          <option value="XAF → CNY">China</option>
+          <option>Nigeria</option>
+          <option>Dubai</option>
+          <option>China</option>
         </select>
         <span class="filter-date-label">From</span>
         <input type="date" class="filter-date">
@@ -610,7 +610,7 @@
       <div class="card" style="overflow-x:auto;">
         <table style="min-width:860px;">
           <thead><tr>
-            <th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount deposited (XAF)</th><th>Amount received</th><th>Corridor</th><th>Status</th><th>Submitted</th><th>Action</th>
+            <th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount deposited (XAF)</th><th>Amount received</th><th>Destination</th><th>Status</th><th>Submitted</th><th>Action</th>
           </tr></thead>
           <tbody>
             <tr class="clickable" onclick="openCCTxDetail('TXN8K2P9QR34M1','PENDING_REVIEW')">
@@ -618,7 +618,7 @@
               <td style="white-space:nowrap;">Mireille Fouda</td><td style="white-space:nowrap;">Adaeze Okafor</td>
               <td style="font-weight:700;white-space:nowrap;">2,500,000</td>
               <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN 6,200,000</td>
-              <td style="white-space:nowrap;">XAF → NGN</td>
+              <td style="white-space:nowrap;">Nigeria</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 09:14</td>
               <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN8K2P9QR34M1','PENDING_REVIEW')">Review</button></td>
@@ -628,7 +628,7 @@
               <td style="white-space:nowrap;">Patrick Eboule</td><td style="white-space:nowrap;">Li Wei Trading Co.</td>
               <td style="font-weight:700;white-space:nowrap;">4,800,000</td>
               <td style="color:var(--green);font-weight:700;white-space:nowrap;">CNY 33,792</td>
-              <td style="white-space:nowrap;">XAF → CNY</td>
+              <td style="white-space:nowrap;">China</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:52</td>
               <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN3X7LH5WC29N','PENDING_REVIEW')">Review</button></td>
@@ -638,7 +638,7 @@
               <td style="white-space:nowrap;">Carine Mbida</td><td style="white-space:nowrap;">Ahmed Al-Farsi</td>
               <td style="font-weight:700;white-space:nowrap;">1,200,000</td>
               <td style="color:var(--green);font-weight:700;white-space:nowrap;">AED 7,320</td>
-              <td style="white-space:nowrap;">XAF → AED</td>
+              <td style="white-space:nowrap;">Dubai</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:30</td>
               <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN5MQ2YD8BT6R','PENDING_REVIEW')">Review</button></td>
@@ -648,7 +648,7 @@
               <td style="white-space:nowrap;">Bertrand Tabi</td><td style="white-space:nowrap;">Chinedu Okoro</td>
               <td style="font-weight:700;white-space:nowrap;">3,100,000</td>
               <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN 7,688,000</td>
-              <td style="white-space:nowrap;">XAF → NGN</td>
+              <td style="white-space:nowrap;">Nigeria</td>
               <td><span class="bp bp-approved">Approved</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 07:40</td>
               <td><button class="btn btn-success" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN9AP4RN1GT7Z','APPROVED')">Complete</button></td>
@@ -658,7 +658,7 @@
               <td style="white-space:nowrap;">Sylvie Nguema</td><td style="white-space:nowrap;">Blessing Adeyemi</td>
               <td style="font-weight:700;white-space:nowrap;">5,000,000</td>
               <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN 12,400,000</td>
-              <td style="white-space:nowrap;">XAF → NGN</td>
+              <td style="white-space:nowrap;">Nigeria</td>
               <td><span class="bp bp-completed">Completed</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Yesterday</td>
               <td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN2BC6KX3PW8L','COMPLETED')">View</button></td>
@@ -969,9 +969,9 @@
         </select>
         <select class="filter-select" onchange="applyCCFilters(this)">
           <option value="">Destination</option>
-          <option value="XAF → NGN">Nigeria</option>
-          <option value="XAF → AED">Dubai</option>
-          <option value="XAF → CNY">China</option>
+          <option>Nigeria</option>
+          <option>Dubai</option>
+          <option>China</option>
         </select>
         <span class="filter-date-label">From</span>
         <input type="date" class="filter-date">
@@ -981,7 +981,7 @@
       </div>
       <div class="card" style="overflow-x:auto;">
         <table style="min-width:820px;">
-          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
+          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
           <tbody id="fx-tx-tbody"></tbody>
         </table>
       </div>
@@ -1582,7 +1582,7 @@ function openCCTxDetail(ref, status) {
       <div class="detail-row"><span class="detail-label">Amount deposited</span><span class="detail-value" style="font-weight:700;">XAF 2,500,000</span></div>
       <div class="detail-row"><span class="detail-label">Amount received</span><span class="detail-value" style="color:var(--green);font-weight:700;">NGN 6,200,000</span></div>
       <div class="detail-row"><span class="detail-label">Crypto volume</span><span class="detail-value">4,166.67 USDT</span></div>
-      <div class="detail-row"><span class="detail-label">Corridor</span><span class="detail-value">XAF → NGN</span></div>
+      <div class="detail-row"><span class="detail-label">Destination</span><span class="detail-value">Nigeria</span></div>
       <div class="detail-row"><span class="detail-label">Rate applied</span><span class="detail-value">1 XAF = 2.48 NGN</span></div>
       <div class="detail-row"><span class="detail-label">Reason</span><span class="detail-value">Goods — textile supplies (Invoice INV-2026-0847)</span></div>
     </div>
@@ -1825,6 +1825,7 @@ const FX_TX = {
   'BTXR-260005': { customer:'Paul Nguemo',    beneName:'Kemi Supplies Ltd',     beneBank:'UBA Nigeria',            beneAcct:'0056473829', amount:'2,419,355', dest:'6,000,000',  crypto:'4,032.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 09:02', status:'APPROVED', reason:'Payment for equipment supplies' },
   'BTXR-260006': { customer:'Hervé Tchinda',  beneName:'Biodun Trading Co.',    beneBank:'Fidelity Bank Nigeria',  beneAcct:'0072819364', amount:'1,612,903', dest:'4,000,000',  crypto:'2,688.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 13:10', status:'INITIATED', reason:'Payment for trading goods' },
 };
+const CORRIDOR_DESTINATION = { 'XAF → NGN':'Nigeria', 'XAF → AED':'Dubai', 'XAF → CNY':'China' };
 const FX_TX_STATUS_LABEL = { INITIATED:'Initiated', PENDING_REVIEW:'Pending Review', APPROVED:'Approved', COMPLETED:'Completed', REJECTED:'Rejected' };
 const FX_TX_STATUS_CLASS = { INITIATED:'bp-initiated', PENDING_REVIEW:'bp-pending', APPROVED:'bp-approved', COMPLETED:'bp-completed', REJECTED:'bp-rejected' };
 const FX_TX_ACTION_LABEL = { INITIATED:'View', PENDING_REVIEW:'Review', APPROVED:'Complete', COMPLETED:'View', REJECTED:'View' };
@@ -1839,6 +1840,7 @@ function renderFXTxTable() {
       <td style="white-space:nowrap;">${t.beneName}</td>
       <td style="font-weight:700;white-space:nowrap;">XAF ${t.amount}</td>
       <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN ${t.dest}</td>
+      <td style="white-space:nowrap;">${CORRIDOR_DESTINATION[t.corridor] || t.corridor}</td>
       <td><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${t.date}</td>
       <td><button class="btn ${FX_TX_ACTION_CLASS[t.status]}" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openFXTxDetail('${ref}')">${FX_TX_ACTION_LABEL[t.status]}</button></td>
@@ -1860,7 +1862,7 @@ function openFXTxDetail(ref) {
       <div class="detail-row"><span class="detail-label">Amount Deposited</span><span class="detail-value" style="font-weight:700;">XAF ${t.amount}</span></div>
       <div class="detail-row"><span class="detail-label">Amount to Receive</span><span class="detail-value" style="color:var(--green);font-weight:700;">NGN ${t.dest}</span></div>
       <div class="detail-row"><span class="detail-label">Crypto volume (to beneficiary)</span><span class="detail-value">${t.crypto} USDT</span></div>
-      <div class="detail-row"><span class="detail-label">Corridor</span><span class="detail-value">${t.corridor}</span></div>
+      <div class="detail-row"><span class="detail-label">Destination</span><span class="detail-value">${CORRIDOR_DESTINATION[t.corridor] || t.corridor}</span></div>
       <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value">${t.rate}</span></div>
       <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value">${t.date}</span></div>
       <div class="detail-row"><span class="detail-label">Reason</span><span class="detail-value">${t.reason}</span></div>

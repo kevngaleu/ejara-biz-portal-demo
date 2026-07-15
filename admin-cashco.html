@@ -610,7 +610,7 @@
       <div class="card" style="overflow-x:auto;">
         <table style="min-width:1180px;">
           <thead><tr>
-            <th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount deposited (XAF)</th><th>Amount received</th><th>Destination</th><th>Stock Price (XAF/USDC)</th><th>Sell Price (XAF/USDC)</th><th>Margin (XAF)</th><th>Doc</th><th>Status</th><th>Submitted</th><th>Action</th>
+            <th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount deposited (XAF)</th><th>Amount received</th><th>Destination</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Status</th><th>Submitted</th><th>Action</th>
           </tr></thead>
           <tbody>
             <tr class="clickable" onclick="openCCTxDetail('TXN8K2P9QR34M1','PENDING_REVIEW')">
@@ -622,7 +622,6 @@
               <td style="white-space:nowrap;">589</td>
               <td style="white-space:nowrap;">601</td>
               <td style="font-weight:600;white-space:nowrap;">45,833</td>
-              <td style="white-space:nowrap;">✓</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 09:14</td>
               <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN8K2P9QR34M1','PENDING_REVIEW')">Review</button></td>
@@ -636,7 +635,6 @@
               <td style="white-space:nowrap;">589</td>
               <td style="white-space:nowrap;">601</td>
               <td style="font-weight:600;white-space:nowrap;">95,609</td>
-              <td style="white-space:nowrap;">✓</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:52</td>
               <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN3X7LH5WC29N','PENDING_REVIEW')">Review</button></td>
@@ -650,7 +648,6 @@
               <td style="white-space:nowrap;">589</td>
               <td style="white-space:nowrap;">601</td>
               <td style="font-weight:600;white-space:nowrap;">23,962</td>
-              <td style="white-space:nowrap;">✓</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:30</td>
               <td><button class="btn btn-primary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN5MQ2YD8BT6R','PENDING_REVIEW')">Review</button></td>
@@ -664,7 +661,6 @@
               <td style="white-space:nowrap;">589</td>
               <td style="white-space:nowrap;">601</td>
               <td style="font-weight:600;white-space:nowrap;">61,898</td>
-              <td style="white-space:nowrap;">✓</td>
               <td><span class="bp bp-approved">Approved</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 07:40</td>
               <td><button class="btn btn-success" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN9AP4RN1GT7Z','APPROVED')">Complete</button></td>
@@ -678,7 +674,6 @@
               <td style="white-space:nowrap;">589</td>
               <td style="white-space:nowrap;">601</td>
               <td style="font-weight:600;white-space:nowrap;">99,831</td>
-              <td style="white-space:nowrap;">✓</td>
               <td><span class="bp bp-completed">Completed</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Yesterday</td>
               <td><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openCCTxDetail('TXN2BC6KX3PW8L','COMPLETED')">View</button></td>
@@ -1001,7 +996,7 @@
       </div>
       <div class="card" style="overflow-x:auto;">
         <table style="min-width:1400px;">
-          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Stock Price (XAF/USDC)</th><th>Sell Price (XAF/USDC)</th><th>Margin (XAF)</th><th>Route</th><th>Override</th><th>Doc</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
+          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Route</th><th>Margin Rate Applied</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
           <tbody id="fx-tx-tbody"></tbody>
         </table>
       </div>
@@ -1625,8 +1620,8 @@ function openCCTxDetail(ref, status) {
       <div class="detail-row"><span class="detail-label">Crypto volume</span><span class="detail-value">4,166.67 USDT</span></div>
       <div class="detail-row"><span class="detail-label">Destination</span><span class="detail-value">Nigeria</span></div>
       <div class="detail-row"><span class="detail-label">Rate applied</span><span class="detail-value">1 XAF = 2.48 NGN</span></div>
-      <div class="detail-row"><span class="detail-label">Stock Price (XAF/USDC)</span><span class="detail-value">589</span></div>
-      <div class="detail-row"><span class="detail-label">Sell Price (XAF/USDC)</span><span class="detail-value">601</span></div>
+      <div class="detail-row"><span class="detail-label">Stock Price (USDC/XAF)</span><span class="detail-value">589</span></div>
+      <div class="detail-row"><span class="detail-label">Sell Price (USDC/XAF)</span><span class="detail-value">601</span></div>
       <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" style="font-weight:700;">45,833</span></div>
       <div class="detail-row"><span class="detail-label">Reason</span><span class="detail-value">Goods — textile supplies (Invoice INV-2026-0847)</span></div>
     </div>
@@ -1868,7 +1863,7 @@ const FX_TX = {
   'BTXR-260004': { customer:'Fatima Bello',   beneName:'Lagos Goods Ltd',       beneBank:'First Bank Nigeria',     beneAcct:'0038291746', amount:'1,209,677', dest:'3,000,000',  crypto:'2,016.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 14:20', status:'REJECTED', reason:'Payment for imported goods', stockPrice:null, sellPrice:null, margin:null, route:null, override:null, docUploaded:false },
   'BTXR-260005': { customer:'Paul Nguemo',    beneName:'Kemi Supplies Ltd',     beneBank:'UBA Nigeria',            beneAcct:'0056473829', amount:'2,419,355', dest:'6,000,000',  crypto:'4,032.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 09:02', status:'APPROVED', reason:'Payment for equipment supplies', stockPrice:'589', sellPrice:'595', margin:'11,800', route:'Manual', override:'1% (override)', docUploaded:true },
   'BTXR-260006': { customer:'Hervé Tchinda',  beneName:'Biodun Trading Co.',    beneBank:'Fidelity Bank Nigeria',  beneAcct:'0072819364', amount:'1,612,903', dest:'4,000,000',  crypto:'2,688.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 13:10', status:'INITIATED', reason:'Payment for trading goods', stockPrice:null, sellPrice:null, margin:null, route:null, override:null, docUploaded:false },
-  'BTXR-260007': { customer:'Julienne Abanda', beneName:'Shenzhen Parts Co.',   beneBank:'Bank of China',          beneAcct:'0099371050', amount:'1,500,000', dest:'16,500',     crypto:'2,500.00', corridor:'XAF → CNY', rate:'1 XAF = 0.011 CNY', date:'26 Mar 2026, 15:47', status:'APPROVED', reason:'Payment for electronics components', stockPrice:'589', sellPrice:'601', margin:'27,500', route:'Provider', override:'2% (default)', docUploaded:false },
+  'BTXR-260007': { customer:'Julienne Abanda', beneName:'Shenzhen Parts Co.',   beneBank:'Bank of China',          beneAcct:'0099371050', amount:'1,500,000', dest:'16,500',     crypto:'2,500.00', corridor:'XAF → CNY', rate:'1 XAF = 0.011 CNY', date:'26 Mar 2026, 15:47', status:'APPROVED', reason:'Payment for electronics components', stockPrice:'589', sellPrice:'601', margin:'27,500', route:'CPN', override:'2% (default)', docUploaded:false },
 };
 const CORRIDOR_DESTINATION = { 'XAF → NGN':'Nigeria', 'XAF → AED':'Dubai', 'XAF → CNY':'China' };
 const CORRIDOR_CURRENCY = { 'XAF → NGN':'NGN', 'XAF → AED':'AED', 'XAF → CNY':'CNY' };
@@ -1890,9 +1885,8 @@ function renderFXTxTable() {
       <td style="white-space:nowrap;">${t.stockPrice || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;">${t.sellPrice || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="font-weight:600;white-space:nowrap;${t.absorbed ? 'color:var(--red);' : ''}">${t.margin != null ? t.margin : '<span style="color:var(--text-secondary);">—</span>'}</td>
-      <td style="white-space:nowrap;${t.route === 'Provider' ? 'font-weight:600;' : ''}">${t.route || '<span style="color:var(--text-secondary);">—</span>'}</td>
+      <td style="white-space:nowrap;${t.route === 'CPN' ? 'font-weight:600;' : ''}">${t.route || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;${t.override && t.override.includes('override') ? 'font-weight:600;color:var(--purple);' : 'color:var(--text-secondary);'}">${t.override || '<span style="color:var(--text-secondary);">—</span>'}</td>
-      <td style="white-space:nowrap;${t.docUploaded === false && t.route ? 'color:var(--red);' : ''}">${t.route ? (t.docUploaded ? '✓' : '✗') : '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${t.date}</td>
       <td><button class="btn ${FX_TX_ACTION_CLASS[t.status]}" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openFXTxDetail('${ref}')">${FX_TX_ACTION_LABEL[t.status]}</button></td>
@@ -1921,12 +1915,11 @@ function openFXTxDetail(ref) {
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Pricing &amp; Margin</div>
-      <div class="detail-row"><span class="detail-label">Stock Price (XAF/USDC)</span><span class="detail-value">${t.stockPrice || '—'}</span></div>
-      <div class="detail-row"><span class="detail-label">Sell Price (XAF/USDC)</span><span class="detail-value">${t.sellPrice || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Stock Price (USDC/XAF)</span><span class="detail-value">${t.stockPrice || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Sell Price (USDC/XAF)</span><span class="detail-value">${t.sellPrice || '—'}</span></div>
       <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" style="${t.absorbed ? 'color:var(--red);' : ''}">${t.margin != null ? t.margin : '—'}</span></div>
       <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value">${t.route || '—'}</span></div>
-      <div class="detail-row"><span class="detail-label">Override</span><span class="detail-value">${t.override || '—'}</span></div>
-      <div class="detail-row"><span class="detail-label">Supporting Document</span><span class="detail-value">${t.route ? (t.docUploaded ? '<span class="bp bp-approved">✓ Uploaded</span>' : '<span class="bp bp-rejected">✗ Missing</span>') : '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Margin Rate Applied</span><span class="detail-value">${t.override || '—'}</span></div>
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Customer</div>

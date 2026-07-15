@@ -416,13 +416,20 @@
       </div>
       <div class="card">
         <div style="overflow-x:auto;">
-          <table style="min-width:600px;">
+          <table style="min-width:1400px;">
             <thead><tr>
               <th>Reference</th>
               <th>Customer</th>
               <th>Beneficiary</th>
               <th>Amount Deposited</th>
               <th>Amount to Receive</th>
+              <th>Corridor</th>
+              <th>Stock Price (XAF/USDC)</th>
+              <th>Sell Price (XAF/USDC)</th>
+              <th>Margin (XAF)</th>
+              <th>Route</th>
+              <th>Override</th>
+              <th>Doc</th>
               <th>Status</th>
               <th>Date &amp; Time</th>
               <th></th>
@@ -434,6 +441,13 @@
                 <td style="font-weight:600;white-space:nowrap;">Chukwudi Electronics</td>
                 <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
+                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">589</td>
+                <td style="white-space:nowrap;">601</td>
+                <td style="font-weight:600;white-space:nowrap;">38,089</td>
+                <td style="white-space:nowrap;">Manual</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;">✓</td>
                 <td id="tx-row-status-tx-001"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 11:34</td>
                 <td id="tx-row-action-tx-001"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
@@ -444,6 +458,13 @@
                 <td style="font-weight:600;white-space:nowrap;">Adeola Suppliers Ltd</td>
                 <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
+                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">605</td>
+                <td style="white-space:nowrap;">601</td>
+                <td style="font-weight:600;white-space:nowrap;color:var(--red);">-33,342</td>
+                <td style="white-space:nowrap;">Manual</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;">✓</td>
                 <td id="tx-row-status-tx-002"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 10:15</td>
                 <td id="tx-row-action-tx-002"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
@@ -454,6 +475,13 @@
                 <td style="font-weight:600;white-space:nowrap;">Emeka Traders</td>
                 <td style="font-weight:600;white-space:nowrap;">806,452 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">2,000,000 NGN</td>
+                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">589</td>
+                <td style="white-space:nowrap;">601</td>
+                <td style="font-weight:600;white-space:nowrap;">14,836</td>
+                <td style="white-space:nowrap;">Manual</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;">✓</td>
                 <td id="tx-row-status-tx-003"><span class="status-badge status-completed">Completed</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 16:48</td>
                 <td id="tx-row-action-tx-003"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
@@ -464,6 +492,13 @@
                 <td style="font-weight:600;white-space:nowrap;">Lagos Goods Ltd</td>
                 <td style="font-weight:600;white-space:nowrap;">1,209,677 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">3,000,000 NGN</td>
+                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td id="tx-row-status-tx-004"><span class="status-badge status-rejected">Rejected</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 14:20</td>
                 <td id="tx-row-action-tx-004"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
@@ -474,6 +509,13 @@
                 <td style="font-weight:600;white-space:nowrap;">Kemi Supplies Ltd</td>
                 <td style="font-weight:600;white-space:nowrap;">2,419,355 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">6,000,000 NGN</td>
+                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">589</td>
+                <td style="white-space:nowrap;">595</td>
+                <td style="font-weight:600;white-space:nowrap;">11,800</td>
+                <td style="white-space:nowrap;">Manual</td>
+                <td style="white-space:nowrap;font-weight:600;color:var(--purple);">1% (override)</td>
+                <td style="white-space:nowrap;">✓</td>
                 <td id="tx-row-status-tx-005"><span class="status-badge status-approved">Approved</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 09:02</td>
                 <td id="tx-row-action-tx-005"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-005')">Complete</button></td>
@@ -484,9 +526,33 @@
                 <td style="font-weight:600;white-space:nowrap;">Biodun Trading Co.</td>
                 <td style="font-weight:600;white-space:nowrap;">1,612,903 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">4,000,000 NGN</td>
+                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td id="tx-row-status-tx-006"><span class="status-badge status-initiated">Initiated</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 13:10</td>
                 <td id="tx-row-action-tx-006"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-006')">View</button></td>
+              </tr>
+              <tr onclick="openTX('tx-007')" style="cursor:pointer;">
+                <td style="font-weight:600;font-family:monospace;font-size:12px;white-space:nowrap;">BTXR-260007</td>
+                <td style="font-weight:600;white-space:nowrap;">Julienne Abanda</td>
+                <td style="font-weight:600;white-space:nowrap;">Shenzhen Parts Co.</td>
+                <td style="font-weight:600;white-space:nowrap;">1,500,000 XAF</td>
+                <td style="font-weight:600;color:var(--green);white-space:nowrap;">16,500 CNY</td>
+                <td style="white-space:nowrap;">CMR → CHN</td>
+                <td style="white-space:nowrap;">589</td>
+                <td style="white-space:nowrap;">601</td>
+                <td style="font-weight:600;white-space:nowrap;">27,500</td>
+                <td style="white-space:nowrap;font-weight:600;">Provider</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;color:var(--red);">✗</td>
+                <td id="tx-row-status-tx-007"><span class="status-badge status-approved">Approved</span></td>
+                <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 15:47</td>
+                <td id="tx-row-action-tx-007"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-007')">Complete</button></td>
               </tr>
             </tbody>
           </table>
@@ -499,6 +565,24 @@
       <div style="margin-bottom:24px;">
         <div style="font-size:20px;font-weight:700;">Exchange Rates</div>
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Set retail rates per corridor. Changes apply to all new quotes immediately.</div>
+      </div>
+      <div class="card" style="margin-bottom:20px;border:1.5px solid var(--purple-mid);">
+        <div class="card-header">
+          <div>
+            <div class="card-title">USDC Stock Margin Rate</div>
+            <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">This is the default margin applied on top of the USDC stock price (Sell Price = Stock Price × (1 + margin)) when crediting a customer's wallet. Separate from the per-corridor retail rates below.</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="rate-row">
+            <div><div class="rate-corridor">USDC Stock Margin</div><div class="rate-sub" id="margin-rate-sub">Applies to all new quotes across every corridor · Admins can still override this per transaction (see Transactions)</div></div>
+            <div class="rate-input-wrap">
+              <input class="rate-input" type="number" value="2" step="0.1" min="0" id="margin-rate-input" data-committed="2" style="max-width:80px;">
+              <span style="font-size:13px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveMarginRate()">Save</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="card">
         <div class="card-header">
@@ -743,6 +827,28 @@
   </div>
 </div>
 
+<!-- USDC STOCK MARGIN CONFIRMATION MODAL -->
+<div class="modal-overlay" id="margin-rate-modal-overlay">
+  <div class="modal-box" style="width:420px;">
+    <div class="rate-modal-icon">📈</div>
+    <div class="rate-modal-title">Confirm USDC Stock Margin Change</div>
+    <div class="rate-modal-body">You are about to update the default USDC stock margin rate, applied across all corridors:</div>
+    <div class="rate-modal-change">
+      <div style="font-weight:700;font-size:15px;margin-bottom:10px;">USDC Stock Margin</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">Current rate</div><div style="font-size:18px;font-weight:700;color:var(--text-secondary);" id="margin-modal-old-rate">—</div></div>
+        <div style="font-size:20px;color:var(--text-light);">→</div>
+        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">New rate</div><div style="font-size:18px;font-weight:700;color:var(--purple);" id="margin-modal-new-rate">—</div></div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);text-align:center;">This changes the default margin used to price new quotes on the USDC stock price. Per-transaction admin overrides are not affected.</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-lg" onclick="cancelMarginRateModal()">Cancel</button>
+      <button class="btn btn-primary btn-lg" onclick="confirmMarginRateModal()">Confirm Update</button>
+    </div>
+  </div>
+</div>
+
 <!-- TX DETAIL PANEL -->
 <div class="detail-overlay" id="tx-overlay" onclick="closeTX()"></div>
 <div class="detail-panel" id="tx-panel">
@@ -760,6 +866,15 @@
       <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value" id="tx-rate">—</span></div>
       <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value" id="tx-date">—</span></div>
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value" id="tx-status">—</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Pricing &amp; Margin</div>
+      <div class="detail-row"><span class="detail-label">Stock Price (XAF/USDC)</span><span class="detail-value" id="tx-stock-price">—</span></div>
+      <div class="detail-row"><span class="detail-label">Sell Price (XAF/USDC)</span><span class="detail-value" id="tx-sell-price">—</span></div>
+      <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" id="tx-margin">—</span></div>
+      <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value" id="tx-route">—</span></div>
+      <div class="detail-row"><span class="detail-label">Override</span><span class="detail-value" id="tx-override">—</span></div>
+      <div class="detail-row"><span class="detail-label">Supporting Document</span><span class="detail-value" id="tx-doc">—</span></div>
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Beneficiary</div>
@@ -1115,12 +1230,13 @@
 
   // ─── TX DATA ───
   const txData = {
-    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', crypto: '3,360 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789' },
-    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', crypto: '6,720 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421' },
-    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', crypto: '1,344 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122' },
-    'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', crypto: '2,016 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833' },
-    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', crypto: '4,032 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390' },
-    'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', crypto: '2,688 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714' },
+    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', crypto: '3,360 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789', stockPrice: '589', sellPrice: '601', margin: '38,089', route: 'Manual', override: '2% (default)', docUploaded: true },
+    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', crypto: '6,720 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421', stockPrice: '605', sellPrice: '601', margin: '-33,342', absorbed: true, route: 'Manual', override: '2% (default)', docUploaded: true },
+    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', crypto: '1,344 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122', stockPrice: '589', sellPrice: '601', margin: '14,836', route: 'Manual', override: '2% (default)', docUploaded: true },
+    'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', crypto: '2,016 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
+    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', crypto: '4,032 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390', stockPrice: '589', sellPrice: '595', margin: '11,800', route: 'Manual', override: '1% (override)', docUploaded: true },
+    'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', crypto: '2,688 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
+    'tx-007': { ref: 'BTXR-260007', customer: 'Julienne Abanda', amount: '1,500,000 XAF', dest: '16,500 CNY', crypto: '2,500 USDT', rate: '1 XAF = 0.011 CNY', corridor: 'CMR → CHN', date: 'Mar 26, 2026 · 15:47', status: 'approved', beneName: 'Shenzhen Parts Co.', beneBank: 'Bank of China', beneAcct: '****5510', stockPrice: '589', sellPrice: '601', margin: '27,500', route: 'Provider', override: '2% (default)', docUploaded: false },
   };
 
   let currentTX = null, rejectTXMode = false;
@@ -1134,6 +1250,16 @@
     document.getElementById('tx-dest').textContent = d.dest;
     document.getElementById('tx-rate').textContent = d.rate;
     document.getElementById('tx-date').textContent = d.date;
+    document.getElementById('tx-stock-price').textContent = d.stockPrice || '—';
+    document.getElementById('tx-sell-price').textContent = d.sellPrice || '—';
+    const marginEl = document.getElementById('tx-margin');
+    if (d.margin) {
+      marginEl.textContent = d.margin;
+      marginEl.style.color = d.absorbed ? 'var(--red)' : '';
+    } else { marginEl.textContent = '—'; marginEl.style.color = ''; }
+    document.getElementById('tx-route').textContent = d.route || '—';
+    document.getElementById('tx-override').textContent = d.override || '—';
+    document.getElementById('tx-doc').innerHTML = d.docUploaded ? '<span class="badge-pill badge-approved">✓ Uploaded</span>' : '<span class="badge-pill badge-rejected">✗ Missing</span>';
     const statusMap = {
       initiated: '<span class="status-badge status-initiated">Initiated</span>',
       pending: '<span class="badge-pill badge-review">Pending Review</span>',
@@ -1642,6 +1768,33 @@
     document.getElementById('rate-modal-overlay').classList.remove('open');
     _pendingRate = null;
     showToast('📈', 'Rate updated', `1 XAF → ${corridor} is now ${newPerUnit.toFixed(dec)}`);
+  }
+
+  let _pendingMarginRate = null;
+  function saveMarginRate() {
+    const input = document.getElementById('margin-rate-input');
+    const newRate = parseFloat(input.value);
+    const oldRate = parseFloat(input.dataset.committed);
+    _pendingMarginRate = { oldRate, newRate };
+    document.getElementById('margin-modal-old-rate').textContent = oldRate + '%';
+    document.getElementById('margin-modal-new-rate').textContent = newRate + '%';
+    document.getElementById('margin-rate-modal-overlay').classList.add('open');
+  }
+  function cancelMarginRateModal() { document.getElementById('margin-rate-modal-overlay').classList.remove('open'); _pendingMarginRate = null; }
+  function confirmMarginRateModal() {
+    if (!_pendingMarginRate) return;
+    const { oldRate, newRate } = _pendingMarginRate;
+    const input = document.getElementById('margin-rate-input');
+    input.dataset.committed = newRate;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const tbody = document.getElementById('audit-tbody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td style="font-weight:600;white-space:nowrap;">USDC Stock Margin</td><td style="color:var(--text-secondary);white-space:nowrap;">${oldRate}%</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newRate}%</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>`;
+    tbody.insertBefore(tr, tbody.firstChild);
+    document.getElementById('margin-rate-modal-overlay').classList.remove('open');
+    _pendingMarginRate = null;
+    showToast('📈', 'Margin rate updated', `Default USDC stock margin is now ${newRate}%`);
   }
 
   // ─── BADGES ───

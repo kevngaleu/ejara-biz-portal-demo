@@ -1109,6 +1109,15 @@
               <textarea class="form-input" id="transfer-reason" rows="2" placeholder="e.g. Payment for electronic goods — invoice #INV-2045" style="resize:none;line-height:1.6;"></textarea>
             </div>
 
+            <div class="form-group" style="margin-bottom:24px;">
+              <div class="form-label" style="margin-bottom:6px;">Supporting document <span style="color:var(--text-secondary);font-weight:400;">(required)</span></div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">A document justifying this payment — e.g. a supplier bill, purchase order, or a funding request to a subsidiary.</div>
+              <div id="reason-doc-upload-zone" style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;color:var(--text-secondary);font-size:13px;" onclick="document.getElementById('reason-doc-file-input').click()">
+                📎 Click to upload — image or PDF
+              </div>
+              <input type="file" id="reason-doc-file-input" accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="handleReasonDocUpload(this)">
+            </div>
+
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <button class="btn btn-secondary btn-lg" onclick="goStep(3)" data-i18n="back">← Back</button>
               <button class="btn btn-primary btn-lg" onclick="submitPayment()">Confirm & Continue →</button>
@@ -1286,6 +1295,7 @@
             <div class="review-row"><span class="review-label">Bank</span><span class="review-value" id="modal-bene-bank">GTBank Nigeria</span></div>
             <div class="review-row"><span class="review-label">Account</span><span class="review-value" id="modal-bene-acct">0123456789</span></div>
             <div class="review-row"><span class="review-label">Reason</span><span class="review-value" id="modal-transfer-reason" style="color:var(--text-secondary);font-weight:400;">—</span></div>
+            <div class="review-row"><span class="review-label">Supporting document</span><span class="review-value" id="modal-reason-doc" style="color:var(--text-secondary);font-weight:400;">—</span></div>
           </div>
 
           <div class="form-group" id="reject-reason-group" style="display:none">
@@ -1934,6 +1944,7 @@
 
     state.transferReason = document.getElementById('transfer-reason').value || '—';
     addToHistory(p, state.selectedBene);
+    state.reasonDocName = state.reasonDocName || null;
     goStep(5);
     showToast('📋', 'Transfer confirmed', 'Choose your deposit method and upload your proof.');
   }
@@ -2003,6 +2014,15 @@
       const zone = document.getElementById('proof-upload-zone');
       zone.innerHTML = '📎 ' + input.files[0].name + ' <span style="color:var(--green);font-weight:600;">✓ Uploaded</span>';
       zone.style.borderColor = 'var(--green)';
+    }
+  }
+
+  function handleReasonDocUpload(input) {
+    if (input.files.length) {
+      const zone = document.getElementById('reason-doc-upload-zone');
+      zone.innerHTML = '📎 ' + input.files[0].name + ' <span style="color:var(--green);font-weight:600;">✓ Uploaded</span>';
+      zone.style.borderColor = 'var(--green)';
+      state.reasonDocName = input.files[0].name;
     }
   }
 
@@ -2108,6 +2128,7 @@
     document.getElementById('modal-bene-bank').textContent = p.bene.bank;
     document.getElementById('modal-bene-acct').textContent = p.bene.acct;
     document.getElementById('modal-transfer-reason').textContent = p.reason || state.transferReason || '—';
+    document.getElementById('modal-reason-doc').textContent = state.reasonDocName || '—';
     document.getElementById('reject-reason-group').style.display = 'none';
     document.getElementById('approve-confirm-btn').textContent = '✓ Approve Payment';
     document.getElementById('approval-modal').classList.add('open');

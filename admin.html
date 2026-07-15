@@ -404,7 +404,7 @@
           <option>Approved</option><option>Completed</option><option>Rejected</option>
         </select>
         <select class="form-input" style="max-width:160px;padding:8px 12px;font-size:13px;">
-          <option>All corridors</option><option>XAF → NGN</option><option>XAF → CNY</option><option>XAF → AED</option>
+          <option>All destinations</option><option>Nigeria</option><option>China</option><option>Dubai</option>
         </select>
         <div style="display:flex;align-items:center;gap:6px;">
           <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">From</span>
@@ -423,7 +423,7 @@
               <th>Beneficiary</th>
               <th>Amount Deposited</th>
               <th>Amount to Receive</th>
-              <th>Corridor</th>
+              <th>Destination</th>
               <th>Stock Price (XAF/USDC)</th>
               <th>Sell Price (XAF/USDC)</th>
               <th>Margin (XAF)</th>
@@ -441,7 +441,7 @@
                 <td style="font-weight:600;white-space:nowrap;">Chukwudi Electronics</td>
                 <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
-                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;">38,089</td>
@@ -458,7 +458,7 @@
                 <td style="font-weight:600;white-space:nowrap;">Adeola Suppliers Ltd</td>
                 <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
-                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;">605</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--red);">-33,342</td>
@@ -475,7 +475,7 @@
                 <td style="font-weight:600;white-space:nowrap;">Emeka Traders</td>
                 <td style="font-weight:600;white-space:nowrap;">806,452 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">2,000,000 NGN</td>
-                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;">14,836</td>
@@ -492,7 +492,7 @@
                 <td style="font-weight:600;white-space:nowrap;">Lagos Goods Ltd</td>
                 <td style="font-weight:600;white-space:nowrap;">1,209,677 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">3,000,000 NGN</td>
-                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
@@ -509,7 +509,7 @@
                 <td style="font-weight:600;white-space:nowrap;">Kemi Supplies Ltd</td>
                 <td style="font-weight:600;white-space:nowrap;">2,419,355 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">6,000,000 NGN</td>
-                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">595</td>
                 <td style="font-weight:600;white-space:nowrap;">11,800</td>
@@ -526,7 +526,7 @@
                 <td style="font-weight:600;white-space:nowrap;">Biodun Trading Co.</td>
                 <td style="font-weight:600;white-space:nowrap;">1,612,903 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">4,000,000 NGN</td>
-                <td style="white-space:nowrap;">CMR → NGA</td>
+                <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
@@ -543,7 +543,7 @@
                 <td style="font-weight:600;white-space:nowrap;">Shenzhen Parts Co.</td>
                 <td style="font-weight:600;white-space:nowrap;">1,500,000 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">16,500 CNY</td>
-                <td style="white-space:nowrap;">CMR → CHN</td>
+                <td style="white-space:nowrap;">China</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;">27,500</td>
@@ -1230,13 +1230,13 @@
 
   // ─── TX DATA ───
   const txData = {
-    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', crypto: '3,360 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789', stockPrice: '589', sellPrice: '601', margin: '38,089', route: 'Manual', override: '2% (default)', docUploaded: true },
-    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', crypto: '6,720 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421', stockPrice: '605', sellPrice: '601', margin: '-33,342', absorbed: true, route: 'Manual', override: '2% (default)', docUploaded: true },
-    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', crypto: '1,344 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122', stockPrice: '589', sellPrice: '601', margin: '14,836', route: 'Manual', override: '2% (default)', docUploaded: true },
-    'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', crypto: '2,016 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
-    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', crypto: '4,032 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390', stockPrice: '589', sellPrice: '595', margin: '11,800', route: 'Manual', override: '1% (override)', docUploaded: true },
-    'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', crypto: '2,688 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'CMR → NGA', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
-    'tx-007': { ref: 'BTXR-260007', customer: 'Julienne Abanda', amount: '1,500,000 XAF', dest: '16,500 CNY', crypto: '2,500 USDT', rate: '1 XAF = 0.011 CNY', corridor: 'CMR → CHN', date: 'Mar 26, 2026 · 15:47', status: 'approved', beneName: 'Shenzhen Parts Co.', beneBank: 'Bank of China', beneAcct: '****5510', stockPrice: '589', sellPrice: '601', margin: '27,500', route: 'Provider', override: '2% (default)', docUploaded: false },
+    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', crypto: '3,360 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789', stockPrice: '589', sellPrice: '601', margin: '38,089', route: 'Manual', override: '2% (default)', docUploaded: true },
+    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', crypto: '6,720 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421', stockPrice: '605', sellPrice: '601', margin: '-33,342', absorbed: true, route: 'Manual', override: '2% (default)', docUploaded: true },
+    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', crypto: '1,344 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122', stockPrice: '589', sellPrice: '601', margin: '14,836', route: 'Manual', override: '2% (default)', docUploaded: true },
+    'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', crypto: '2,016 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
+    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', crypto: '4,032 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390', stockPrice: '589', sellPrice: '595', margin: '11,800', route: 'Manual', override: '1% (override)', docUploaded: true },
+    'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', crypto: '2,688 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
+    'tx-007': { ref: 'BTXR-260007', customer: 'Julienne Abanda', amount: '1,500,000 XAF', dest: '16,500 CNY', crypto: '2,500 USDT', rate: '1 XAF = 0.011 CNY', corridor: 'China', date: 'Mar 26, 2026 · 15:47', status: 'approved', beneName: 'Shenzhen Parts Co.', beneBank: 'Bank of China', beneAcct: '****5510', stockPrice: '589', sellPrice: '601', margin: '27,500', route: 'Provider', override: '2% (default)', docUploaded: false },
   };
 
   let currentTX = null, rejectTXMode = false;

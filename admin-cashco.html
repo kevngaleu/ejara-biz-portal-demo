@@ -1000,8 +1000,8 @@
         <button class="btn btn-secondary filter-export" onclick="showToast('📥','Export started','CSV will be ready in a few seconds.')">↓ Export CSV</button>
       </div>
       <div class="card" style="overflow-x:auto;">
-        <table style="min-width:820px;">
-          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
+        <table style="min-width:1400px;">
+          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Stock Price (XAF/USDC)</th><th>Sell Price (XAF/USDC)</th><th>Margin (XAF)</th><th>Route</th><th>Override</th><th>Doc</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
           <tbody id="fx-tx-tbody"></tbody>
         </table>
       </div>
@@ -1056,6 +1056,27 @@
     <!-- ·· FX RATES ·· -->
     <div id="page-fx-rates" class="content" style="display:none;">
       <div class="alert alert-warn"><span>⏱</span><div>Rate changes enter a <strong>120-second confirmation window</strong> before going live. Any in-progress transactions use the rate locked at submission time.</div></div>
+      <div class="card" style="margin-bottom:20px;border:1.5px solid var(--purple-mid);">
+        <div class="card-header">
+          <div>
+            <div class="card-title">USDC Stock Margin Rate</div>
+            <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">This is the default margin applied on top of the USDC stock price (Sell Price = Stock Price × (1 + margin)) when crediting a customer's wallet. Separate from the per-corridor retail rates below.</div>
+          </div>
+        </div>
+        <div style="padding:0 22px 22px;">
+          <div class="rate-row" style="border-bottom:none;">
+            <div>
+              <div class="rate-corridor">USDC Stock Margin</div>
+              <div class="rate-sub">Applies to all new quotes across every corridor · Admins can still override this per transaction (see Transactions)</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input class="rate-input" id="fx-margin-rate-input" type="number" value="2" step="0.1" min="0" data-committed="2" style="max-width:80px;">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openFXMarginRateModal()">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-header">
           <div class="card-title">Current Rates — FX Business</div>
@@ -1841,14 +1862,16 @@ function completeRefund(ref) {
 
 // ─── FX Transactions ──────────────────────────────────────────────────────────
 const FX_TX = {
-  'BTXR-260001': { customer:'Aminata Diallo', beneName:'Chukwudi Electronics',  beneBank:'GTBank Nigeria',        beneAcct:'0041827364', amount:'2,016,129', dest:'5,000,000',  crypto:'3,360.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 11:34', status:'PENDING_REVIEW', reason:'Payment for electronic goods — invoice #INV-2045' },
-  'BTXR-260002': { customer:'Martin Foka',    beneName:'Adeola Suppliers Ltd',  beneBank:'Zenith Bank Nigeria',    beneAcct:'0087736452', amount:'4,032,258', dest:'10,000,000', crypto:'6,720.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 10:15', status:'PENDING_REVIEW', reason:'Payment for textile supplies' },
-  'BTXR-260003': { customer:'Alice Mbarga',   beneName:'Emeka Traders',         beneBank:'Access Bank Nigeria',    beneAcct:'0019283746', amount:'806,452',   dest:'2,000,000',  crypto:'1,344.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 16:48', status:'COMPLETED', reason:'Payment for retail goods' },
-  'BTXR-260004': { customer:'Fatima Bello',   beneName:'Lagos Goods Ltd',       beneBank:'First Bank Nigeria',     beneAcct:'0038291746', amount:'1,209,677', dest:'3,000,000',  crypto:'2,016.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 14:20', status:'REJECTED', reason:'Payment for imported goods' },
-  'BTXR-260005': { customer:'Paul Nguemo',    beneName:'Kemi Supplies Ltd',     beneBank:'UBA Nigeria',            beneAcct:'0056473829', amount:'2,419,355', dest:'6,000,000',  crypto:'4,032.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 09:02', status:'APPROVED', reason:'Payment for equipment supplies' },
-  'BTXR-260006': { customer:'Hervé Tchinda',  beneName:'Biodun Trading Co.',    beneBank:'Fidelity Bank Nigeria',  beneAcct:'0072819364', amount:'1,612,903', dest:'4,000,000',  crypto:'2,688.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 13:10', status:'INITIATED', reason:'Payment for trading goods' },
+  'BTXR-260001': { customer:'Aminata Diallo', beneName:'Chukwudi Electronics',  beneBank:'GTBank Nigeria',        beneAcct:'0041827364', amount:'2,016,129', dest:'5,000,000',  crypto:'3,360.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 11:34', status:'PENDING_REVIEW', reason:'Payment for electronic goods — invoice #INV-2045', stockPrice:'589', sellPrice:'601', margin:'38,089', route:'Manual', override:'2% (default)', docUploaded:true },
+  'BTXR-260002': { customer:'Martin Foka',    beneName:'Adeola Suppliers Ltd',  beneBank:'Zenith Bank Nigeria',    beneAcct:'0087736452', amount:'4,032,258', dest:'10,000,000', crypto:'6,720.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 10:15', status:'PENDING_REVIEW', reason:'Payment for textile supplies', stockPrice:'605', sellPrice:'601', margin:'-33,342', absorbed:true, route:'Manual', override:'2% (default)', docUploaded:true },
+  'BTXR-260003': { customer:'Alice Mbarga',   beneName:'Emeka Traders',         beneBank:'Access Bank Nigeria',    beneAcct:'0019283746', amount:'806,452',   dest:'2,000,000',  crypto:'1,344.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 16:48', status:'COMPLETED', reason:'Payment for retail goods', stockPrice:'589', sellPrice:'601', margin:'14,836', route:'Manual', override:'2% (default)', docUploaded:true },
+  'BTXR-260004': { customer:'Fatima Bello',   beneName:'Lagos Goods Ltd',       beneBank:'First Bank Nigeria',     beneAcct:'0038291746', amount:'1,209,677', dest:'3,000,000',  crypto:'2,016.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 14:20', status:'REJECTED', reason:'Payment for imported goods', stockPrice:null, sellPrice:null, margin:null, route:null, override:null, docUploaded:false },
+  'BTXR-260005': { customer:'Paul Nguemo',    beneName:'Kemi Supplies Ltd',     beneBank:'UBA Nigeria',            beneAcct:'0056473829', amount:'2,419,355', dest:'6,000,000',  crypto:'4,032.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 09:02', status:'APPROVED', reason:'Payment for equipment supplies', stockPrice:'589', sellPrice:'595', margin:'11,800', route:'Manual', override:'1% (override)', docUploaded:true },
+  'BTXR-260006': { customer:'Hervé Tchinda',  beneName:'Biodun Trading Co.',    beneBank:'Fidelity Bank Nigeria',  beneAcct:'0072819364', amount:'1,612,903', dest:'4,000,000',  crypto:'2,688.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 13:10', status:'INITIATED', reason:'Payment for trading goods', stockPrice:null, sellPrice:null, margin:null, route:null, override:null, docUploaded:false },
+  'BTXR-260007': { customer:'Julienne Abanda', beneName:'Shenzhen Parts Co.',   beneBank:'Bank of China',          beneAcct:'0099371050', amount:'1,500,000', dest:'16,500',     crypto:'2,500.00', corridor:'XAF → CNY', rate:'1 XAF = 0.011 CNY', date:'26 Mar 2026, 15:47', status:'APPROVED', reason:'Payment for electronics components', stockPrice:'589', sellPrice:'601', margin:'27,500', route:'Provider', override:'2% (default)', docUploaded:false },
 };
 const CORRIDOR_DESTINATION = { 'XAF → NGN':'Nigeria', 'XAF → AED':'Dubai', 'XAF → CNY':'China' };
+const CORRIDOR_CURRENCY = { 'XAF → NGN':'NGN', 'XAF → AED':'AED', 'XAF → CNY':'CNY' };
 const FX_TX_STATUS_LABEL = { INITIATED:'Initiated', PENDING_REVIEW:'Pending Review', APPROVED:'Approved', COMPLETED:'Completed', REJECTED:'Rejected' };
 const FX_TX_STATUS_CLASS = { INITIATED:'bp-initiated', PENDING_REVIEW:'bp-pending', APPROVED:'bp-approved', COMPLETED:'bp-completed', REJECTED:'bp-rejected' };
 const FX_TX_ACTION_LABEL = { INITIATED:'View', PENDING_REVIEW:'Review', APPROVED:'Complete', COMPLETED:'View', REJECTED:'View' };
@@ -1862,8 +1885,14 @@ function renderFXTxTable() {
       <td style="white-space:nowrap;">${t.customer}</td>
       <td style="white-space:nowrap;">${t.beneName}</td>
       <td style="font-weight:700;white-space:nowrap;">XAF ${t.amount}</td>
-      <td style="color:var(--green);font-weight:700;white-space:nowrap;">NGN ${t.dest}</td>
+      <td style="color:var(--green);font-weight:700;white-space:nowrap;">${CORRIDOR_CURRENCY[t.corridor] || 'NGN'} ${t.dest}</td>
       <td style="white-space:nowrap;">${CORRIDOR_DESTINATION[t.corridor] || t.corridor}</td>
+      <td style="white-space:nowrap;">${t.stockPrice || '<span style="color:var(--text-secondary);">—</span>'}</td>
+      <td style="white-space:nowrap;">${t.sellPrice || '<span style="color:var(--text-secondary);">—</span>'}</td>
+      <td style="font-weight:600;white-space:nowrap;${t.absorbed ? 'color:var(--red);' : ''}">${t.margin != null ? t.margin : '<span style="color:var(--text-secondary);">—</span>'}</td>
+      <td style="white-space:nowrap;${t.route === 'Provider' ? 'font-weight:600;' : ''}">${t.route || '<span style="color:var(--text-secondary);">—</span>'}</td>
+      <td style="white-space:nowrap;${t.override && t.override.includes('override') ? 'font-weight:600;color:var(--purple);' : 'color:var(--text-secondary);'}">${t.override || '<span style="color:var(--text-secondary);">—</span>'}</td>
+      <td style="white-space:nowrap;${t.docUploaded === false && t.route ? 'color:var(--red);' : ''}">${t.route ? (t.docUploaded ? '✓' : '✗') : '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${t.date}</td>
       <td><button class="btn ${FX_TX_ACTION_CLASS[t.status]}" style="font-size:11px;padding:4px 10px;" onclick="event.stopPropagation();openFXTxDetail('${ref}')">${FX_TX_ACTION_LABEL[t.status]}</button></td>
@@ -1883,12 +1912,21 @@ function openFXTxDetail(ref) {
       <div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value" style="font-family:monospace;">${ref}</span></div>
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value"><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></span></div>
       <div class="detail-row"><span class="detail-label">Amount Deposited</span><span class="detail-value" style="font-weight:700;">XAF ${t.amount}</span></div>
-      <div class="detail-row"><span class="detail-label">Amount to Receive</span><span class="detail-value" style="color:var(--green);font-weight:700;">NGN ${t.dest}</span></div>
+      <div class="detail-row"><span class="detail-label">Amount to Receive</span><span class="detail-value" style="color:var(--green);font-weight:700;">${CORRIDOR_CURRENCY[t.corridor] || 'NGN'} ${t.dest}</span></div>
       <div class="detail-row"><span class="detail-label">Crypto volume (to beneficiary)</span><span class="detail-value">${t.crypto} USDT</span></div>
       <div class="detail-row"><span class="detail-label">Destination</span><span class="detail-value">${CORRIDOR_DESTINATION[t.corridor] || t.corridor}</span></div>
       <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value">${t.rate}</span></div>
       <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value">${t.date}</span></div>
       <div class="detail-row"><span class="detail-label">Reason</span><span class="detail-value">${t.reason}</span></div>
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Pricing &amp; Margin</div>
+      <div class="detail-row"><span class="detail-label">Stock Price (XAF/USDC)</span><span class="detail-value">${t.stockPrice || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Sell Price (XAF/USDC)</span><span class="detail-value">${t.sellPrice || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" style="${t.absorbed ? 'color:var(--red);' : ''}">${t.margin != null ? t.margin : '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value">${t.route || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Override</span><span class="detail-value">${t.override || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Supporting Document</span><span class="detail-value">${t.route ? (t.docUploaded ? '<span class="bp bp-approved">✓ Uploaded</span>' : '<span class="bp bp-rejected">✗ Missing</span>') : '—'}</span></div>
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Customer</div>
@@ -2443,6 +2481,27 @@ function openRateModal(corridor, inputId) {
 }
 function cancelRate()  { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('ℹ️','Rate Change Cancelled','No changes applied.'); }
 function confirmRate() { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('✅','Rate Updated',pendingCorridorLabel + ' → ' + pendingNewRate + ' is now live.'); }
+
+function openFXMarginRateModal() {
+  const input = document.getElementById('fx-margin-rate-input');
+  const oldRate = parseFloat(input.dataset.committed);
+  const newRate = parseFloat(input.value);
+  input.dataset.committed = newRate;
+  pendingCorridorLabel = 'USDC Stock Margin';
+  pendingNewRate = newRate + '%';
+  document.getElementById('rate-modal-corridor-label').textContent = 'USDC Stock Margin Rate';
+  document.getElementById('rate-modal-old').textContent = oldRate + '%';
+  document.getElementById('rate-modal-new').textContent = pendingNewRate;
+  document.getElementById('rate-modal').classList.add('open');
+  let val = 120;
+  document.getElementById('rate-countdown').textContent = val;
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    val--;
+    document.getElementById('rate-countdown').textContent = val;
+    if (val <= 0) { clearInterval(countdownTimer); confirmRate(); }
+  }, 1000);
+}
 
 // ─── Toast + badge helpers ────────────────────────────────────────────────────
 function showToast(icon, title, body) {

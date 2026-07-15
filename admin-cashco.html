@@ -1863,7 +1863,7 @@ const FX_TX = {
   'BTXR-260004': { customer:'Fatima Bello',   beneName:'Lagos Goods Ltd',       beneBank:'First Bank Nigeria',     beneAcct:'0038291746', amount:'1,209,677', dest:'3,000,000',  crypto:'2,016.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'25 Mar 2026, 14:20', status:'REJECTED', reason:'Payment for imported goods', stockPrice:null, sellPrice:null, margin:null, route:null, override:null, docUploaded:false },
   'BTXR-260005': { customer:'Paul Nguemo',    beneName:'Kemi Supplies Ltd',     beneBank:'UBA Nigeria',            beneAcct:'0056473829', amount:'2,419,355', dest:'6,000,000',  crypto:'4,032.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 09:02', status:'APPROVED', reason:'Payment for equipment supplies', stockPrice:'589', sellPrice:'595', margin:'11,800', route:'Manual', override:'1%', docUploaded:true },
   'BTXR-260006': { customer:'Hervé Tchinda',  beneName:'Biodun Trading Co.',    beneBank:'Fidelity Bank Nigeria',  beneAcct:'0072819364', amount:'1,612,903', dest:'4,000,000',  crypto:'2,688.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 13:10', status:'INITIATED', reason:'Payment for trading goods', stockPrice:null, sellPrice:null, margin:null, route:null, override:null, docUploaded:false },
-  'BTXR-260007': { customer:'Julienne Abanda', beneName:'Shenzhen Parts Co.',   beneBank:'Bank of China',          beneAcct:'0099371050', amount:'1,500,000', dest:'16,500',     crypto:'2,500.00', corridor:'XAF → CNY', rate:'1 XAF = 0.011 CNY', date:'26 Mar 2026, 15:47', status:'APPROVED', reason:'Payment for electronics components', stockPrice:'589', sellPrice:'601', margin:'27,500', route:'CPN', override:'2%', docUploaded:false },
+  'BTXR-260007': { customer:'Julienne Abanda', beneName:'Shenzhen Parts Co.',   beneBank:'Bank of China',          beneAcct:'0099371050', amount:'1,500,000', dest:'16,500',     crypto:'2,500.00', corridor:'XAF → CNY', rate:'1 XAF = 0.011 CNY', date:'26 Mar 2026, 15:47', status:'APPROVED', reason:'Payment for electronics components', stockPrice:'589', sellPrice:'601', margin:'27,500', route:'CPN', override:'2%', docUploaded:false, cpnRateInit:'1 USDC = 6.60 CNY', cpnRateRequote:'1 USDC = 6.62 CNY' },
 };
 const CORRIDOR_DESTINATION = { 'XAF → NGN':'Nigeria', 'XAF → AED':'Dubai', 'XAF → CNY':'China' };
 const CORRIDOR_CURRENCY = { 'XAF → NGN':'NGN', 'XAF → AED':'AED', 'XAF → CNY':'CNY' };
@@ -1918,8 +1918,10 @@ function openFXTxDetail(ref) {
       <div class="detail-row"><span class="detail-label">Stock Price (USDC/XAF)</span><span class="detail-value">${t.stockPrice || '—'}</span></div>
       <div class="detail-row"><span class="detail-label">Sell Price (USDC/XAF)</span><span class="detail-value">${t.sellPrice || '—'}</span></div>
       <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" style="${t.absorbed ? 'color:var(--red);' : ''}">${t.margin != null ? t.margin : '—'}</span></div>
-      <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value">${t.route || '—'}</span></div>
       <div class="detail-row"><span class="detail-label">Margin Rate</span><span class="detail-value">${t.override || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value">${t.route || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">CPN Rate at Initiation</span><span class="detail-value">${t.cpnRateInit || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">CPN Rate at Requote</span><span class="detail-value">${t.cpnRateRequote || '—'}</span></div>
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Customer</div>

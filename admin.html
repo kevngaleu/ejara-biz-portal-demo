@@ -428,7 +428,7 @@
               <th>Sell Price (USDC/XAF)</th>
               <th>Margin (XAF)</th>
               <th>Route</th>
-              <th>Margin Rate Applied</th>
+              <th>Margin Rate</th>
               <th>Status</th>
               <th>Date &amp; Time</th>
               <th></th>
@@ -445,7 +445,7 @@
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;">38,089</td>
                 <td style="white-space:nowrap;">Manual</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td id="tx-row-status-tx-001"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 11:34</td>
                 <td id="tx-row-action-tx-001"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
@@ -461,7 +461,7 @@
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--red);">-33,342</td>
                 <td style="white-space:nowrap;">Manual</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td id="tx-row-status-tx-002"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 10:15</td>
                 <td id="tx-row-action-tx-002"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
@@ -477,7 +477,7 @@
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;">14,836</td>
                 <td style="white-space:nowrap;">Manual</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td id="tx-row-status-tx-003"><span class="status-badge status-completed">Completed</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 16:48</td>
                 <td id="tx-row-action-tx-003"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
@@ -509,7 +509,7 @@
                 <td style="white-space:nowrap;">595</td>
                 <td style="font-weight:600;white-space:nowrap;">11,800</td>
                 <td style="white-space:nowrap;">Manual</td>
-                <td style="white-space:nowrap;font-weight:600;color:var(--purple);">1% (override)</td>
+                <td style="white-space:nowrap;font-weight:600;color:var(--purple);">1%</td>
                 <td id="tx-row-status-tx-005"><span class="status-badge status-approved">Approved</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 09:02</td>
                 <td id="tx-row-action-tx-005"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-005')">Complete</button></td>
@@ -541,7 +541,7 @@
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;">27,500</td>
                 <td style="white-space:nowrap;font-weight:600;">CPN</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">2% (default)</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td id="tx-row-status-tx-007"><span class="status-badge status-approved">Approved</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 15:47</td>
                 <td id="tx-row-action-tx-007"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-007')">Complete</button></td>
@@ -865,7 +865,7 @@
       <div class="detail-row"><span class="detail-label">Sell Price (USDC/XAF)</span><span class="detail-value" id="tx-sell-price">—</span></div>
       <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" id="tx-margin">—</span></div>
       <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value" id="tx-route">—</span></div>
-      <div class="detail-row"><span class="detail-label">Margin Rate Applied</span><span class="detail-value" id="tx-override">—</span></div>
+      <div class="detail-row"><span class="detail-label">Margin Rate</span><span class="detail-value" id="tx-override">—</span></div>
     </div>
     <div class="detail-section">
       <div class="detail-section-title">Beneficiary</div>
@@ -1221,13 +1221,13 @@
 
   // ─── TX DATA ───
   const txData = {
-    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', crypto: '3,360 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789', stockPrice: '589', sellPrice: '601', margin: '38,089', route: 'Manual', override: '2% (default)', docUploaded: true },
-    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', crypto: '6,720 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421', stockPrice: '605', sellPrice: '601', margin: '-33,342', absorbed: true, route: 'Manual', override: '2% (default)', docUploaded: true },
-    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', crypto: '1,344 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122', stockPrice: '589', sellPrice: '601', margin: '14,836', route: 'Manual', override: '2% (default)', docUploaded: true },
+    'tx-001': { ref: 'BTXR-260001', customer: 'Aminata Diallo', amount: '2,016,129 XAF', dest: '5,000,000 NGN', crypto: '3,360 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 11:34', status: 'pending', beneName: 'Chukwudi Electronics', beneBank: 'GTBank Nigeria', beneAcct: '****6789', stockPrice: '589', sellPrice: '601', margin: '38,089', route: 'Manual', override: '2%', docUploaded: true },
+    'tx-002': { ref: 'BTXR-260002', customer: 'Martin Foka', amount: '4,032,258 XAF', dest: '10,000,000 NGN', crypto: '6,720 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 10:15', status: 'pending', beneName: 'Adeola Suppliers Ltd', beneBank: 'Zenith Bank Nigeria', beneAcct: '****4421', stockPrice: '605', sellPrice: '601', margin: '-33,342', absorbed: true, route: 'Manual', override: '2%', docUploaded: true },
+    'tx-003': { ref: 'BTXR-260003', customer: 'Alice Mbarga', amount: '806,452 XAF', dest: '2,000,000 NGN', crypto: '1,344 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 25, 2026 · 16:48', status: 'completed', beneName: 'Emeka Traders', beneBank: 'Access Bank Nigeria', beneAcct: '****1122', stockPrice: '589', sellPrice: '601', margin: '14,836', route: 'Manual', override: '2%', docUploaded: true },
     'tx-004': { ref: 'BTXR-260004', customer: 'Fatima Bello', amount: '1,209,677 XAF', dest: '3,000,000 NGN', crypto: '2,016 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 25, 2026 · 14:20', status: 'rejected', beneName: 'Lagos Goods Ltd', beneBank: 'First Bank Nigeria', beneAcct: '****8833', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
-    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', crypto: '4,032 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390', stockPrice: '589', sellPrice: '595', margin: '11,800', route: 'Manual', override: '1% (override)', docUploaded: true },
+    'tx-005': { ref: 'BTXR-260005', customer: 'Paul Nguemo', amount: '2,419,355 XAF', dest: '6,000,000 NGN', crypto: '4,032 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 09:02', status: 'approved', beneName: 'Kemi Supplies Ltd', beneBank: 'UBA Nigeria', beneAcct: '****3390', stockPrice: '589', sellPrice: '595', margin: '11,800', route: 'Manual', override: '1%', docUploaded: true },
     'tx-006': { ref: 'BTXR-260006', customer: 'Hervé Tchinda', amount: '1,612,903 XAF', dest: '4,000,000 NGN', crypto: '2,688 USDT', rate: '1 XAF = 2.48 NGN', corridor: 'Nigeria', date: 'Mar 26, 2026 · 13:10', status: 'initiated', beneName: 'Biodun Trading Co.', beneBank: 'Fidelity Bank Nigeria', beneAcct: '****7714', stockPrice: null, sellPrice: null, margin: null, route: null, override: null, docUploaded: false },
-    'tx-007': { ref: 'BTXR-260007', customer: 'Julienne Abanda', amount: '1,500,000 XAF', dest: '16,500 CNY', crypto: '2,500 USDT', rate: '1 XAF = 0.011 CNY', corridor: 'China', date: 'Mar 26, 2026 · 15:47', status: 'approved', beneName: 'Shenzhen Parts Co.', beneBank: 'Bank of China', beneAcct: '****5510', stockPrice: '589', sellPrice: '601', margin: '27,500', route: 'CPN', override: '2% (default)', docUploaded: false },
+    'tx-007': { ref: 'BTXR-260007', customer: 'Julienne Abanda', amount: '1,500,000 XAF', dest: '16,500 CNY', crypto: '2,500 USDT', rate: '1 XAF = 0.011 CNY', corridor: 'China', date: 'Mar 26, 2026 · 15:47', status: 'approved', beneName: 'Shenzhen Parts Co.', beneBank: 'Bank of China', beneAcct: '****5510', stockPrice: '589', sellPrice: '601', margin: '27,500', route: 'CPN', override: '2%', docUploaded: false },
   };
 
   let currentTX = null, rejectTXMode = false;

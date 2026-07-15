@@ -443,7 +443,7 @@
                 <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
-                <td style="font-weight:600;white-space:nowrap;">38,089</td>
+                <td style="font-weight:600;white-space:nowrap;color:var(--green);">38,089</td>
                 <td style="white-space:nowrap;">Manual</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td id="tx-row-status-tx-001"><span class="status-badge status-pending-review">Pending Review</span></td>
@@ -475,7 +475,7 @@
                 <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
-                <td style="font-weight:600;white-space:nowrap;">14,836</td>
+                <td style="font-weight:600;white-space:nowrap;color:var(--green);">14,836</td>
                 <td style="white-space:nowrap;">Manual</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td id="tx-row-status-tx-003"><span class="status-badge status-completed">Completed</span></td>
@@ -507,7 +507,7 @@
                 <td style="white-space:nowrap;">Nigeria</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">595</td>
-                <td style="font-weight:600;white-space:nowrap;">11,800</td>
+                <td style="font-weight:600;white-space:nowrap;color:var(--green);">11,800</td>
                 <td style="white-space:nowrap;">Manual</td>
                 <td style="white-space:nowrap;font-weight:600;color:var(--purple);">1%</td>
                 <td id="tx-row-status-tx-005"><span class="status-badge status-approved">Approved</span></td>
@@ -539,7 +539,7 @@
                 <td style="white-space:nowrap;">China</td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
-                <td style="font-weight:600;white-space:nowrap;">27,500</td>
+                <td style="font-weight:600;white-space:nowrap;color:var(--green);">27,500</td>
                 <td style="white-space:nowrap;font-weight:600;">CPN</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td id="tx-row-status-tx-007"><span class="status-badge status-approved">Approved</span></td>
@@ -1248,7 +1248,7 @@
     const marginEl = document.getElementById('tx-margin');
     if (d.margin) {
       marginEl.textContent = d.margin;
-      marginEl.style.color = d.absorbed ? 'var(--red)' : '';
+      marginEl.style.color = d.absorbed ? 'var(--red)' : 'var(--green)';
     } else { marginEl.textContent = '—'; marginEl.style.color = ''; }
     document.getElementById('tx-route').textContent = d.route || '—';
     document.getElementById('tx-override').textContent = d.override || '—';

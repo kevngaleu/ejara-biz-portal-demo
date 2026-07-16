@@ -149,9 +149,6 @@
     .input-with-icon .form-input { padding-right: 48px; }
     .input-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); font-size: 16px; }
 
-    .amount-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: end; margin-bottom: 8px; }
-    .swap-icon { width: 36px; height: 36px; background: var(--purple-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--purple); font-size: 16px; margin-bottom: 2px; border: none; transition: all .2s; }
-    .swap-icon:hover { background: var(--purple-mid); }
     .currency-badge { display: flex; align-items: center; gap: 6px; padding: 10px 14px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; font-weight: 600; font-size: 13px; margin-top: 6px; }
     .flag { font-size: 18px; }
 
@@ -863,27 +860,14 @@
               </select>
             </div>
 
-            <div class="form-label" style="margin-bottom:12px;">Amount</div>
-            <div style="display:grid;grid-template-columns:1fr 40px 1fr;gap:12px;align-items:end;margin-bottom:6px;">
-              <div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;" data-i18n="youSend">You send</div>
-                <div style="display:flex;gap:0;">
-                  <div class="currency-badge" style="border-right:none;border-radius:8px 0 0 8px;padding:10px 12px;">🇨🇲 XAF</div>
-                  <input class="form-input" id="xaf-input" type="number" placeholder="0" style="border-radius:0 8px 8px 0;border-left:none;" oninput="calcFromXAF(this.value)">
-                </div>
+            <div class="form-group">
+              <div class="form-label" data-i18n="beneficiaryReceives">Beneficiary receives</div>
+              <div style="display:flex;gap:0;">
+                <input class="form-input" id="dest-input" type="number" placeholder="0" style="border-radius:8px 0 0 8px;border-right:none;" oninput="calcFromDest(this.value)">
+                <div class="currency-badge" id="dest-currency-badge" style="border-left:none;border-radius:0 8px 8px 0;padding:10px 12px;">🇳🇬 NGN</div>
               </div>
-              <div style="display:flex;align-items:center;justify-content:center;padding-bottom:2px;">
-                <button class="swap-icon" onclick="swapAmounts()">⇄</button>
-              </div>
-              <div>
-                <div style="font-size:11px;color:var(--text-secondary);margin-bottom:6px;" data-i18n="beneficiaryReceives">Beneficiary receives</div>
-                <div style="display:flex;gap:0;">
-                  <div class="currency-badge" id="dest-currency-badge" style="border-right:none;border-radius:8px 0 0 8px;padding:10px 12px;">🇳🇬 NGN</div>
-                  <input class="form-input" id="dest-input" type="number" placeholder="0" style="border-radius:0 8px 8px 0;border-left:none;" oninput="calcFromDest(this.value)">
-                </div>
-              </div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">We don't have a live rate until you get a quote — the amount you'll need to deposit is shown on the next step.</div>
             </div>
-            <div style="text-align:center;font-size:12px;color:var(--text-secondary);margin-bottom:20px;" id="rate-hint">Live rate: 1 XAF = <span id="rate-display">2.48</span> <span id="dest-currency-label">NGN</span></div>
 
             <button class="btn btn-primary btn-lg" onclick="getQuote()" id="get-quote-btn" disabled data-i18n="getQuote">Get Quote →</button>
           </div>
@@ -1814,41 +1798,21 @@
     state.quoteData.destFlag = flag;
     state.quoteData.rate = rate;
     document.getElementById('dest-currency-badge').textContent = flag + ' ' + currency;
-    document.getElementById('rate-display').textContent = rate;
-    document.getElementById('dest-currency-label').textContent = currency;
-    // Recalc
-    const xaf = parseFloat(document.getElementById('xaf-input').value);
-    if (xaf) calcFromXAF(xaf);
-  }
-
-  function calcFromXAF(val) {
-    const rate = state.quoteData.rate;
-    const dest = Math.round(val * rate);
-    document.getElementById('dest-input').value = dest || '';
-    state.quoteData.xaf = parseFloat(val) || 0;
-    state.quoteData.dest = dest;
-    document.getElementById('get-quote-btn').disabled = !val || val <= 0;
+    // Recalc from whatever beneficiary amount is already entered
+    const dest = parseFloat(document.getElementById('dest-input').value);
+    if (dest) calcFromDest(dest);
   }
 
   function calcFromDest(val) {
     const rate = state.quoteData.rate;
     const xaf = Math.round(val / rate);
-    document.getElementById('xaf-input').value = xaf || '';
     state.quoteData.dest = parseFloat(val) || 0;
     state.quoteData.xaf = xaf;
     document.getElementById('get-quote-btn').disabled = !val || val <= 0;
   }
 
-  function swapAmounts() {
-    const x = document.getElementById('xaf-input').value;
-    const d = document.getElementById('dest-input').value;
-    document.getElementById('xaf-input').value = d;
-    document.getElementById('dest-input').value = x;
-    if (d) calcFromXAF(d);
-  }
-
   function getQuote() {
-    const xaf = state.quoteData.xaf || parseFloat(document.getElementById('xaf-input').value);
+    const xaf = state.quoteData.xaf;
     const dest = state.quoteData.dest || parseFloat(document.getElementById('dest-input').value);
     const rate = state.quoteData.rate;
     const currency = state.quoteData.destCurrency;
@@ -2183,7 +2147,6 @@
 
   function resetTransfer() {
     clearInterval(state.timerInterval);
-    document.getElementById('xaf-input').value = '';
     document.getElementById('dest-input').value = '';
     document.getElementById('get-quote-btn').disabled = true;
     state.selectedBene = { name: 'Chukwudi Electronics', bank: 'GTBank Nigeria', acct: '0123456789' };

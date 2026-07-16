@@ -851,12 +851,12 @@
           <div class="card-body">
             <div class="form-group">
               <div class="form-label" data-i18n="destinationCountry">Destination Country</div>
-              <select class="form-input form-select" id="dest-country" onchange="updateDestCurrency()">
-                <option value="NG" data-currency="NGN" data-flag="🇳🇬" data-rate="2.48">Nigeria (NGN)</option>
-                <option value="CN" data-currency="CNY" data-flag="🇨🇳" data-rate="0.0071">China (CNY)</option>
-                <option value="AE" data-currency="AED" data-flag="🇦🇪" data-rate="0.0091">Dubai / UAE (AED)</option>
-                <option value="GB" data-currency="GBP" data-flag="🇬🇧" data-rate="0.00079">United Kingdom (GBP)</option>
-                <option value="FR" data-currency="EUR" data-flag="🇫🇷" data-rate="0.00152">Europe (EUR)</option>
+              <select class="form-input form-select" id="dest-country" onchange="updateDestCountry()">
+                <option value="NG" data-flag="🇳🇬">Nigeria</option>
+                <option value="CN" data-flag="🇨🇳">China</option>
+                <option value="AE" data-flag="🇦🇪">Dubai / UAE</option>
+                <option value="GB" data-flag="🇬🇧">United Kingdom</option>
+                <option value="FR" data-flag="🇫🇷">Europe</option>
               </select>
             </div>
 
@@ -864,7 +864,7 @@
               <div class="form-label" data-i18n="beneficiaryReceives">Beneficiary receives</div>
               <div style="display:flex;gap:0;">
                 <input class="form-input" id="dest-input" type="number" placeholder="0" style="border-radius:8px 0 0 8px;border-right:none;" oninput="calcFromDest(this.value)">
-                <div class="currency-badge" id="dest-currency-badge" style="border-left:none;border-radius:0 8px 8px 0;padding:10px 12px;">🇳🇬 NGN</div>
+                <select class="form-input" id="dest-currency-select" onchange="updateDestCurrencyFromSelect()" style="border-left:none;border-radius:0 8px 8px 0;max-width:100px;font-weight:600;flex:none;"></select>
               </div>
               <div style="font-size:12px;color:var(--text-secondary);margin-top:8px;">We don't have a live rate until you get a quote — the amount you'll need to deposit is shown on the next step.</div>
             </div>
@@ -1788,16 +1788,30 @@
     state.transferStep = n;
   }
 
-  function updateDestCurrency() {
+  // A destination country can settle in more than one currency (e.g. Nigeria: NGN or USD)
+  const COUNTRY_CURRENCIES = {
+    NG: [ { code: 'NGN', rate: 2.48 }, { code: 'USD', rate: 0.0017 } ],
+    CN: [ { code: 'CNY', rate: 0.0071 } ],
+    AE: [ { code: 'AED', rate: 0.0091 } ],
+    GB: [ { code: 'GBP', rate: 0.00079 } ],
+    FR: [ { code: 'EUR', rate: 0.00152 } ],
+  };
+
+  function updateDestCountry() {
     const sel = document.getElementById('dest-country');
     const opt = sel.options[sel.selectedIndex];
-    const currency = opt.dataset.currency;
-    const flag = opt.dataset.flag;
-    const rate = parseFloat(opt.dataset.rate);
-    state.quoteData.destCurrency = currency;
-    state.quoteData.destFlag = flag;
-    state.quoteData.rate = rate;
-    document.getElementById('dest-currency-badge').textContent = flag + ' ' + currency;
+    state.quoteData.destFlag = opt.dataset.flag;
+    const currencies = COUNTRY_CURRENCIES[sel.value];
+    document.getElementById('dest-currency-select').innerHTML = currencies.map(c => `<option value="${c.code}">${c.code}</option>`).join('');
+    updateDestCurrencyFromSelect();
+  }
+
+  function updateDestCurrencyFromSelect() {
+    const country = document.getElementById('dest-country').value;
+    const currencyCode = document.getElementById('dest-currency-select').value;
+    const match = COUNTRY_CURRENCIES[country].find(c => c.code === currencyCode);
+    state.quoteData.destCurrency = match.code;
+    state.quoteData.rate = match.rate;
     // Recalc from whatever beneficiary amount is already entered
     const dest = parseFloat(document.getElementById('dest-input').value);
     if (dest) calcFromDest(dest);
@@ -2500,6 +2514,8 @@
     if (n === 4) { updateReview(); }
     originalGoStep(n);
   };
+
+  updateDestCountry();
 </script>
 </body>
 </html>

@@ -1790,6 +1790,11 @@ function openKYC2Detail(id) {
       ${docItem('📱','Mobile_money_statement_3mo.pdf','245 KB','mmstatement')}
       ${docItem('🧾','Sales_receipt_deposit.pdf','118 KB','receipt')}
     </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Deposit Slip</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Submitted by the customer for this specific transfer, not a one-time KYC document.</div>
+      ${docItem('🧾','Deposit_slip.pdf','92 KB','deposit')}
+    </div>
   `;
   document.getElementById('detail-actions').innerHTML = d.pending
     ? `<button class="btn btn-success" onclick="approveKYC2()">✓ Approve Level 2</button><button class="btn btn-danger" onclick="rejectKYC2()">✕ Reject</button>`
@@ -1820,6 +1825,11 @@ function openKYC3Detail(id) {
       <div class="detail-section-title">Documents (2 / 2 required)</div>
       ${docItem('📄','TPPRM_document_signed.pdf','312 KB','tpprm')}
       ${docItem('🏦','Bank_statements_6mo.pdf','547 KB','bankstmt')}
+    </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Deposit Slip</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Submitted by the customer for this specific transfer, not a one-time KYC document.</div>
+      ${docItem('🧾','Deposit_slip.pdf','92 KB','deposit')}
     </div>
   `;
   document.getElementById('detail-actions').innerHTML = `

@@ -596,24 +596,6 @@
         <div style="font-size:20px;font-weight:700;">Exchange Rates</div>
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Set retail rates per corridor. Changes apply to all new quotes immediately.</div>
       </div>
-      <div class="card" style="margin-bottom:20px;border:1.5px solid var(--purple-mid);">
-        <div class="card-header">
-          <div>
-            <div class="card-title">USDC Stock Margin Rate</div>
-            <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">This is the default margin applied on top of the USDC stock price (Sell Price = Stock Price × (1 + margin)) when crediting a customer's wallet. Separate from the per-corridor retail rates below.</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="rate-row">
-            <div><div class="rate-corridor">USDC Stock Margin</div><div class="rate-sub" id="margin-rate-sub">Applies to all new quotes across every corridor · Admins can still override this per transaction (see Transactions)</div></div>
-            <div class="rate-input-wrap">
-              <input class="rate-input" type="number" value="2" step="0.1" min="0" id="margin-rate-input" data-committed="2" style="max-width:80px;">
-              <span style="font-size:13px;color:var(--text-secondary);">%</span>
-              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveMarginRate()">Save</button>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="card">
         <div class="card-header">
           <div class="card-title">Retail Rates</div>
@@ -853,28 +835,6 @@
     <div class="modal-actions">
       <button class="btn btn-secondary btn-lg" onclick="cancelRateModal()">Cancel</button>
       <button class="btn btn-primary btn-lg" onclick="confirmSaveRate()">Confirm Update</button>
-    </div>
-  </div>
-</div>
-
-<!-- USDC STOCK MARGIN CONFIRMATION MODAL -->
-<div class="modal-overlay" id="margin-rate-modal-overlay">
-  <div class="modal-box" style="width:420px;">
-    <div class="rate-modal-icon">📈</div>
-    <div class="rate-modal-title">Confirm USDC Stock Margin Change</div>
-    <div class="rate-modal-body">You are about to update the default USDC stock margin rate, applied across all corridors:</div>
-    <div class="rate-modal-change">
-      <div style="font-weight:700;font-size:15px;margin-bottom:10px;">USDC Stock Margin</div>
-      <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
-        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">Current rate</div><div style="font-size:18px;font-weight:700;color:var(--text-secondary);" id="margin-modal-old-rate">—</div></div>
-        <div style="font-size:20px;color:var(--text-light);">→</div>
-        <div><div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">New rate</div><div style="font-size:18px;font-weight:700;color:var(--purple);" id="margin-modal-new-rate">—</div></div>
-      </div>
-    </div>
-    <div style="font-size:12px;color:var(--text-secondary);text-align:center;">This changes the default margin used to price new quotes on the USDC stock price. Per-transaction admin overrides are not affected.</div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary btn-lg" onclick="cancelMarginRateModal()">Cancel</button>
-      <button class="btn btn-primary btn-lg" onclick="confirmMarginRateModal()">Confirm Update</button>
     </div>
   </div>
 </div>
@@ -1836,32 +1796,6 @@
     showToast('📈', 'Rate updated', `1 XAF → ${corridor} is now ${newPerUnit.toFixed(dec)}`);
   }
 
-  let _pendingMarginRate = null;
-  function saveMarginRate() {
-    const input = document.getElementById('margin-rate-input');
-    const newRate = parseFloat(input.value);
-    const oldRate = parseFloat(input.dataset.committed);
-    _pendingMarginRate = { oldRate, newRate };
-    document.getElementById('margin-modal-old-rate').textContent = oldRate + '%';
-    document.getElementById('margin-modal-new-rate').textContent = newRate + '%';
-    document.getElementById('margin-rate-modal-overlay').classList.add('open');
-  }
-  function cancelMarginRateModal() { document.getElementById('margin-rate-modal-overlay').classList.remove('open'); _pendingMarginRate = null; }
-  function confirmMarginRateModal() {
-    if (!_pendingMarginRate) return;
-    const { oldRate, newRate } = _pendingMarginRate;
-    const input = document.getElementById('margin-rate-input');
-    input.dataset.committed = newRate;
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    const tbody = document.getElementById('audit-tbody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td style="font-weight:600;white-space:nowrap;">USDC Stock Margin</td><td style="color:var(--text-secondary);white-space:nowrap;">${oldRate}%</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newRate}%</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>`;
-    tbody.insertBefore(tr, tbody.firstChild);
-    document.getElementById('margin-rate-modal-overlay').classList.remove('open');
-    _pendingMarginRate = null;
-    showToast('📈', 'Margin rate updated', `Default USDC stock margin is now ${newRate}%`);
-  }
 
   // ─── BADGES ───
   function updateBadges() {

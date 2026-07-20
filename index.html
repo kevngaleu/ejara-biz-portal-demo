@@ -167,6 +167,9 @@
     .deposit-method-card { border: 2px solid var(--border); border-radius: 10px; padding: 14px 8px; text-align: center; cursor: pointer; transition: border-color .15s, background .15s; }
     .deposit-method-card:hover { border-color: var(--purple); background: var(--purple-light); }
     .deposit-method-card.selected { border-color: var(--purple); background: var(--purple-light); }
+    .deposit-method-card.disabled { cursor: not-allowed; opacity: .5; }
+    .deposit-method-card.disabled:hover { border-color: var(--border); background: none; }
+    .coming-soon-tag { display: inline-flex; align-items: center; padding: 1px 7px; background: #FFF7ED; color: #EA580C; border-radius: 20px; font-size: 9px; font-weight: 600; margin-top: 4px; }
     .deposit-momo-card { border: 2px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: border-color .15s; }
     .deposit-momo-card.selected { border-color: var(--purple); background: var(--purple-light); }
     .status-submitted { background: #EFF6FF; color: #3B82F6; }
@@ -1150,9 +1153,10 @@
                 <div style="font-size:22px;margin-bottom:4px;">🔗</div>
                 <div style="font-size:12px;font-weight:600;">Crypto Wallet</div>
               </div>
-              <div class="deposit-method-card" onclick="selectDepositMethod('cash', this)">
+              <div class="deposit-method-card disabled">
                 <div style="font-size:22px;margin-bottom:4px;">🏪</div>
                 <div style="font-size:12px;font-weight:600;">Cash Point</div>
+                <div class="coming-soon-tag">Coming soon</div>
               </div>
             </div>
 
@@ -1196,14 +1200,6 @@
               <div class="review-row"><span class="review-label">Wallet address</span><span class="review-value" style="font-family:monospace;font-size:12px;word-break:break-all;">0x1A2b3C4d5E6f7890aBcDeF1234567890AbCdEf12</span></div>
               <div class="review-row"><span class="review-label">Amount (USDC)</span><span class="review-value" id="deposit-usdc">—</span></div>
               <div style="margin-top:10px;padding:8px 12px;background:#fff3cd;border-radius:6px;font-size:12px;color:#856404;">⚠️ Only send USDC on Polygon network. Sending on a different network may result in permanent loss of funds.</div>
-            </div>
-
-            <!-- Cash Point details -->
-            <div id="deposit-details-cash" style="display:none;background:var(--bg);border-radius:10px;padding:16px;margin-bottom:20px;">
-              <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-secondary);margin-bottom:12px;">Cash Point</div>
-              <div class="review-row"><span class="review-label">Agent name</span><span class="review-value">Ejara Agent — Akwa Point</span></div>
-              <div class="review-row"><span class="review-label">Address</span><span class="review-value">Carrefour Akwa, Rue Bebey Eyidi, Douala</span></div>
-              <div class="review-row"><span class="review-label">Hours</span><span class="review-value">Mon – Sat · 8am – 6pm</span></div>
             </div>
 
             <!-- Proof of payment upload -->
@@ -1975,7 +1971,7 @@
   function selectDepositMethod(method, el) {
     document.querySelectorAll('.deposit-method-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
-    ['bank','momo','crypto','cash'].forEach(m => {
+    ['bank','momo','crypto'].forEach(m => {
       document.getElementById('deposit-details-' + m).style.display = m === method ? 'block' : 'none';
     });
   }

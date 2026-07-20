@@ -1028,7 +1028,7 @@
       </div>
       <div class="card" style="overflow-x:auto;">
         <table style="min-width:1400px;">
-          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Status</th><th>Payment Type</th><th>Operator Name</th><th>Account Number</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Route</th><th>Margin Rate</th><th>USDC Required at Payment</th><th>CPN rate at Payment</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
+          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Status</th><th>Payment Type</th><th>Operator Name</th><th>Account Number</th><th>Route</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Margin Rate</th><th>USDC Required at Payment</th><th>CPN rate at Payment</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
           <tbody id="fx-tx-tbody"></tbody>
         </table>
       </div>
@@ -1990,10 +1990,10 @@ function renderFXTxTable() {
       <td style="white-space:nowrap;">${t.paymentType || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;">${t.operatorName || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;font-family:monospace;font-size:12px;">${t.accountNumber || '<span style="color:var(--text-secondary);font-family:sans-serif;">—</span>'}</td>
+      <td style="white-space:nowrap;${t.route === 'CPN' ? 'font-weight:600;' : ''}">${t.route || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;">${t.stockPrice || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;">${t.sellPrice || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="font-weight:600;white-space:nowrap;${t.margin == null ? '' : t.absorbed ? 'color:var(--red);' : 'color:var(--green);'}">${t.margin != null ? t.margin : '<span style="color:var(--text-secondary);">—</span>'}</td>
-      <td style="white-space:nowrap;${t.route === 'CPN' ? 'font-weight:600;' : ''}">${t.route || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;${t.override && t.override !== '2%' ? 'font-weight:600;color:var(--purple);' : 'color:var(--text-secondary);'}">${t.override || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;">${t.margin != null ? t.crypto + ' USDC' : '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;${t.cpnRatePayment ? 'font-weight:600;' : 'color:var(--text-secondary);'}">${t.cpnRatePayment || '<span style="color:var(--text-secondary);">—</span>'}</td>

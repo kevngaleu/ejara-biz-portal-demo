@@ -429,12 +429,15 @@
         <div style="color:var(--text-secondary);font-size:13px;margin-top:4px;">Review proof of payment and approve or reject transfers</div>
       </div>
       <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
-        <select class="form-input" style="max-width:180px;padding:8px 12px;font-size:13px;">
-          <option>All statuses</option><option>Initiated</option><option>Pending Review</option>
+        <select class="form-input tx-filter-select" style="max-width:180px;padding:8px 12px;font-size:13px;" onchange="applyTxFilters()">
+          <option value="">All statuses</option><option>Initiated</option><option>Pending Review</option>
           <option>Approved</option><option>Completed</option><option>Rejected</option>
         </select>
-        <select class="form-input" style="max-width:160px;padding:8px 12px;font-size:13px;">
-          <option>All destinations</option><option>Nigeria</option><option>China</option><option>Dubai</option>
+        <select class="form-input tx-filter-select" style="max-width:160px;padding:8px 12px;font-size:13px;" onchange="applyTxFilters()">
+          <option value="">All destinations</option><option>Nigeria</option><option>China</option><option>Dubai</option>
+        </select>
+        <select class="form-input tx-filter-select" style="max-width:160px;padding:8px 12px;font-size:13px;" onchange="applyTxFilters()">
+          <option value="">All payment types</option><option>Bank Transfer</option><option>Mobile Money</option><option>Crypto Wallet</option>
         </select>
         <div style="display:flex;align-items:center;gap:6px;">
           <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">From</span>
@@ -446,7 +449,7 @@
       </div>
       <div class="card">
         <div style="overflow-x:auto;">
-          <table style="min-width:1400px;">
+          <table id="tx-table" style="min-width:1400px;">
             <thead><tr>
               <th>Reference</th>
               <th>Customer</th>
@@ -1868,6 +1871,35 @@
     const el = document.getElementById('tx-badge');
     el.textContent = txPending;
     el.style.display = txPending === 0 ? 'none' : '';
+  }
+
+  // ─── TX FILTERS ───
+  function applyTxFilters() {
+    const table = document.getElementById('tx-table');
+    const activeFilters = Array.from(document.querySelectorAll('.tx-filter-select'))
+      .map(s => s.value)
+      .filter(v => v);
+    const rows = Array.from(table.tBodies[0].rows).filter(r => r.id !== 'tx-filter-empty-row');
+    let visible = 0;
+    rows.forEach(row => {
+      const text = row.textContent;
+      const match = activeFilters.every(f => text.includes(f));
+      row.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    let emptyRow = table.tBodies[0].querySelector('#tx-filter-empty-row');
+    if (visible === 0) {
+      if (!emptyRow) {
+        const colCount = table.tHead.rows[0].cells.length;
+        emptyRow = document.createElement('tr');
+        emptyRow.id = 'tx-filter-empty-row';
+        emptyRow.innerHTML = `<td colspan="${colCount}" style="text-align:center;padding:24px;color:var(--text-secondary);font-size:13px;">No results match these filters.</td>`;
+        table.tBodies[0].appendChild(emptyRow);
+      }
+      emptyRow.style.display = '';
+    } else if (emptyRow) {
+      emptyRow.style.display = 'none';
+    }
   }
 
   // ─── TOAST ───

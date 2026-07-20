@@ -1091,6 +1091,35 @@
     <!-- ·· FX RATES ·· -->
     <div id="page-fx-rates" class="content" style="display:none;">
       <div class="alert alert-warn"><span>⏱</span><div>Rate changes enter a <strong>120-second confirmation window</strong> before going live. Any in-progress transactions use the rate locked at submission time.</div></div>
+      <div class="card" style="margin-bottom:20px;border:1.5px solid var(--purple-mid);">
+        <div class="card-header">
+          <div>
+            <div class="card-title">USDC Stock Margin</div>
+            <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">Sell Price = Stock Price + Margin — this determines how much USDC the customer's wallet receives, and how much they need to deposit. Applies across every corridor.</div>
+          </div>
+        </div>
+        <div style="padding:0 22px 22px;">
+          <div style="background:var(--bg);border-radius:10px;padding:14px 16px;margin:16px 0;display:flex;align-items:center;gap:10px;font-size:13px;">
+            <span style="color:var(--text-secondary);">Example:</span>
+            <span>Stock Price <strong>589</strong></span>
+            <span style="color:var(--text-secondary);">+</span>
+            <span id="fx-margin-example-pct" style="color:var(--purple);font-weight:700;">2%</span>
+            <span style="color:var(--text-secondary);">=</span>
+            <span>Sell Price <strong id="fx-margin-example-sell" style="color:var(--purple);">601</strong></span>
+          </div>
+          <div class="rate-row" style="border-bottom:none;">
+            <div>
+              <div class="rate-corridor">Default Margin</div>
+              <div class="rate-sub">Applies to all new quotes across every corridor · Admins can still offer a better rate per transaction (see Transactions → Margin Rate)</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input class="rate-input" id="fx-margin-rate-input" type="number" value="2" step="0.1" min="0" data-committed="2" style="max-width:80px;" oninput="updateFXMarginExample()">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openFXMarginRateModal()">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="card">
         <div class="card-header">
           <div class="card-title">Current Rates — FX Business</div>
@@ -2534,6 +2563,35 @@ function openRateModal(corridor, inputId) {
 }
 function cancelRate()  { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('ℹ️','Rate Change Cancelled','No changes applied.'); }
 function confirmRate() { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('✅','Rate Updated',pendingCorridorLabel + ' → ' + pendingNewRate + ' is now live.'); }
+
+function updateFXMarginExample() {
+  const pct = parseFloat(document.getElementById('fx-margin-rate-input').value) || 0;
+  const stock = 589;
+  const sell = Math.round(stock * (1 + pct / 100));
+  document.getElementById('fx-margin-example-pct').textContent = pct + '%';
+  document.getElementById('fx-margin-example-sell').textContent = sell;
+}
+
+function openFXMarginRateModal() {
+  const input = document.getElementById('fx-margin-rate-input');
+  const oldRate = parseFloat(input.dataset.committed);
+  const newRate = parseFloat(input.value);
+  input.dataset.committed = newRate;
+  pendingCorridorLabel = 'USDC Stock Margin';
+  pendingNewRate = newRate + '%';
+  document.getElementById('rate-modal-corridor-label').textContent = 'USDC Stock Margin (applies to all corridors)';
+  document.getElementById('rate-modal-old').textContent = oldRate + '%';
+  document.getElementById('rate-modal-new').textContent = pendingNewRate;
+  document.getElementById('rate-modal').classList.add('open');
+  let val = 120;
+  document.getElementById('rate-countdown').textContent = val;
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    val--;
+    document.getElementById('rate-countdown').textContent = val;
+    if (val <= 0) { clearInterval(countdownTimer); confirmRate(); }
+  }, 1000);
+}
 
 // ─── Toast + badge helpers ────────────────────────────────────────────────────
 function showToast(icon, title, body) {

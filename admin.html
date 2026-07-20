@@ -684,15 +684,18 @@
             <div class="card-title">Retail Rates</div>
             <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">Destinations not served by CPN. Currently Nigeria only, China and Dubai are priced via the CPN Wallet margin above.</div>
           </div>
-          <a href="#" onclick="navigate('auditlog');return false;" style="font-size:13px;color:var(--purple);white-space:nowrap;">View change log →</a>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <button class="btn btn-secondary" style="padding:7px 14px;font-size:12px;" onclick="openAddRateModal()">+ Add Exchange Rate</button>
+            <a href="#" onclick="navigate('auditlog');return false;" style="font-size:13px;color:var(--purple);white-space:nowrap;">View change log →</a>
+          </div>
         </div>
-        <div class="card-body">
-          <div class="rate-row" style="border-bottom:none;">
+        <div class="card-body" id="retail-rates-body">
+          <div class="rate-row" style="border-bottom:none;" id="retail-row-ngn">
             <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;">· Non-CPN</span></div><div class="rate-sub" id="rate-sub-ngn">Final rate shown to customer: 1 XAF = <strong id="ngn-final-rate">2.48</strong> NGN · Updated today, 06:00</div></div>
             <div>
               <input type="hidden" id="wholesale-ngn" data-committed="2.41">
               <input type="hidden" id="margin-ngn" data-committed="2.9">
-              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="openRetailRateModal()">Edit rate</button>
+              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="openRetailRateModal('NGN', 'wholesale-ngn', 'margin-ngn', 'ngn-final-rate', 'rate-sub-ngn', 2)">Edit rate</button>
             </div>
           </div>
         </div>
@@ -918,28 +921,68 @@
 <div class="modal-overlay" id="retail-rate-modal-overlay">
   <div class="modal-box" style="width:420px;">
     <div class="rate-modal-icon">💱</div>
-    <div class="rate-modal-title">Edit NGN Rate</div>
+    <div class="rate-modal-title" id="rr-modal-title">Edit Rate</div>
     <div class="rate-modal-body">Non-CPN destination. Set the wholesale rate and margin, the final rate is what's shown to the customer.</div>
     <div style="display:flex;flex-direction:column;gap:12px;margin:16px 0;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
         <span style="font-size:13px;color:var(--text-secondary);">Wholesale 1 XAF =</span>
-        <input class="rate-input" type="number" step="0.01" id="wholesale-ngn-modal" style="max-width:110px;" oninput="updateRetailFinalRate('ngn', 2)">
+        <input class="rate-input" type="number" id="rr-wholesale-input" style="max-width:120px;" oninput="updateRetailModalPreview()">
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
         <span style="font-size:13px;color:var(--text-secondary);">Margin</span>
         <div style="display:flex;align-items:center;gap:6px;">
-          <input class="rate-input" type="number" step="0.1" id="margin-ngn-modal" style="max-width:80px;" oninput="updateRetailFinalRate('ngn', 2)">
+          <input class="rate-input" type="number" id="rr-margin-input" style="max-width:90px;" oninput="updateRetailModalPreview()">
           <span style="font-size:13px;color:var(--text-secondary);">%</span>
         </div>
       </div>
     </div>
     <div class="rate-modal-change">
       <div style="font-size:11px;color:var(--text-secondary);margin-bottom:3px;">Final rate shown to customer</div>
-      <div style="font-size:20px;font-weight:700;color:var(--purple);">1 XAF = <span id="ngn-final-rate-preview">2.48</span> NGN</div>
+      <div style="font-size:20px;font-weight:700;color:var(--purple);">1 XAF = <span id="rr-final-preview">0</span> <span id="rr-corridor-unit"></span></div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-secondary btn-lg" onclick="closeRetailRateModal()">Cancel</button>
-      <button class="btn btn-primary btn-lg" onclick="saveRetailRate('NGN', 'wholesale-ngn', 'margin-ngn', 'ngn-final-rate', 'rate-sub-ngn', 2)">Save</button>
+      <button class="btn btn-primary btn-lg" onclick="confirmRetailRateModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD EXCHANGE RATE MODAL (non-CPN destinations) -->
+<div class="modal-overlay" id="add-rate-modal-overlay">
+  <div class="modal-box" style="width:440px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="rate-modal-title" style="text-align:left;">Add Exchange Rate</div>
+      <button onclick="closeAddRateModal()" style="border:none;background:none;font-size:18px;line-height:1;cursor:pointer;color:var(--text-secondary);">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);margin:2px 0 16px;">For destinations not supported by CPN. Currently: Nigeria.</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Source Country <span style="color:var(--red);">*</span></label>
+        <select id="add-rate-source" class="rate-input" style="width:100%;box-sizing:border-box;text-align:left;">
+          <option value="CM">🇨🇲 Cameroon</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Destination Country <span style="color:var(--red);">*</span></label>
+        <select id="add-rate-dest" class="rate-input" style="width:100%;box-sizing:border-box;text-align:left;">
+          <option value="">Select destination country</option>
+          <option value="GH">🇬🇭 Ghana (GHS)</option>
+          <option value="KE">🇰🇪 Kenya (KES)</option>
+          <option value="CI">🇨🇮 Côte d'Ivoire (XOF)</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Rate (wholesale) <span style="color:var(--red);">*</span></label>
+        <input class="rate-input" type="number" id="add-rate-wholesale" placeholder="e.g. 1.5" style="width:100%;box-sizing:border-box;text-align:left;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Margin (%) <span style="color:var(--red);">*</span></label>
+        <input class="rate-input" type="number" id="add-rate-margin" placeholder="e.g. 1.5" style="width:100%;box-sizing:border-box;text-align:left;">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-lg" onclick="closeAddRateModal()">Cancel</button>
+      <button class="btn btn-primary btn-lg" onclick="createExchangeRate()">Create</button>
     </div>
   </div>
 </div>
@@ -1856,41 +1899,82 @@
     openMarginConfirm(_pendingMarginChange, 'You are about to update the USDC margin applied on top of the stock price, for all CPN-routed corridors (China, Dubai):', 'This changes the Sell Price shown on the transaction page for new quotes. Per-transaction admin overrides are not affected.');
   }
 
-  function openRetailRateModal() {
-    document.getElementById('wholesale-ngn-modal').value = document.getElementById('wholesale-ngn').dataset.committed;
-    document.getElementById('margin-ngn-modal').value = document.getElementById('margin-ngn').dataset.committed;
-    updateRetailFinalRate('ngn', 2);
+  let _pendingRetailRate = null;
+  function openRetailRateModal(corridorCode, wholesaleId, marginId, finalElId, subElId, decimals) {
+    const wInput = document.getElementById(wholesaleId);
+    const mInput = document.getElementById(marginId);
+    _pendingRetailRate = { corridorCode, wholesaleId, marginId, finalElId, subElId, decimals };
+    document.getElementById('rr-modal-title').textContent = 'Edit ' + corridorCode + ' Rate';
+    document.getElementById('rr-corridor-unit').textContent = corridorCode;
+    document.getElementById('rr-wholesale-input').value = wInput.dataset.committed;
+    document.getElementById('rr-margin-input').value = mInput.dataset.committed;
+    updateRetailModalPreview();
     document.getElementById('retail-rate-modal-overlay').classList.add('open');
   }
   function closeRetailRateModal() {
     document.getElementById('retail-rate-modal-overlay').classList.remove('open');
+    _pendingRetailRate = null;
   }
-  function updateRetailFinalRate(corridor, decimals) {
-    const w = parseFloat(document.getElementById('wholesale-' + corridor + '-modal').value) || 0;
-    const m = parseFloat(document.getElementById('margin-' + corridor + '-modal').value) || 0;
-    const el = document.getElementById(corridor + '-final-rate-preview');
-    if (el) el.textContent = (w * (1 + m / 100)).toFixed(decimals);
+  function updateRetailModalPreview() {
+    if (!_pendingRetailRate) return;
+    const w = parseFloat(document.getElementById('rr-wholesale-input').value) || 0;
+    const m = parseFloat(document.getElementById('rr-margin-input').value) || 0;
+    document.getElementById('rr-final-preview').textContent = (w * (1 + m / 100)).toFixed(_pendingRetailRate.decimals);
   }
-  function saveRetailRate(corridorCode, wholesaleId, marginId, finalElId, subElId, decimals) {
+  function confirmRetailRateModal() {
+    if (!_pendingRetailRate) return;
+    const { corridorCode, wholesaleId, marginId, finalElId, subElId, decimals } = _pendingRetailRate;
     const wInput = document.getElementById(wholesaleId);
     const mInput = document.getElementById(marginId);
-    const newWholesale = parseFloat(document.getElementById(wholesaleId + '-modal').value);
-    const newMargin = parseFloat(document.getElementById(marginId + '-modal').value);
-    const oldWholesale = parseFloat(wInput.dataset.committed);
-    const oldMargin = parseFloat(mInput.dataset.committed);
-    const oldFinal = oldWholesale * (1 + oldMargin / 100);
-    const newFinal = newWholesale * (1 + newMargin / 100);
+    const newWholesale = parseFloat(document.getElementById('rr-wholesale-input').value);
+    const newMargin = parseFloat(document.getElementById('rr-margin-input').value);
     wInput.dataset.committed = newWholesale;
     mInput.dataset.committed = newMargin;
+    const newFinal = newWholesale * (1 + newMargin / 100);
     const now = new Date();
     document.getElementById(subElId).innerHTML = `Final rate shown to customer: 1 XAF = <strong id="${finalElId}">${newFinal.toFixed(decimals)}</strong> ${corridorCode} · Updated today, ${now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`;
-    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    const tbody = document.getElementById('audit-tbody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td style="font-weight:600;white-space:nowrap;">${corridorCode} Rate</td><td style="color:var(--text-secondary);white-space:nowrap;">${oldFinal.toFixed(decimals)} ${corridorCode}</td><td style="font-weight:700;color:var(--purple);white-space:nowrap;">${newFinal.toFixed(decimals)} ${corridorCode}</td><td><span class="audit-user">👤 recitKevin</span></td><td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${dateStr}</td>`;
-    tbody.insertBefore(tr, tbody.firstChild);
-    document.getElementById('retail-rate-modal-overlay').classList.remove('open');
     showToast('📈', corridorCode + ' rate updated', `Final rate is now 1 XAF = ${newFinal.toFixed(decimals)} ${corridorCode}`);
+    document.getElementById('retail-rate-modal-overlay').classList.remove('open');
+    _pendingRetailRate = null;
+  }
+
+  const ADD_RATE_COUNTRIES = {
+    GH: { name: 'Ghana', flag: '🇬🇭', currency: 'GHS' },
+    KE: { name: 'Kenya', flag: '🇰🇪', currency: 'KES' },
+    CI: { name: "Côte d'Ivoire", flag: '🇨🇮', currency: 'XOF' }
+  };
+  function openAddRateModal() {
+    document.getElementById('add-rate-wholesale').value = '';
+    document.getElementById('add-rate-margin').value = '';
+    document.getElementById('add-rate-dest').value = '';
+    document.getElementById('add-rate-modal-overlay').classList.add('open');
+  }
+  function closeAddRateModal() {
+    document.getElementById('add-rate-modal-overlay').classList.remove('open');
+  }
+  function createExchangeRate() {
+    const destCode = document.getElementById('add-rate-dest').value;
+    const wholesale = parseFloat(document.getElementById('add-rate-wholesale').value);
+    const margin = parseFloat(document.getElementById('add-rate-margin').value);
+    if (!destCode || isNaN(wholesale) || isNaN(margin)) {
+      showToast('⚠️', 'Missing information', 'Select a destination country and fill in the rate and margin.');
+      return;
+    }
+    const dest = ADD_RATE_COUNTRIES[destCode];
+    const key = destCode.toLowerCase();
+    const decimals = wholesale < 0.1 ? 4 : 2;
+    const finalRate = wholesale * (1 + margin / 100);
+    const row = document.createElement('div');
+    row.className = 'rate-row';
+    row.id = 'retail-row-' + key;
+    row.innerHTML = `<div><div class="rate-corridor">🇨🇲 XAF → ${dest.flag} ${dest.currency} <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;">· Non-CPN</span></div><div class="rate-sub" id="rate-sub-${key}">Final rate shown to customer: 1 XAF = <strong id="${key}-final-rate">${finalRate.toFixed(decimals)}</strong> ${dest.currency} · Updated today, ${new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}</div></div><div><input type="hidden" id="wholesale-${key}" data-committed="${wholesale}"><input type="hidden" id="margin-${key}" data-committed="${margin}"><button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="openRetailRateModal('${dest.currency}', 'wholesale-${key}', 'margin-${key}', '${key}-final-rate', 'rate-sub-${key}', ${decimals})">Edit rate</button></div>`;
+    const body = document.getElementById('retail-rates-body');
+    body.querySelectorAll('.rate-row').forEach(r => r.style.borderBottom = '1px solid var(--border)');
+    row.style.borderBottom = 'none';
+    body.appendChild(row);
+    document.getElementById('add-rate-dest').querySelector(`option[value="${destCode}"]`).remove();
+    document.getElementById('add-rate-modal-overlay').classList.remove('open');
+    showToast('✅', 'Exchange rate added', `${dest.name} (${dest.currency}) is now live at 1 XAF = ${finalRate.toFixed(decimals)} ${dest.currency}`);
   }
   function openMarginConfirm(change, bodyText, footerText) {
     document.getElementById('margin-modal-title').textContent = `Confirm ${change.label} Change`;

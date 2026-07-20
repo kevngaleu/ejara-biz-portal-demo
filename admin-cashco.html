@@ -880,10 +880,13 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">Current Rates — Cash Co Bill Payment</div>
-          <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('cc-rate-log')">View change log →</button>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="openAddRateModal('cc')">+ Add Exchange Rate</button>
+            <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('cc-rate-log')">View change log →</button>
+          </div>
         </div>
         <div style="padding:6px 22px 2px;font-size:12px;color:var(--text-secondary);">Cash Co never routes through CPN — every corridor is priced here as Wholesale + Margin → Final rate shown to the customer.</div>
-        <div style="padding:0 22px;">
+        <div style="padding:0 22px;" id="cc-rates-body">
           <div class="rate-row">
             <div>
               <div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div>
@@ -1109,7 +1112,10 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">Current Rates — FX Business</div>
-          <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('fx-rate-log')">View change log →</button>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="openAddRateModal('fx')">+ Add Exchange Rate</button>
+            <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('fx-rate-log')">View change log →</button>
+          </div>
         </div>
         <div style="padding:10px 22px;border-bottom:1px solid var(--border);">
           <div class="rate-base-row" style="margin-bottom:0;">
@@ -1120,7 +1126,7 @@
             <button class="base-btn" id="fx-base-1000" onclick="setFXBase(1000)">1,000</button>
           </div>
         </div>
-        <div style="padding:0 22px;">
+        <div style="padding:0 22px;" id="fx-rates-body">
           <div class="rate-row">
             <div>
               <div class="rate-corridor">XAF → NGN <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;">· Non-CPN</span></div>
@@ -1318,6 +1324,43 @@
     <div class="modal-actions">
       <button class="btn btn-danger" onclick="closeRetailRateModal()">Cancel</button>
       <button class="btn btn-primary" onclick="confirmRetailRateModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Exchange Rate modal (non-CPN destinations) -->
+<div class="modal-overlay" id="add-rate-modal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div class="modal-title" style="text-align:left;">Add Exchange Rate</div>
+      <button onclick="closeAddRateModal()" style="border:none;background:none;font-size:18px;line-height:1;cursor:pointer;color:var(--text-secondary);">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-secondary);margin:2px 0 16px;">For destinations not supported by CPN. Currently: Nigeria.</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Source Country <span style="color:var(--red);">*</span></label>
+        <select id="add-rate-source" class="rate-input" style="width:100%;box-sizing:border-box;text-align:left;">
+          <option value="CM">🇨🇲 Cameroon</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Destination Country <span style="color:var(--red);">*</span></label>
+        <select id="add-rate-dest" class="rate-input" style="width:100%;box-sizing:border-box;text-align:left;">
+          <option value="">Select destination country</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Rate (wholesale) <span style="color:var(--red);">*</span></label>
+        <input class="rate-input" type="number" id="add-rate-wholesale" placeholder="e.g. 1.5" style="width:100%;box-sizing:border-box;text-align:left;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:6px;">Margin (%) <span style="color:var(--red);">*</span></label>
+        <input class="rate-input" type="number" id="add-rate-margin" placeholder="e.g. 1.5" style="width:100%;box-sizing:border-box;text-align:left;">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" onclick="closeAddRateModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="createExchangeRate()">Create</button>
     </div>
   </div>
 </div>
@@ -2591,6 +2634,56 @@ function confirmRetailRateModal() {
   showToast('📈', corridorCode + ' rate updated', `Final rate is now 1 XAF = ${newFinal.toFixed(decimals)} ${corridorCode}`);
   document.getElementById('retail-rate-modal').classList.remove('open');
   _pendingRetailRate = null;
+}
+
+// ─── Add Exchange Rate (non-CPN destinations) ────────────────────────────────
+const ADD_RATE_COUNTRIES = {
+  GH: { name: 'Ghana', flag: '🇬🇭', currency: 'GHS' },
+  KE: { name: 'Kenya', flag: '🇰🇪', currency: 'KES' },
+  CI: { name: "Côte d'Ivoire", flag: '🇨🇮', currency: 'XOF' }
+};
+const _addedRateCountries = { cc: new Set(), fx: new Set() };
+let _pendingAddRateContext = null;
+function openAddRateModal(context) {
+  _pendingAddRateContext = context;
+  const select = document.getElementById('add-rate-dest');
+  select.innerHTML = '<option value="">Select destination country</option>' +
+    Object.keys(ADD_RATE_COUNTRIES).filter(c => !_addedRateCountries[context].has(c)).map(c => {
+      const d = ADD_RATE_COUNTRIES[c];
+      return `<option value="${c}">${d.flag} ${d.name} (${d.currency})</option>`;
+    }).join('');
+  document.getElementById('add-rate-wholesale').value = '';
+  document.getElementById('add-rate-margin').value = '';
+  document.getElementById('add-rate-modal').classList.add('open');
+}
+function closeAddRateModal() {
+  document.getElementById('add-rate-modal').classList.remove('open');
+  _pendingAddRateContext = null;
+}
+function createExchangeRate() {
+  const context = _pendingAddRateContext;
+  const destCode = document.getElementById('add-rate-dest').value;
+  const wholesale = parseFloat(document.getElementById('add-rate-wholesale').value);
+  const margin = parseFloat(document.getElementById('add-rate-margin').value);
+  if (!context || !destCode || isNaN(wholesale) || isNaN(margin)) {
+    showToast('⚠️', 'Missing information', 'Select a destination country and fill in the rate and margin.');
+    return;
+  }
+  const dest = ADD_RATE_COUNTRIES[destCode];
+  const prefix = context + '-';
+  const key = prefix + destCode.toLowerCase();
+  const decimals = wholesale < 0.1 ? 4 : 2;
+  const finalRate = wholesale * (1 + margin / 100);
+  const row = document.createElement('div');
+  row.className = 'rate-row';
+  row.innerHTML = `<div><div class="rate-corridor">🇨🇲 XAF → ${dest.flag} ${dest.currency} <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;">· Non-CPN</span></div><div class="rate-sub" id="${key}-sub">Final rate shown to customer: 1 XAF = <strong id="${key}-final-rate">${finalRate.toFixed(decimals)}</strong> ${dest.currency} · Updated today, ${new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}</div></div><div><input type="hidden" id="${key}-wholesale" data-committed="${wholesale}"><input type="hidden" id="${key}-margin" data-committed="${margin}"><button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRetailRateModal('${dest.currency}', '${key}-wholesale', '${key}-margin', '${key}-final-rate', '${key}-sub', ${decimals})">Edit rate</button></div>`;
+  const body = document.getElementById(context + '-rates-body');
+  body.querySelectorAll('.rate-row').forEach(r => r.style.borderBottom = '1px solid var(--border)');
+  row.style.borderBottom = 'none';
+  body.appendChild(row);
+  _addedRateCountries[context].add(destCode);
+  document.getElementById('add-rate-modal').classList.remove('open');
+  showToast('✅', 'Exchange rate added', `${dest.name} (${dest.currency}) is now live at 1 XAF = ${finalRate.toFixed(decimals)} ${dest.currency}`);
 }
 
 // ─── Rate modal ──────────────────────────────────────────────────────────────

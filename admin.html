@@ -705,12 +705,14 @@
         </div>
         <div class="card-body">
           <div class="rate-row">
-            <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div><div class="rate-sub" id="rate-sub-ngn">Wholesale: 1 XAF = 2.41 NGN</div></div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;">· Non-CPN</span></div><div class="rate-sub" id="rate-sub-ngn">Final rate shown to customer: 1 XAF = <strong id="ngn-final-rate">2.48</strong> NGN · Updated today, 06:00</div></div>
             <div class="rate-input-wrap">
-              <span class="rate-base-label" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">1 XAF =</span>
-              <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn" data-base-rate="2.48">
-              <span style="font-size:13px;color:var(--text-secondary);">NGN</span>
-              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRate('NGN', 'rate-ngn')">Save</button>
+              <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Wholesale 1 XAF =</span>
+              <input class="rate-input" type="number" value="2.41" step="0.01" id="wholesale-ngn" data-committed="2.41" style="max-width:75px;" oninput="updateRetailFinalRate('ngn', 2)">
+              <span style="font-size:12px;color:var(--text-secondary);">+</span>
+              <input class="rate-input" type="number" value="2.9" step="0.1" id="margin-ngn" data-committed="2.9" style="max-width:60px;" oninput="updateRetailFinalRate('ngn', 2)">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveRetailRate('NGN', 'wholesale-ngn', 'margin-ngn', 'ngn-final-rate', 'rate-sub-ngn', 2)">Save</button>
             </div>
           </div>
           <div class="rate-row">
@@ -1879,7 +1881,7 @@
       input.value = (perUnit * base).toFixed(dec);
       input.step = (perUnit * base < 1) ? '0.0001' : base >= 100 ? '0.1' : '0.01';
     });
-    ['NGN', 'CNY', 'AED'].forEach(curr => {
+    ['CNY', 'AED'].forEach(curr => {
       const el = document.getElementById('rate-sub-' + curr.toLowerCase());
       if (!el) return;
       const w = wholesaleRates[curr];
@@ -1944,6 +1946,32 @@
     _pendingMarginChange = { type: 'margin', inputId, label: corridorName + ' Margin', unit: '%', oldVal, newVal, corridorName };
     openMarginConfirm(_pendingMarginChange, `You are about to update the CPN margin for ${corridorName}:`, 'This changes the Sell Price (and deposit amount) for new quotes on this corridor. Per-transaction admin overrides are not affected.');
   }
+
+  function updateRetailFinalRate(corridor, decimals) {
+    const w = parseFloat(document.getElementById('wholesale-' + corridor).value) || 0;
+    const m = parseFloat(document.getElementById('margin-' + corridor).value) || 0;
+    const el = document.getElementById(corridor + '-final-rate');
+    if (el) el.textContent = (w * (1 + m / 100)).toFixed(decimals);
+  }
+  function saveRetailRate(corridorCode, wholesaleId, marginId, finalElId, subElId, decimals) {
+    const wInput = document.getElementById(wholesaleId);
+    const mInput = document.getElementById(marginId);
+    const newWholesale = parseFloat(wInput.value);
+    const newMargin = parseFloat(mInput.value);
+    const oldWholesale = parseFloat(wInput.dataset.committed);
+    const oldMargin = parseFloat(mInput.dataset.committed);
+    const oldFinal = oldWholesale * (1 + oldMargin / 100);
+    const newFinal = newWholesale * (1 + newMargin / 100);
+    _pendingMarginChange = {
+      type: 'retail', corridorCode, wholesaleId, marginId, finalElId, subElId, decimals,
+      newWholesale, newMargin,
+      oldVal: oldFinal.toFixed(decimals), newVal: newFinal.toFixed(decimals),
+      label: corridorCode + ' Rate', unit: ' ' + corridorCode
+    };
+    openMarginConfirm(_pendingMarginChange,
+      `You are about to update the final ${corridorCode} rate shown to the customer (1 XAF = ${newFinal.toFixed(decimals)} ${corridorCode}):`,
+      `Wholesale ${newWholesale} + ${newMargin}% margin. This is a non-CPN corridor priced directly, not via the CPN Wallet stock price.`);
+  }
   function openMarginConfirm(change, bodyText, footerText) {
     document.getElementById('margin-modal-title').textContent = `Confirm ${change.label} Change`;
     document.getElementById('margin-modal-body').textContent = bodyText;
@@ -1956,11 +1984,19 @@
   function cancelMarginRateModal() { document.getElementById('margin-rate-modal-overlay').classList.remove('open'); _pendingMarginChange = null; }
   function confirmMarginRateModal() {
     if (!_pendingMarginChange) return;
-    const { label, unit, oldVal, newVal, inputId } = _pendingMarginChange;
-    document.getElementById(inputId).dataset.committed = newVal;
-    if (inputId === 'stock-price-input') {
-      const now = new Date();
-      document.getElementById('stock-price-sub').textContent = 'Updated every morning · Last updated: today, ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+    const change = _pendingMarginChange;
+    const { label, unit, oldVal, newVal } = change;
+    if (change.type === 'retail') {
+      document.getElementById(change.wholesaleId).dataset.committed = change.newWholesale;
+      document.getElementById(change.marginId).dataset.committed = change.newMargin;
+      const t = new Date();
+      document.getElementById(change.subElId).innerHTML = `Final rate shown to customer: 1 XAF = <strong id="${change.finalElId}">${change.newVal}</strong> ${change.corridorCode} · Updated today, ${t.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`;
+    } else {
+      document.getElementById(change.inputId).dataset.committed = newVal;
+      if (change.inputId === 'stock-price-input') {
+        const now = new Date();
+        document.getElementById('stock-price-sub').textContent = 'Updated every morning · Last updated: today, ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+      }
     }
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });

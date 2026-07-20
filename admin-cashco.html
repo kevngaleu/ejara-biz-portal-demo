@@ -253,6 +253,7 @@
     .rate-corridor { font-weight: 700; font-size: 15px; }
     .rate-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
     .rate-input { width: 130px; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Inter', sans-serif; outline: none; text-align: right; }
+    .rate-input-wrap { display: flex; align-items: center; gap: 8px; }
     .rate-input:focus { border-color: var(--purple); }
 
     /* ── MODAL ── */
@@ -882,50 +883,48 @@
           <div class="card-title">Current Rates — Cash Co Bill Payment</div>
           <button class="btn btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="navigate('cc-rate-log')">View change log →</button>
         </div>
-        <div style="padding:10px 22px;border-bottom:1px solid var(--border);">
-          <div class="rate-base-row" style="margin-bottom:0;">
-            <span class="rate-base-label-text">Display base:</span>
-            <button class="base-btn active" id="base-1" onclick="setBase(1)">1</button>
-            <button class="base-btn" id="base-10" onclick="setBase(10)">10</button>
-            <button class="base-btn" id="base-100" onclick="setBase(100)">100</button>
-            <button class="base-btn" id="base-1000" onclick="setBase(1000)">1,000</button>
-          </div>
-        </div>
+        <div style="padding:6px 22px 2px;font-size:12px;color:var(--text-secondary);">Cash Co never routes through CPN — every corridor is priced here as Wholesale + Margin → Final rate shown to the customer.</div>
         <div style="padding:0 22px;">
           <div class="rate-row">
             <div>
-              <div class="rate-corridor">XAF → NGN</div>
-              <div class="rate-sub">Wholesale: <span id="ws-ngn">1 XAF = 2.41 NGN</span> · Updated today 06:00</div>
+              <div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div>
+              <div class="rate-sub" id="cc-sub-ngn">Final rate shown to customer: 1 XAF = <strong id="cc-ngn-final-rate">2.48</strong> NGN · Updated today, 06:00</div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span class="rate-base-label" id="lbl-ngn" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
-              <input class="rate-input" id="rate-ngn" type="number" value="2.48" step="0.01">
-              <span style="font-size:12px;color:var(--text-secondary);">NGN</span>
-              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('NGN','rate-ngn')">Save</button>
+            <div class="rate-input-wrap">
+              <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Wholesale 1 XAF =</span>
+              <input class="rate-input" type="number" value="2.41" step="0.01" id="cc-wholesale-ngn" data-committed="2.41" style="max-width:75px;" oninput="updateRetailFinalRate('cc-wholesale-ngn','cc-margin-ngn','cc-ngn-final-rate',2)">
+              <span style="font-size:12px;color:var(--text-secondary);">+</span>
+              <input class="rate-input" type="number" value="2.9" step="0.1" id="cc-margin-ngn" data-committed="2.9" style="max-width:60px;" oninput="updateRetailFinalRate('cc-wholesale-ngn','cc-margin-ngn','cc-ngn-final-rate',2)">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRetailRateConfirm('NGN','cc-wholesale-ngn','cc-margin-ngn','cc-ngn-final-rate','cc-sub-ngn',2)">Save</button>
             </div>
           </div>
           <div class="rate-row">
             <div>
-              <div class="rate-corridor">XAF → CNY</div>
-              <div class="rate-sub">Wholesale: <span id="ws-cny">1 XAF = 0.0109 CNY</span> · Updated today 06:00</div>
+              <div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div>
+              <div class="rate-sub" id="cc-sub-cny">Final rate shown to customer: 1 XAF = <strong id="cc-cny-final-rate">0.0112</strong> CNY · Updated today, 06:00</div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span class="rate-base-label" id="lbl-cny" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
-              <input class="rate-input" id="rate-cny" type="number" value="0.0112" step="0.0001">
-              <span style="font-size:12px;color:var(--text-secondary);">CNY</span>
-              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('CNY','rate-cny')">Save</button>
+            <div class="rate-input-wrap">
+              <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Wholesale 1 XAF =</span>
+              <input class="rate-input" type="number" value="0.0109" step="0.0001" id="cc-wholesale-cny" data-committed="0.0109" style="max-width:75px;" oninput="updateRetailFinalRate('cc-wholesale-cny','cc-margin-cny','cc-cny-final-rate',4)">
+              <span style="font-size:12px;color:var(--text-secondary);">+</span>
+              <input class="rate-input" type="number" value="2.75" step="0.1" id="cc-margin-cny" data-committed="2.75" style="max-width:60px;" oninput="updateRetailFinalRate('cc-wholesale-cny','cc-margin-cny','cc-cny-final-rate',4)">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRetailRateConfirm('CNY','cc-wholesale-cny','cc-margin-cny','cc-cny-final-rate','cc-sub-cny',4)">Save</button>
             </div>
           </div>
           <div class="rate-row" style="border-bottom:none;">
             <div>
-              <div class="rate-corridor">XAF → AED</div>
-              <div class="rate-sub">Wholesale: <span id="ws-aed">1 XAF = 0.00593 AED</span> · Updated today 06:00</div>
+              <div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div>
+              <div class="rate-sub" id="cc-sub-aed">Final rate shown to customer: 1 XAF = <strong id="cc-aed-final-rate">0.0061</strong> AED · Updated today, 06:00</div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span class="rate-base-label" id="lbl-aed" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
-              <input class="rate-input" id="rate-aed" type="number" value="0.0061" step="0.0001">
-              <span style="font-size:12px;color:var(--text-secondary);">AED</span>
-              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('AED','rate-aed')">Save</button>
+            <div class="rate-input-wrap">
+              <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Wholesale 1 XAF =</span>
+              <input class="rate-input" type="number" value="0.0059" step="0.0001" id="cc-wholesale-aed" data-committed="0.0059" style="max-width:75px;" oninput="updateRetailFinalRate('cc-wholesale-aed','cc-margin-aed','cc-aed-final-rate',4)">
+              <span style="font-size:12px;color:var(--text-secondary);">+</span>
+              <input class="rate-input" type="number" value="3.39" step="0.1" id="cc-margin-aed" data-committed="3.39" style="max-width:60px;" oninput="updateRetailFinalRate('cc-wholesale-aed','cc-margin-aed','cc-aed-final-rate',4)">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRetailRateConfirm('AED','cc-wholesale-aed','cc-margin-aed','cc-aed-final-rate','cc-sub-aed',4)">Save</button>
             </div>
           </div>
         </div>
@@ -1143,14 +1142,16 @@
         <div style="padding:0 22px;">
           <div class="rate-row">
             <div>
-              <div class="rate-corridor">XAF → NGN</div>
-              <div class="rate-sub">Wholesale: <span id="fx-ws-ngn">1 XAF = 2.41 NGN</span> · Updated today 06:00</div>
+              <div class="rate-corridor">XAF → NGN <span style="font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;">· Non-CPN</span></div>
+              <div class="rate-sub" id="fx-sub-ngn">Final rate shown to customer: 1 XAF = <strong id="fx-ngn-final-rate">2.48</strong> NGN · Updated today, 06:00</div>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span class="rate-base-label" id="fx-lbl-ngn" style="font-size:12px;color:var(--text-secondary);">1 XAF =</span>
-              <input class="rate-input" id="fx-rate-ngn" type="number" value="2.48" step="0.01">
-              <span style="font-size:12px;color:var(--text-secondary);">NGN</span>
-              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRateModal('NGN','fx-rate-ngn')">Save</button>
+            <div class="rate-input-wrap">
+              <span style="font-size:12px;color:var(--text-secondary);white-space:nowrap;">Wholesale 1 XAF =</span>
+              <input class="rate-input" type="number" value="2.41" step="0.01" id="fx-wholesale-ngn" data-committed="2.41" style="max-width:75px;" oninput="updateRetailFinalRate('fx-wholesale-ngn','fx-margin-ngn','fx-ngn-final-rate',2)">
+              <span style="font-size:12px;color:var(--text-secondary);">+</span>
+              <input class="rate-input" type="number" value="2.9" step="0.1" id="fx-margin-ngn" data-committed="2.9" style="max-width:60px;" oninput="updateRetailFinalRate('fx-wholesale-ngn','fx-margin-ngn','fx-ngn-final-rate',2)">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openRetailRateConfirm('NGN','fx-wholesale-ngn','fx-margin-ngn','fx-ngn-final-rate','fx-sub-ngn',2)">Save</button>
             </div>
           </div>
           <div class="rate-row">
@@ -2535,13 +2536,49 @@ function setBase(b) {
 let fxCurrentBase = 1;
 function setFXBase(b) {
   fxCurrentBase = b;
-  ['ngn','cny','aed'].forEach(c => {
+  ['cny','aed'].forEach(c => {
     document.getElementById('fx-lbl-' + c).textContent = (b > 1 ? b.toLocaleString() : '1') + ' XAF =';
     const raw = BASE_RATES[c] * b;
     document.getElementById('fx-rate-' + c).value = parseFloat(raw.toPrecision(4));
   });
   document.querySelectorAll('#page-fx-rates .base-btn').forEach(btn => btn.classList.remove('active'));
   document.getElementById('fx-base-' + b).classList.add('active');
+}
+
+// ─── Wholesale + Margin → Final Rate (non-CPN corridors) ─────────────────────
+function updateRetailFinalRate(wholesaleId, marginId, finalElId, decimals) {
+  const w = parseFloat(document.getElementById(wholesaleId).value) || 0;
+  const m = parseFloat(document.getElementById(marginId).value) || 0;
+  const el = document.getElementById(finalElId);
+  if (el) el.textContent = (w * (1 + m / 100)).toFixed(decimals);
+}
+function openRetailRateConfirm(corridorCode, wholesaleId, marginId, finalElId, subElId, decimals) {
+  const wInput = document.getElementById(wholesaleId);
+  const mInput = document.getElementById(marginId);
+  const newWholesale = parseFloat(wInput.value);
+  const newMargin = parseFloat(mInput.value);
+  const oldWholesale = parseFloat(wInput.dataset.committed);
+  const oldMargin = parseFloat(mInput.dataset.committed);
+  const oldFinal = oldWholesale * (1 + oldMargin / 100);
+  const newFinal = newWholesale * (1 + newMargin / 100);
+  wInput.dataset.committed = newWholesale;
+  mInput.dataset.committed = newMargin;
+  pendingCorridorLabel = 'XAF → ' + corridorCode;
+  pendingNewRate = newFinal.toFixed(decimals) + ' ' + corridorCode;
+  document.getElementById('rate-modal-corridor-label').textContent = 'Corridor: XAF → ' + corridorCode + ' · Non-CPN';
+  document.getElementById('rate-modal-old').textContent = oldFinal.toFixed(decimals) + ' ' + corridorCode;
+  document.getElementById('rate-modal-new').textContent = pendingNewRate;
+  document.getElementById('rate-modal').classList.add('open');
+  let val = 120;
+  document.getElementById('rate-countdown').textContent = val;
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    val--;
+    document.getElementById('rate-countdown').textContent = val;
+    if (val <= 0) { clearInterval(countdownTimer); confirmRate(); }
+  }, 1000);
+  const now = new Date();
+  document.getElementById(subElId).innerHTML = `Final rate shown to customer: 1 XAF = <strong id="${finalElId}">${newFinal.toFixed(decimals)}</strong> ${corridorCode} · Updated today, ${now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' })}`;
 }
 
 // ─── Rate modal ──────────────────────────────────────────────────────────────

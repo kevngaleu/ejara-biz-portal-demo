@@ -610,7 +610,7 @@
       <div class="card" style="overflow-x:auto;">
         <table style="min-width:1180px;">
           <thead><tr>
-            <th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount deposited (XAF)</th><th>Amount received</th><th>Destination</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Route</th><th>Margin Rate</th><th>CPN rate at Payment</th><th>Status</th><th>Submitted</th><th>Action</th>
+            <th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount deposited (XAF)</th><th>Amount received</th><th>Destination</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Route</th><th>Margin Rate</th><th>USDC Required at Payment</th><th>CPN rate at Payment</th><th>Status</th><th>Submitted</th><th>Action</th>
           </tr></thead>
           <tbody>
             <tr class="clickable" onclick="openCCTxDetail('TXN8K2P9QR34M1','PENDING_REVIEW')">
@@ -624,6 +624,7 @@
               <td style="font-weight:600;white-space:nowrap;color:var(--green);">45,833</td>
               <td style="white-space:nowrap;">Manual</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
+              <td style="white-space:nowrap;">4,166.67 USDC</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 09:14</td>
@@ -640,6 +641,7 @@
               <td style="font-weight:600;white-space:nowrap;color:var(--green);">95,609</td>
               <td style="white-space:nowrap;">Manual</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
+              <td style="white-space:nowrap;">7,987.08 USDC</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:52</td>
@@ -656,6 +658,7 @@
               <td style="font-weight:600;white-space:nowrap;color:var(--green);">23,962</td>
               <td style="white-space:nowrap;">Manual</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
+              <td style="white-space:nowrap;">1,996.67 USDC</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 08:30</td>
@@ -672,6 +675,7 @@
               <td style="font-weight:600;white-space:nowrap;color:var(--green);">61,898</td>
               <td style="white-space:nowrap;">Manual</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
+              <td style="white-space:nowrap;">5,158.07 USDC</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
               <td><span class="bp bp-approved">Approved</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 07:40</td>
@@ -688,6 +692,7 @@
               <td style="font-weight:600;white-space:nowrap;color:var(--green);">99,831</td>
               <td style="white-space:nowrap;">Manual</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
+              <td style="white-space:nowrap;">8,319.47 USDC</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
               <td><span class="bp bp-completed">Completed</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Yesterday</td>
@@ -704,6 +709,7 @@
               <td style="font-weight:600;white-space:nowrap;color:var(--red);">-23,823</td>
               <td style="white-space:nowrap;">Manual</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
+              <td style="white-space:nowrap;">5,824.50 USDC</td>
               <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
               <td><span class="bp bp-pending">Pending Review</span></td>
               <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Today, 06:15</td>
@@ -1027,7 +1033,7 @@
       </div>
       <div class="card" style="overflow-x:auto;">
         <table style="min-width:1400px;">
-          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Route</th><th>Margin Rate</th><th>CPN rate at Payment</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
+          <thead><tr><th>Reference</th><th>Customer</th><th>Beneficiary</th><th>Amount Deposited</th><th>Amount to Receive</th><th>Destination</th><th>Stock Price (USDC/XAF)</th><th>Sell Price (USDC/XAF)</th><th>Margin (XAF)</th><th>Route</th><th>Margin Rate</th><th>USDC Required at Payment</th><th>CPN rate at Payment</th><th>Status</th><th>Date &amp; Time</th><th>Action</th></tr></thead>
           <tbody id="fx-tx-tbody"></tbody>
         </table>
       </div>
@@ -1627,7 +1633,6 @@ function openCCTxDetail(ref, status) {
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value">${statusHtml}</span></div>
       <div class="detail-row"><span class="detail-label">Amount deposited</span><span class="detail-value" style="font-weight:700;">XAF 2,500,000</span></div>
       <div class="detail-row"><span class="detail-label">Amount received</span><span class="detail-value" style="color:var(--green);font-weight:700;">NGN 6,200,000</span></div>
-      <div class="detail-row"><span class="detail-label">Crypto volume</span><span class="detail-value">4,166.67 USDT</span></div>
       <div class="detail-row"><span class="detail-label">Destination</span><span class="detail-value">Nigeria</span></div>
       <div class="detail-row"><span class="detail-label">Rate applied</span><span class="detail-value">1 XAF = 2.48 NGN</span></div>
       <div class="detail-row"><span class="detail-label">Stock Price (USDC/XAF)</span><span class="detail-value">589</span></div>
@@ -1635,6 +1640,7 @@ function openCCTxDetail(ref, status) {
       <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" style="font-weight:700;color:var(--green);">45,833</span></div>
       <div class="detail-row"><span class="detail-label">Margin Rate</span><span class="detail-value" style="color:var(--text-secondary);">2%</span></div>
       <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value">Manual</span></div>
+      <div class="detail-row"><span class="detail-label">USDC Required at Payment</span><span class="detail-value">4,166.67 USDC</span></div>
       <div class="detail-row"><span class="detail-label">CPN rate at Initiation</span><span class="detail-value">—</span></div>
       <div class="detail-row"><span class="detail-label">CPN rate at Payment</span><span class="detail-value">—</span></div>
       <div class="detail-row"><span class="detail-label">Reason</span><span class="detail-value">Goods — textile supplies (Invoice INV-2026-0847)</span></div>
@@ -1893,6 +1899,7 @@ const FX_TX = {
   'BTXR-260005': { customer:'Paul Nguemo',    beneName:'Kemi Supplies Ltd',     beneBank:'UBA Nigeria',            beneAcct:'0056473829', amount:'2,419,355', dest:'6,000,000',  crypto:'4,032.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 09:02', status:'APPROVED', reason:'Payment for equipment supplies', stockPrice:'589', sellPrice:'595', margin:'11,800', route:'Manual', override:'1%', docUploaded:true },
   'BTXR-260006': { customer:'Hervé Tchinda',  beneName:'Biodun Trading Co.',    beneBank:'Fidelity Bank Nigeria',  beneAcct:'0072819364', amount:'1,612,903', dest:'4,000,000',  crypto:'2,688.00', corridor:'XAF → NGN', rate:'1 XAF = 2.48 NGN', date:'26 Mar 2026, 13:10', status:'INITIATED', reason:'Payment for trading goods', stockPrice:null, sellPrice:null, margin:null, route:null, override:null, docUploaded:false },
   'BTXR-260007': { customer:'Julienne Abanda', beneName:'Shenzhen Parts Co.',   beneBank:'Bank of China',          beneAcct:'0099371050', amount:'1,500,000', dest:'16,500',     crypto:'2,500.00', corridor:'XAF → CNY', rate:'1 XAF = 0.011 CNY', date:'26 Mar 2026, 15:47', status:'APPROVED', reason:'Payment for electronics components', stockPrice:'589', sellPrice:'601', margin:'27,500', route:'CPN', override:'2%', docUploaded:false, cpnRateInit:'1 USDC = 6.55 CNY', cpnRatePayment:'1 USDC = 6.60 CNY' },
+  'BTXR-260008': { customer:'Bertrand Simo',   beneName:'Ahmed Al Mansouri',    beneBank:'Emirates NBD',           beneAcct:'0033921456', amount:'900,000',   dest:'5,490',      crypto:'1,480.00', corridor:'XAF → AED', rate:'1 XAF = 0.0061 AED', date:'27 Mar 2026, 10:20', status:'APPROVED', reason:'Payment for logistics equipment', stockPrice:'589', sellPrice:'601', margin:'28,280', route:'CPN', override:'2%', docUploaded:true, cpnRateInit:'1 USDC = 3.66 AED', cpnRatePayment:'1 USDC = 3.71 AED' },
 };
 const CORRIDOR_DESTINATION = { 'XAF → NGN':'Nigeria', 'XAF → AED':'Dubai', 'XAF → CNY':'China' };
 const CORRIDOR_CURRENCY = { 'XAF → NGN':'NGN', 'XAF → AED':'AED', 'XAF → CNY':'CNY' };
@@ -1916,6 +1923,7 @@ function renderFXTxTable() {
       <td style="font-weight:600;white-space:nowrap;${t.margin == null ? '' : t.absorbed ? 'color:var(--red);' : 'color:var(--green);'}">${t.margin != null ? t.margin : '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;${t.route === 'CPN' ? 'font-weight:600;' : ''}">${t.route || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;${t.override && t.override !== '2%' ? 'font-weight:600;color:var(--purple);' : 'color:var(--text-secondary);'}">${t.override || '<span style="color:var(--text-secondary);">—</span>'}</td>
+      <td style="white-space:nowrap;">${t.margin != null ? t.crypto + ' USDC' : '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td style="white-space:nowrap;${t.cpnRatePayment ? 'font-weight:600;' : 'color:var(--text-secondary);'}">${t.cpnRatePayment || '<span style="color:var(--text-secondary);">—</span>'}</td>
       <td><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></td>
       <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">${t.date}</td>
@@ -1937,7 +1945,6 @@ function openFXTxDetail(ref) {
       <div class="detail-row"><span class="detail-label">Status</span><span class="detail-value"><span class="bp ${FX_TX_STATUS_CLASS[t.status]}">${FX_TX_STATUS_LABEL[t.status]}</span></span></div>
       <div class="detail-row"><span class="detail-label">Amount Deposited</span><span class="detail-value" style="font-weight:700;">XAF ${t.amount}</span></div>
       <div class="detail-row"><span class="detail-label">Amount to Receive</span><span class="detail-value" style="color:var(--green);font-weight:700;">${CORRIDOR_CURRENCY[t.corridor] || 'NGN'} ${t.dest}</span></div>
-      <div class="detail-row"><span class="detail-label">Crypto volume (to beneficiary)</span><span class="detail-value">${t.crypto} USDT</span></div>
       <div class="detail-row"><span class="detail-label">Destination</span><span class="detail-value">${CORRIDOR_DESTINATION[t.corridor] || t.corridor}</span></div>
       <div class="detail-row"><span class="detail-label">Exchange Rate</span><span class="detail-value">${t.rate}</span></div>
       <div class="detail-row"><span class="detail-label">Submitted</span><span class="detail-value">${t.date}</span></div>
@@ -1950,6 +1957,7 @@ function openFXTxDetail(ref) {
       <div class="detail-row"><span class="detail-label">Margin (XAF)</span><span class="detail-value" style="${t.margin == null ? '' : t.absorbed ? 'color:var(--red);' : 'color:var(--green);'}">${t.margin != null ? t.margin : '—'}</span></div>
       <div class="detail-row"><span class="detail-label">Margin Rate</span><span class="detail-value">${t.override || '—'}</span></div>
       <div class="detail-row"><span class="detail-label">Route</span><span class="detail-value">${t.route || '—'}</span></div>
+      <div class="detail-row"><span class="detail-label">USDC Required at Payment</span><span class="detail-value">${t.margin != null ? t.crypto + ' USDC' : '—'}</span></div>
       <div class="detail-row"><span class="detail-label">CPN rate at Initiation</span><span class="detail-value">${t.cpnRateInit || '—'}</span></div>
       <div class="detail-row"><span class="detail-label">CPN rate at Payment</span><span class="detail-value">${t.cpnRatePayment || '—'}</span></div>
     </div>

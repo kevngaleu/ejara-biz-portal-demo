@@ -1094,28 +1094,34 @@
       <div class="card" style="margin-bottom:20px;border:1.5px solid var(--purple-mid);">
         <div class="card-header">
           <div>
-            <div class="card-title">USDC Stock Margin</div>
-            <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">Sell Price = Stock Price + Margin — this determines how much USDC the customer's wallet receives, and how much they need to deposit. Applies across every corridor.</div>
+            <div class="card-title">CPN Wallet — Stock Price &amp; Margin</div>
+            <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">Sell Price = Stock Price + Margin — determines how much USDC is credited and how much the customer must deposit, for corridors routed via CPN (China, Dubai). Nigeria doesn't use CPN — its pricing is set directly via Retail Rates below.</div>
           </div>
         </div>
         <div style="padding:0 22px 22px;">
-          <div style="background:var(--bg);border-radius:10px;padding:14px 16px;margin:16px 0;display:flex;align-items:center;gap:10px;font-size:13px;">
-            <span style="color:var(--text-secondary);">Example:</span>
-            <span>Stock Price <strong>589</strong></span>
-            <span style="color:var(--text-secondary);">+</span>
-            <span id="fx-margin-example-pct" style="color:var(--purple);font-weight:700;">2%</span>
-            <span style="color:var(--text-secondary);">=</span>
-            <span>Sell Price <strong id="fx-margin-example-sell" style="color:var(--purple);">601</strong></span>
+          <div class="rate-row" style="margin-top:16px;">
+            <div><div class="rate-corridor">USDC Stock Price</div><div class="rate-sub" id="fx-stock-price-sub">Updated every morning · Last updated: today, 06:00</div></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input class="rate-input" id="fx-stock-price-input" type="number" value="589" step="1" min="0" data-committed="589" style="max-width:90px;" oninput="updateFXCorridorMarginExamples()">
+              <span style="font-size:12px;color:var(--text-secondary);">XAF/USDC</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="saveFXStockPrice()">Save</button>
+            </div>
+          </div>
+          <div style="margin:18px 0 10px;font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;">Margin by CPN Corridor</div>
+          <div class="rate-row">
+            <div><div class="rate-corridor">🇨🇳 China</div><div class="rate-sub">Sell Price: <strong id="fx-cn-margin-example">601</strong> XAF/USDC</div></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <input class="rate-input" id="fx-cn-margin-input" type="number" value="2" step="0.1" min="0" data-committed="2" style="max-width:80px;" oninput="updateFXCorridorMarginExamples()">
+              <span style="font-size:12px;color:var(--text-secondary);">%</span>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="saveFXCorridorMargin('China', 'fx-cn-margin-input')">Save</button>
+            </div>
           </div>
           <div class="rate-row" style="border-bottom:none;">
-            <div>
-              <div class="rate-corridor">Default Margin</div>
-              <div class="rate-sub">Applies to all new quotes across every corridor · Admins can still offer a better rate per transaction (see Transactions → Margin Rate)</div>
-            </div>
+            <div><div class="rate-corridor">🇦🇪 Dubai</div><div class="rate-sub">Sell Price: <strong id="fx-ae-margin-example">601</strong> XAF/USDC</div></div>
             <div style="display:flex;align-items:center;gap:10px;">
-              <input class="rate-input" id="fx-margin-rate-input" type="number" value="2" step="0.1" min="0" data-committed="2" style="max-width:80px;" oninput="updateFXMarginExample()">
+              <input class="rate-input" id="fx-ae-margin-input" type="number" value="2" step="0.1" min="0" data-committed="2" style="max-width:80px;" oninput="updateFXCorridorMarginExamples()">
               <span style="font-size:12px;color:var(--text-secondary);">%</span>
-              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="openFXMarginRateModal()">Save</button>
+              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="saveFXCorridorMargin('Dubai', 'fx-ae-margin-input')">Save</button>
             </div>
           </div>
         </div>
@@ -2564,23 +2570,24 @@ function openRateModal(corridor, inputId) {
 function cancelRate()  { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('ℹ️','Rate Change Cancelled','No changes applied.'); }
 function confirmRate() { clearInterval(countdownTimer); document.getElementById('rate-modal').classList.remove('open'); showToast('✅','Rate Updated',pendingCorridorLabel + ' → ' + pendingNewRate + ' is now live.'); }
 
-function updateFXMarginExample() {
-  const pct = parseFloat(document.getElementById('fx-margin-rate-input').value) || 0;
-  const stock = 589;
-  const sell = Math.round(stock * (1 + pct / 100));
-  document.getElementById('fx-margin-example-pct').textContent = pct + '%';
-  document.getElementById('fx-margin-example-sell').textContent = sell;
+function updateFXCorridorMarginExamples() {
+  const stock = parseFloat(document.getElementById('fx-stock-price-input').value) || 0;
+  ['cn', 'ae'].forEach(prefix => {
+    const pct = parseFloat(document.getElementById('fx-' + prefix + '-margin-input').value) || 0;
+    const sell = Math.round(stock * (1 + pct / 100));
+    document.getElementById('fx-' + prefix + '-margin-example').textContent = sell;
+  });
 }
 
-function openFXMarginRateModal() {
-  const input = document.getElementById('fx-margin-rate-input');
-  const oldRate = parseFloat(input.dataset.committed);
-  const newRate = parseFloat(input.value);
-  input.dataset.committed = newRate;
-  pendingCorridorLabel = 'USDC Stock Margin';
-  pendingNewRate = newRate + '%';
-  document.getElementById('rate-modal-corridor-label').textContent = 'USDC Stock Margin (applies to all corridors)';
-  document.getElementById('rate-modal-old').textContent = oldRate + '%';
+function openFXMarginConfirm(label, inputId, unit, cornerLabel) {
+  const input = document.getElementById(inputId);
+  const oldVal = parseFloat(input.dataset.committed);
+  const newVal = parseFloat(input.value);
+  input.dataset.committed = newVal;
+  pendingCorridorLabel = label;
+  pendingNewRate = newVal + unit;
+  document.getElementById('rate-modal-corridor-label').textContent = cornerLabel;
+  document.getElementById('rate-modal-old').textContent = oldVal + unit;
   document.getElementById('rate-modal-new').textContent = pendingNewRate;
   document.getElementById('rate-modal').classList.add('open');
   let val = 120;
@@ -2591,6 +2598,16 @@ function openFXMarginRateModal() {
     document.getElementById('rate-countdown').textContent = val;
     if (val <= 0) { clearInterval(countdownTimer); confirmRate(); }
   }, 1000);
+}
+function saveFXStockPrice() {
+  openFXMarginConfirm('USDC Stock Price', 'fx-stock-price-input', ' XAF/USDC', 'CPN Wallet — used for all CPN-routed corridors');
+  const now = new Date();
+  document.getElementById('fx-stock-price-sub').textContent = 'Updated every morning · Last updated: today, ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  updateFXCorridorMarginExamples();
+}
+function saveFXCorridorMargin(corridorName, inputId) {
+  openFXMarginConfirm(corridorName + ' CPN Margin', inputId, '%', 'CPN Margin — ' + corridorName);
+  updateFXCorridorMarginExamples();
 }
 
 // ─── Toast + badge helpers ────────────────────────────────────────────────────

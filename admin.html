@@ -696,7 +696,7 @@
         </div>
         <div class="card-body">
           <div class="rate-row">
-            <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div><div class="rate-sub" id="rate-sub-ngn">Wholesale: 1 XAF = 2.41 NGN · Spread: 2.9%</div></div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇳🇬 NGN</div><div class="rate-sub" id="rate-sub-ngn">Wholesale: 1 XAF = 2.41 NGN</div></div>
             <div class="rate-input-wrap">
               <span class="rate-base-label" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">1 XAF =</span>
               <input class="rate-input" type="number" value="2.48" step="0.01" id="rate-ngn" data-base-rate="2.48">
@@ -705,7 +705,7 @@
             </div>
           </div>
           <div class="rate-row">
-            <div><div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div><div class="rate-sub" id="rate-sub-cny">Wholesale: 1 XAF = 0.0109 CNY · Spread: 2.8%</div></div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇨🇳 CNY</div><div class="rate-sub" id="rate-sub-cny">Wholesale: 1 XAF = 0.0109 CNY</div></div>
             <div class="rate-input-wrap">
               <span class="rate-base-label" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">1 XAF =</span>
               <input class="rate-input" type="number" value="0.0112" step="0.0001" id="rate-cny" data-base-rate="0.0112">
@@ -714,7 +714,7 @@
             </div>
           </div>
           <div class="rate-row">
-            <div><div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div><div class="rate-sub" id="rate-sub-aed">Wholesale: 1 XAF = 0.0059 AED · Spread: 3.4%</div></div>
+            <div><div class="rate-corridor">🇨🇲 XAF → 🇦🇪 AED</div><div class="rate-sub" id="rate-sub-aed">Wholesale: 1 XAF = 0.0059 AED</div></div>
             <div class="rate-input-wrap">
               <span class="rate-base-label" style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">1 XAF =</span>
               <input class="rate-input" type="number" value="0.0061" step="0.0001" id="rate-aed" data-base-rate="0.0061">
@@ -1856,7 +1856,6 @@
   let rateBase = 1;
 
   const wholesaleRates = { NGN: 2.41, CNY: 0.0109, AED: 0.0059 };
-  const spreads = { NGN: '2.9%', CNY: '2.8%', AED: '3.4%' };
 
   function setRateBase(base, btn) {
     rateBase = base;
@@ -1877,7 +1876,7 @@
       const w = wholesaleRates[curr];
       const wDisplay = (w * base).toFixed(curr === 'NGN' ? 2 : 4);
       const baseStr = base === 1 ? '1 XAF' : `${base.toLocaleString()} XAF`;
-      el.textContent = `Wholesale: ${baseStr} = ${wDisplay} ${curr} · Spread: ${spreads[curr]}`;
+      el.textContent = `Wholesale: ${baseStr} = ${wDisplay} ${curr}`;
     });
   }
 

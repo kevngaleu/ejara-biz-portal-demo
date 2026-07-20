@@ -655,18 +655,10 @@
       <div class="card" style="margin-bottom:20px;border:1.5px solid var(--purple-mid);">
         <div class="card-header">
           <div>
-            <div class="card-title">CPN Wallet — Stock Price &amp; Margin</div>
+            <div class="card-title">CPN Wallet — Margin</div>
           </div>
         </div>
         <div class="card-body">
-          <div class="rate-row">
-            <div><div class="rate-corridor">USDC Stock Price</div></div>
-            <div class="rate-input-wrap">
-              <input class="rate-input" type="number" value="589" step="1" min="0" id="stock-price-input" data-committed="589" style="max-width:90px;">
-              <span style="font-size:13px;color:var(--text-secondary);">XAF/USDC</span>
-              <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveStockPrice()">Save</button>
-            </div>
-          </div>
           <div class="rate-row" style="border-bottom:none;">
             <div><div class="rate-corridor">USDC Margin</div><div class="rate-sub">This is the margin that will be applied on the USDC stock price for the bill payment product</div></div>
             <div class="rate-input-wrap">
@@ -1876,13 +1868,6 @@
 
   // ─── RATES ───
   let _pendingMarginChange = null;
-  function saveStockPrice() {
-    const input = document.getElementById('stock-price-input');
-    const newVal = parseFloat(input.value);
-    const oldVal = parseFloat(input.dataset.committed);
-    _pendingMarginChange = { type: 'stock', inputId: 'stock-price-input', label: 'USDC Stock Price', unit: ' XAF/USDC', oldVal, newVal };
-    openMarginConfirm(_pendingMarginChange, 'You are about to update the USDC stock price used to settle all CPN-routed transactions:', 'This affects new quotes going forward. FIFO lots already settled are not affected.');
-  }
   function saveCorridorMargin(corridorName, inputId) {
     const input = document.getElementById(inputId);
     const newVal = parseFloat(input.value);

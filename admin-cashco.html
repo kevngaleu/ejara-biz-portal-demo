@@ -1086,19 +1086,11 @@
       <div class="card" style="margin-bottom:20px;border:1.5px solid var(--purple-mid);">
         <div class="card-header">
           <div>
-            <div class="card-title">CPN Wallet — Stock Price &amp; Margin</div>
+            <div class="card-title">CPN Wallet — Margin</div>
           </div>
         </div>
         <div style="padding:0 22px 22px;">
-          <div class="rate-row" style="margin-top:16px;">
-            <div><div class="rate-corridor">USDC Stock Price</div></div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <input class="rate-input" id="fx-stock-price-input" type="number" value="589" step="1" min="0" data-committed="589" style="max-width:90px;">
-              <span style="font-size:12px;color:var(--text-secondary);">XAF/USDC</span>
-              <button class="btn btn-primary" style="font-size:11px;padding:5px 12px;" onclick="saveFXStockPrice()">Save</button>
-            </div>
-          </div>
-          <div class="rate-row" style="border-bottom:none;">
+          <div class="rate-row" style="margin-top:16px;border-bottom:none;">
             <div><div class="rate-corridor">USDC Margin</div><div class="rate-sub">This is the margin that will be applied on the USDC stock price for the bill payment product</div></div>
             <div style="display:flex;align-items:center;gap:10px;">
               <input class="rate-input" id="fx-cpn-margin-input" type="number" value="2" step="0.1" min="0" data-committed="2" style="max-width:80px;">
@@ -2730,9 +2722,6 @@ function openFXMarginConfirm(label, inputId, unit, cornerLabel) {
     document.getElementById('rate-countdown').textContent = val;
     if (val <= 0) { clearInterval(countdownTimer); confirmRate(); }
   }, 1000);
-}
-function saveFXStockPrice() {
-  openFXMarginConfirm('USDC Stock Price', 'fx-stock-price-input', ' XAF/USDC', 'CPN Wallet, used for all CPN-routed corridors');
 }
 function saveFXCorridorMargin(corridorName, inputId) {
   openFXMarginConfirm('USDC Margin', inputId, '%', 'USDC Margin, applies to China & Dubai');

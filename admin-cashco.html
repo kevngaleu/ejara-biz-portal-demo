@@ -296,15 +296,6 @@
     .kyc-level-pill { display: inline-block; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--purple-light); color: var(--purple); }
     .kyc-level-pill.pending { background: #EFF6FF; color: #2563EB; }
 
-    /* ── INLINE PROOF CARD ── */
-    .proof-card { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
-    .proof-card-header { background: #1E1B4B; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
-    .proof-card-bank { color: white; font-weight: 700; font-size: 13px; }
-    .proof-card-type { color: rgba(255,255,255,.55); font-size: 11px; }
-    .proof-card-body { padding: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .proof-field-label { font-size: 10px; color: var(--text-secondary); margin-bottom: 2px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-    .proof-field-value { font-size: 12px; font-weight: 600; font-family: monospace; }
-    .proof-card-footer { padding: 8px 14px; border-top: 1px dashed var(--border); font-size: 11px; color: var(--text-secondary); text-align: center; }
     .verify-banner { background: #EFF6FF; border-radius: 8px; padding: 10px 13px; font-size: 12px; color: #1E40AF; margin-top: 4px; }
 
     /* ── COMPLETE TX MODAL ── */
@@ -1666,19 +1657,6 @@ function openCCTxDetail(ref, status) {
       <div class="detail-section-title">Proof of Deposit</div>
       ${docItem('🧾','Invoice_2026-06-30.pdf','148 KB','invoice')}
       ${docItem('🧾','Deposit_slip_SGC.pdf','92 KB','deposit')}
-      <div class="proof-card" style="margin-top:12px;">
-        <div class="proof-card-header">
-          <div class="proof-card-bank">Société Générale Cameroun</div>
-          <div class="proof-card-type">Deposit Slip</div>
-        </div>
-        <div class="proof-card-body">
-          <div><div class="proof-field-label">Date</div><div class="proof-field-value">30 Jun 2026</div></div>
-          <div><div class="proof-field-label">Account</div><div class="proof-field-value">•••• 4421</div></div>
-          <div><div class="proof-field-label">Amount</div><div class="proof-field-value">XAF 2,500,000</div></div>
-          <div><div class="proof-field-label">Cashier ref</div><div class="proof-field-value">SGC-2026-1103892</div></div>
-        </div>
-        <div class="proof-card-footer">For full document — click "Deposit_slip_SGC.pdf" above</div>
-      </div>
       <div class="verify-banner">
         ✓ Verify using: <strong>Amount</strong> (XAF 2,500,000) · <strong>Sender name</strong> (Mireille Fouda) · <strong>Timing</strong> (30 Jun 2026, 09:14) · <strong>Uploaded proof</strong> — ref match (SGC-2026-1103892) is a bonus signal, not required
       </div>

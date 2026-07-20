@@ -454,6 +454,7 @@
               <th>Amount Deposited</th>
               <th>Amount to Receive</th>
               <th>Destination</th>
+              <th>Status</th>
               <th>Stock Price (USDC/XAF)</th>
               <th>Sell Price (USDC/XAF)</th>
               <th>Margin (XAF)</th>
@@ -461,7 +462,6 @@
               <th>Margin Rate</th>
               <th>USDC Required at Payment</th>
               <th>CPN rate at Payment</th>
-              <th>Status</th>
               <th>Date &amp; Time</th>
               <th></th>
             </tr></thead>
@@ -473,6 +473,7 @@
                 <td style="font-weight:600;white-space:nowrap;">2,016,129 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,000,000 NGN</td>
                 <td style="white-space:nowrap;">Nigeria</td>
+                <td id="tx-row-status-tx-001"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--green);">38,089</td>
@@ -480,7 +481,6 @@
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td style="white-space:nowrap;">3,360 USDC</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td id="tx-row-status-tx-001"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 11:34</td>
                 <td id="tx-row-action-tx-001"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-001')">Review</button></td>
               </tr>
@@ -491,6 +491,7 @@
                 <td style="font-weight:600;white-space:nowrap;">4,032,258 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">10,000,000 NGN</td>
                 <td style="white-space:nowrap;">Nigeria</td>
+                <td id="tx-row-status-tx-002"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="white-space:nowrap;">605</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--red);">-33,342</td>
@@ -498,7 +499,6 @@
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td style="white-space:nowrap;">6,720 USDC</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td id="tx-row-status-tx-002"><span class="status-badge status-pending-review">Pending Review</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 10:15</td>
                 <td id="tx-row-action-tx-002"><button class="btn btn-primary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-002')">Review</button></td>
               </tr>
@@ -509,6 +509,7 @@
                 <td style="font-weight:600;white-space:nowrap;">806,452 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">2,000,000 NGN</td>
                 <td style="white-space:nowrap;">Nigeria</td>
+                <td id="tx-row-status-tx-003"><span class="status-badge status-completed">Completed</span></td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--green);">14,836</td>
@@ -516,7 +517,6 @@
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td style="white-space:nowrap;">1,344 USDC</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td id="tx-row-status-tx-003"><span class="status-badge status-completed">Completed</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 16:48</td>
                 <td id="tx-row-action-tx-003"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-003')">View</button></td>
               </tr>
@@ -527,14 +527,14 @@
                 <td style="font-weight:600;white-space:nowrap;">1,209,677 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">3,000,000 NGN</td>
                 <td style="white-space:nowrap;">Nigeria</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td id="tx-row-status-tx-004"><span class="status-badge status-rejected">Rejected</span></td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 25, 14:20</td>
                 <td id="tx-row-action-tx-004"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-004')">View</button></td>
               </tr>
@@ -545,6 +545,7 @@
                 <td style="font-weight:600;white-space:nowrap;">2,419,355 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">6,000,000 NGN</td>
                 <td style="white-space:nowrap;">Nigeria</td>
+                <td id="tx-row-status-tx-005"><span class="status-badge status-approved">Approved</span></td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">595</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--green);">11,800</td>
@@ -552,7 +553,6 @@
                 <td style="white-space:nowrap;font-weight:600;color:var(--purple);">1%</td>
                 <td style="white-space:nowrap;">4,032 USDC</td>
                 <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td id="tx-row-status-tx-005"><span class="status-badge status-approved">Approved</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 09:02</td>
                 <td id="tx-row-action-tx-005"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-005')">Complete</button></td>
               </tr>
@@ -563,14 +563,14 @@
                 <td style="font-weight:600;white-space:nowrap;">1,612,903 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">4,000,000 NGN</td>
                 <td style="white-space:nowrap;">Nigeria</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
-                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td id="tx-row-status-tx-006"><span class="status-badge status-initiated">Initiated</span></td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
+                <td style="white-space:nowrap;color:var(--text-secondary);">—</td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 13:10</td>
                 <td id="tx-row-action-tx-006"><button class="btn btn-secondary" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-006')">View</button></td>
               </tr>
@@ -581,6 +581,7 @@
                 <td style="font-weight:600;white-space:nowrap;">1,500,000 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">16,500 CNY</td>
                 <td style="white-space:nowrap;">China</td>
+                <td id="tx-row-status-tx-007"><span class="status-badge status-approved">Approved</span></td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--green);">27,500</td>
@@ -588,7 +589,6 @@
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td style="white-space:nowrap;">2,500 USDC</td>
                 <td style="white-space:nowrap;font-weight:600;">1 USDC = 6.60 CNY</td>
-                <td id="tx-row-status-tx-007"><span class="status-badge status-approved">Approved</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 26, 15:47</td>
                 <td id="tx-row-action-tx-007"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-007')">Complete</button></td>
               </tr>
@@ -599,6 +599,7 @@
                 <td style="font-weight:600;white-space:nowrap;">900,000 XAF</td>
                 <td style="font-weight:600;color:var(--green);white-space:nowrap;">5,490 AED</td>
                 <td style="white-space:nowrap;">Dubai</td>
+                <td id="tx-row-status-tx-008"><span class="status-badge status-approved">Approved</span></td>
                 <td style="white-space:nowrap;">589</td>
                 <td style="white-space:nowrap;">601</td>
                 <td style="font-weight:600;white-space:nowrap;color:var(--green);">28,280</td>
@@ -606,7 +607,6 @@
                 <td style="white-space:nowrap;color:var(--text-secondary);">2%</td>
                 <td style="white-space:nowrap;">1,480 USDC</td>
                 <td style="white-space:nowrap;font-weight:600;">1 USDC = 3.71 AED</td>
-                <td id="tx-row-status-tx-008"><span class="status-badge status-approved">Approved</span></td>
                 <td style="color:var(--text-secondary);font-size:12px;white-space:nowrap;">Mar 27, 10:20</td>
                 <td id="tx-row-action-tx-008"><button class="btn btn-success" style="padding:5px 14px;font-size:12px;white-space:nowrap;" onclick="event.stopPropagation();openTX('tx-008')">Complete</button></td>
               </tr>

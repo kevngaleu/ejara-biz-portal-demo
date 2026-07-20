@@ -656,22 +656,21 @@
         <div class="card-header">
           <div>
             <div class="card-title">CPN Wallet — Stock Price &amp; Margin</div>
-            <div style="color:var(--text-secondary);font-size:12px;margin-top:2px;">Sell Price = Stock Price + Margin — determines how much USDC is credited and how much the customer must deposit, for corridors routed via CPN (China, Dubai). Nigeria doesn't use CPN — its pricing is set directly via Retail Rates below.</div>
           </div>
         </div>
         <div class="card-body">
           <div class="rate-row">
-            <div><div class="rate-corridor">USDC Stock Price</div><div class="rate-sub" id="stock-price-sub">Added by Thomas every morning · Last updated: today, 06:00</div></div>
+            <div><div class="rate-corridor">USDC Stock Price</div></div>
             <div class="rate-input-wrap">
-              <input class="rate-input" type="number" value="589" step="1" min="0" id="stock-price-input" data-committed="589" style="max-width:90px;" oninput="updateCorridorMarginExamples()">
+              <input class="rate-input" type="number" value="589" step="1" min="0" id="stock-price-input" data-committed="589" style="max-width:90px;">
               <span style="font-size:13px;color:var(--text-secondary);">XAF/USDC</span>
               <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveStockPrice()">Save</button>
             </div>
           </div>
           <div class="rate-row" style="border-bottom:none;">
-            <div><div class="rate-corridor">USDC Margin</div><div class="rate-sub">Sell Price shown on the transaction page: <strong id="cpn-margin-example">601</strong> XAF/USDC · applies to China &amp; Dubai</div></div>
+            <div><div class="rate-corridor">USDC Margin</div><div class="rate-sub">This is the margin that will be applied on the USDC stock price for the bill payment product</div></div>
             <div class="rate-input-wrap">
-              <input class="rate-input" type="number" value="2" step="0.1" min="0" id="cpn-margin-input" data-committed="2" style="max-width:80px;" oninput="updateCorridorMarginExamples()">
+              <input class="rate-input" type="number" value="2" step="0.1" min="0" id="cpn-margin-input" data-committed="2" style="max-width:80px;">
               <span style="font-size:13px;color:var(--text-secondary);">%</span>
               <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="saveCorridorMargin('CPN Wallet', 'cpn-margin-input')">Save</button>
             </div>
@@ -1876,13 +1875,6 @@
   }
 
   // ─── RATES ───
-  function updateCorridorMarginExamples() {
-    const stock = parseFloat(document.getElementById('stock-price-input').value) || 0;
-    const pct = parseFloat(document.getElementById('cpn-margin-input').value) || 0;
-    const sell = Math.round(stock * (1 + pct / 100));
-    document.getElementById('cpn-margin-example').textContent = sell;
-  }
-
   let _pendingMarginChange = null;
   function saveStockPrice() {
     const input = document.getElementById('stock-price-input');
@@ -1991,10 +1983,6 @@
     const change = _pendingMarginChange;
     const { label, unit, oldVal, newVal } = change;
     document.getElementById(change.inputId).dataset.committed = newVal;
-    if (change.inputId === 'stock-price-input') {
-      const now = new Date();
-      document.getElementById('stock-price-sub').textContent = 'Updated every morning · Last updated: today, ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-    }
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) + ' · ' + now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
     const tbody = document.getElementById('audit-tbody');
@@ -2004,7 +1992,6 @@
     document.getElementById('margin-rate-modal-overlay').classList.remove('open');
     showToast('📈', label + ' updated', `${label} is now ${newVal}${unit}`);
     _pendingMarginChange = null;
-    updateCorridorMarginExamples();
   }
 
 

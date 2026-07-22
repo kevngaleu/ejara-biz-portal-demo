@@ -1474,6 +1474,7 @@ const USERS = {
 };
 let currentUser = USERS['recitKevin']; // default
 let currentModule = null;
+const deepLinkProduct = new URLSearchParams(window.location.search).get('product'); // ?product=cashco or ?product=fx
 
 // ─── Login ──────────────────────────────────────────────────────────────────
 function goTo2FA() {
@@ -1502,9 +1503,15 @@ function prevDigit(e, el) {
 function goToProductSelect() {
   const username = document.getElementById('username-input').value.trim();
   currentUser = USERS[username] || USERS['recitKevin'];
+  document.getElementById('screen-login').classList.remove('active');
+
+  if (deepLinkProduct && currentUser.access.includes(deepLinkProduct)) {
+    enterModule(deepLinkProduct);
+    return;
+  }
+
   document.getElementById('product-welcome').textContent = 'Welcome, ' + currentUser.name;
   renderProductCards();
-  document.getElementById('screen-login').classList.remove('active');
   document.getElementById('screen-product').classList.add('active');
 }
 

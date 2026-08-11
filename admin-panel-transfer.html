@@ -1892,9 +1892,9 @@ const KYC3_REASONS = {
 };
 function deriveKycStatus(categories) {
   const vals = Object.values(categories).map(c => c.status);
+  if (vals.some(s => s === 'pending')) return 'pending';
   if (vals.some(s => s === 'rejected')) return 'rejected';
-  if (vals.every(s => s === 'approved')) return 'approved';
-  return 'pending';
+  return 'approved';
 }
 const KYC_STATUS_BADGE = {
   pending:  '<span class="bp bp-pending">Pending</span>',
@@ -1987,8 +1987,9 @@ function maybeFinalizeKyc(level, kycId) {
       ? 'Customer eligible for transfers up to XAF 30M.'
       : 'Customer eligible for transfers above XAF 30M.');
   } else {
-    const rejected = Object.values(rec.categories).find(c => c.status === 'rejected');
-    showToast('❌', `KYC Level ${level} Rejected`, 'Customer and agent notified. Reason: ' + rejected.reason);
+    const rejected = Object.values(rec.categories).filter(c => c.status === 'rejected');
+    const reasonText = rejected.map(c => c.reason).join(' / ');
+    showToast('❌', `KYC Level ${level} Rejected`, 'Customer and agent notified. Reason: ' + reasonText);
   }
 }
 

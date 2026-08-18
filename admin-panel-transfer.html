@@ -1857,7 +1857,7 @@ const KYC2_CATEGORY_DEFS = [
 ];
 const KYC3_CATEGORY_DEFS = [
   { key:'rccm',     label:'RCCM (Trade Register)',    icon:'📄', file:'RCCM_registre_commerce.pdf', size:'312 KB' },
-  { key:'bankstmt', label:'Bank Statement (30 days)', icon:'🏦', file:'Bank_statements_30d.pdf',     size:'214 KB' },
+  { key:'bankstmt', label:'Bank Statement (3 months)', icon:'🏦', file:'Bank_statements_3mo.pdf',     size:'214 KB' },
 ];
 const KYC2_REASONS = {
   mmstatement: [
@@ -1886,7 +1886,7 @@ const KYC3_REASONS = {
   bankstmt: [
     { label:'Illegible document', msg:"The image is blurry, cropped, or too dark. Please check and submit a legible version." },
     { label:'Invalid document', msg:"The submitted file does not match a bank statement." },
-    { label:'Incomplete period', msg:"The statement does not cover the last 30 days." },
+    { label:'Incomplete period', msg:"The statement does not cover the required last 3 months." },
     { label:'Unofficial format', msg:"Please provide an official document generated directly by your bank." },
   ],
 };
@@ -2649,8 +2649,8 @@ const docTemplates = {
     stamp: true, pages: 2
   },
   bankstmt: {
-    title: 'Bank Statement (30 days)',
-    rows: [['Bank','Ecobank Cameroon'],['Account holder','Bernard Eboule'],['Account','•••• 7732'],['Period','01 Jun – 30 Jun 2026'],['Average balance','XAF 8,200,000'],['Total inflows','XAF 22,400,000']],
+    title: 'Bank Statement (3 months)',
+    rows: [['Bank','Ecobank Cameroon'],['Account holder','Bernard Eboule'],['Account','•••• 7732'],['Period','01 Apr – 30 Jun 2026'],['Average balance','XAF 8,200,000'],['Total inflows','XAF 22,400,000']],
     stamp: false, pages: 2
   },
   bankreceipt: {

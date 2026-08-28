@@ -847,7 +847,7 @@
 
     <!-- ·· CASH CO REFUNDS ·· -->
     <div id="page-cc-refunds" class="content" style="display:none;">
-      <div class="alert alert-info"><span>ℹ️</span><div>When a transfer is rejected, the <strong>agent's Ejara wallet is automatically re-credited</strong> by the system. The customer refund must be sent manually via mobile money.</div></div>
+      <div class="alert alert-info"><span>ℹ️</span><div>Agree the refund channel with the customer first. <strong>Agent wallet credits are manual</strong> and only needed if an agent will hand out cash, sync with that agent on liquidity before crediting them.</div></div>
       <div class="filter-bar">
         <select class="filter-select" onchange="applyCCFilters(this)">
           <option>All statuses</option>
@@ -1750,25 +1750,26 @@ function openCCTxDetail(ref, status) {
       <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Invoice or deposit slip</div>
       ${docItem('🧾','Deposit_slip_SGC.pdf','92 KB','deposit')}
     </div>
-    ${isPending ? `<div id="reject-section" style="display:none;">
+    ${(isPending || isApproved) ? `<div id="reject-section" style="display:none;">
       <div class="detail-section-title" style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-secondary);margin-top:12px;margin-bottom:6px;">Rejection Reason</div>
       <textarea class="mm-ref-input" id="reject-reason-text" placeholder="Enter reason for rejection…" style="min-height:80px;resize:vertical;margin-top:0;"></textarea>
     </div>` : ''}
   `;
-  document.getElementById('detail-actions').innerHTML = isPending
-    ? `<button class="btn btn-success" onclick="approveCCTx('${ref}')">✓ Approve</button><button class="btn btn-danger" onclick="showRejectField('${ref}')">✕ Reject</button>`
-    : isApproved
-    ? `<button class="btn btn-primary" onclick="completeCCTx('${ref}')">Mark as Completed</button>`
-    : `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
+  document.getElementById('detail-actions').innerHTML = ccTxActionsHtml(ref, status);
   openDetail();
 }
-function showRejectField(ref) {
-  document.getElementById('reject-section').style.display = 'block';
-  document.getElementById('detail-actions').innerHTML = `<button class="btn btn-secondary" onclick="cancelReject('${ref}')">Cancel</button><button class="btn btn-danger" onclick="confirmRejectTx('${ref}')">Confirm Rejection</button>`;
+function ccTxActionsHtml(ref, status) {
+  if (status === 'PENDING_REVIEW') return `<button class="btn btn-success" onclick="approveCCTx('${ref}')">✓ Approve</button><button class="btn btn-danger" onclick="showRejectField('${ref}','${status}')">✕ Reject</button>`;
+  if (status === 'APPROVED') return `<button class="btn btn-primary" onclick="completeCCTx('${ref}')">Mark as Completed</button><button class="btn btn-danger" onclick="showRejectField('${ref}','${status}')">✕ Reject</button>`;
+  return `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
 }
-function cancelReject(ref) {
+function showRejectField(ref, status) {
+  document.getElementById('reject-section').style.display = 'block';
+  document.getElementById('detail-actions').innerHTML = `<button class="btn btn-secondary" onclick="cancelReject('${ref}','${status}')">Cancel</button><button class="btn btn-danger" onclick="confirmRejectTx('${ref}')">Confirm Rejection</button>`;
+}
+function cancelReject(ref, status) {
   document.getElementById('reject-section').style.display = 'none';
-  document.getElementById('detail-actions').innerHTML = `<button class="btn btn-success" onclick="approveCCTx('${ref}')">✓ Approve</button><button class="btn btn-danger" onclick="showRejectField('${ref}')">✕ Reject</button>`;
+  document.getElementById('detail-actions').innerHTML = ccTxActionsHtml(ref, status);
 }
 function approveCCTx(ref) { closeDetail(); decBadge('badge-cc-tx'); showToast('✅','Transaction Approved',ref + ' approved. Agent notified.'); }
 function completeCCTx(ref) {
@@ -2037,9 +2038,10 @@ function markOnsite(id) {
 }
 
 // ─── Refunds — Cash Co ────────────────────────────────────────────────────────
+const CC_REFUND_AGENTS = ['@agentEssama', '@agentFouda', '@agentKamga', '@agentNdongo'];
 const CC_REFUNDS = {
-  'TXN4DF7GH2NL8P': { customer:'Carine Mbida', phone:'+237 6XX XXX XXX', agent:'@agentEssama', amount:'1,200,000', reason:'Suspicious documents', status:'REQUESTED', requestedAt:'Today, 08:30', mmRef:null, completedBy:null },
-  'TXN1AB2CD3EF4G': { customer:'Jean-Pierre Ondoua', phone:'+237 6XX XXX XXX', agent:'@agentFouda', amount:'2,700,000', reason:'Duplicate submission', status:'COMPLETED', requestedAt:'Yesterday', mmRef:'MTN-2026062900891', completedBy:'recitKevin' },
+  'TXN4DF7GH2NL8P': { customer:'Carine Mbida', phone:'+237 6XX XXX XXX', agent:'@agentEssama', amount:'1,200,000', reason:'Suspicious documents', status:'REQUESTED', requestedAt:'Today, 08:30', channel:null, disbursingAgent:null, walletCredited:false, walletCreditedBy:null, walletCreditedAt:null, mmRef:null, confirmationNote:null, completedBy:null },
+  'TXN1AB2CD3EF4G': { customer:'Jean-Pierre Ondoua', phone:'+237 6XX XXX XXX', agent:'@agentFouda', amount:'2,700,000', reason:'Duplicate submission', status:'COMPLETED', requestedAt:'Yesterday', channel:'MOBILE_MONEY', disbursingAgent:null, walletCredited:false, walletCreditedBy:null, walletCreditedAt:null, mmRef:'MTN-2026062900891', confirmationNote:null, completedBy:'recitKevin' },
 };
 const CC_REFUND_STATUS_BADGE = {
   REQUESTED: '<span class="bp bp-refund">Refund Requested</span>',
@@ -2054,12 +2056,13 @@ function renderCCRefundsTable() {
     </tr>
   `).join('');
 }
+const REFUND_CHANNEL_LABEL = { MOBILE_MONEY: 'Mobile money', CASH: 'Cash (via agent)', POS: 'POS (via agent)' };
 function openRefundDetail(ref) {
   const r = CC_REFUNDS[ref];
   const isPending = r.status === 'REQUESTED';
   document.getElementById('detail-title').textContent = 'Refund — ' + ref;
   document.getElementById('detail-body').innerHTML = `
-    <div class="alert alert-info"><span>ℹ️</span><div><strong>Agent wallet already re-credited</strong> automatically when the transfer was rejected. This step is the customer mobile money refund only.</div></div>
+    <div class="alert alert-info"><span>ℹ️</span><div>${refundBannerText(r)}</div></div>
     <div class="detail-section">
       <div class="detail-section-title">Transaction</div>
       <div class="detail-row"><span class="detail-label">Reference</span><span class="detail-value">${ref}</span></div>
@@ -2070,34 +2073,111 @@ function openRefundDetail(ref) {
       <div class="detail-section-title">Customer</div>
       <div class="detail-row"><span class="detail-label">Name</span><span class="detail-value">${r.customer}</span></div>
       <div class="detail-row"><span class="detail-label">Phone</span><span class="detail-value">${r.phone}</span></div>
-      <div class="detail-row"><span class="detail-label">Refund channel</span><span class="detail-value">Mobile money</span></div>
+      <div class="detail-row"><span class="detail-label">Refund channel</span><span class="detail-value">${r.channel ? REFUND_CHANNEL_LABEL[r.channel] : '<span style="color:var(--text-secondary);">Not yet agreed with customer</span>'}</span></div>
     </div>
-    ${isPending ? `
-    <div class="detail-section">
-      <div class="detail-section-title">Mobile Money Reference (required to complete)</div>
-      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Contact the customer, send the mobile money payment, then enter the payment reference below.</div>
-      <input class="mm-ref-input" id="mm-ref" placeholder="e.g. MTN-2026063001234">
-    </div>` : `
-    <div class="detail-section">
-      <div class="detail-section-title">Completed</div>
-      <div class="detail-row"><span class="detail-label">MM Reference</span><span class="detail-value" style="color:var(--green);">${r.mmRef}</span></div>
-      <div class="detail-row"><span class="detail-label">Completed by</span><span class="detail-value">${r.completedBy}</span></div>
-    </div>`}
+    ${refundActionSectionHtml(ref, r)}
   `;
   document.getElementById('detail-actions').innerHTML = isPending
-    ? `<button class="btn btn-primary" onclick="completeRefund('${ref}')">Mark Refund as Completed</button>`
+    ? refundCompleteButtonHtml(ref, r)
     : `<button class="btn btn-secondary" onclick="closeDetail()">Close</button>`;
   openDetail();
 }
+function refundBannerText(r) {
+  if (r.status !== 'REQUESTED') return 'Refund completed.';
+  if (!r.channel) return 'Call the customer and agree a refund channel first, no agent wallet action needed yet.';
+  if (r.channel === 'MOBILE_MONEY') return 'No agent wallet action needed for a Mobile Money refund.';
+  return r.walletCredited
+    ? `<strong>${r.disbursingAgent}'s wallet credited</strong> for this refund. Confirm the handoff with the customer, then mark as completed.`
+    : 'Sync with the disbursing agent on their liquidity, then credit their wallet before they hand out cash.';
+}
+function refundActionSectionHtml(ref, r) {
+  if (r.status !== 'REQUESTED') {
+    const channelDetail = r.channel === 'MOBILE_MONEY'
+      ? `<div class="detail-row"><span class="detail-label">MM Reference</span><span class="detail-value" style="color:var(--green);">${r.mmRef}</span></div>`
+      : `<div class="detail-row"><span class="detail-label">Disbursing agent</span><span class="detail-value">${r.disbursingAgent}</span></div>
+         <div class="detail-row"><span class="detail-label">Confirmation</span><span class="detail-value" style="color:var(--green);">${r.confirmationNote}</span></div>`;
+    return `<div class="detail-section">
+      <div class="detail-section-title">Completed</div>
+      ${channelDetail}
+      <div class="detail-row"><span class="detail-label">Completed by</span><span class="detail-value">${r.completedBy}</span></div>
+    </div>`;
+  }
+  if (!r.channel) {
+    return `<div class="detail-section">
+      <div class="detail-section-title">Refund channel (agree with the customer first)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-secondary" onclick="setRefundChannel('${ref}','MOBILE_MONEY')">Mobile money</button>
+        <button class="btn btn-secondary" onclick="setRefundChannel('${ref}','CASH')">Cash (via agent)</button>
+        <button class="btn btn-secondary" onclick="setRefundChannel('${ref}','POS')">POS (via agent)</button>
+      </div>
+    </div>`;
+  }
+  if (r.channel === 'MOBILE_MONEY') {
+    return `<div class="detail-section">
+      <div class="detail-section-title">Mobile Money Reference (required to complete)</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Contact the customer, send the mobile money payment, then enter the payment reference below.</div>
+      <input class="mm-ref-input" id="mm-ref" placeholder="e.g. MTN-2026063001234">
+      <div style="margin-top:8px;"><button class="btn btn-secondary" style="font-size:12px;" onclick="setRefundChannel('${ref}',null)">← Change channel</button></div>
+    </div>`;
+  }
+  const agentOptions = CC_REFUND_AGENTS.map(a => `<option value="${a}" ${a === (r.disbursingAgent || r.agent) ? 'selected' : ''}>${a}</option>`).join('');
+  return `<div class="detail-section">
+    <div class="detail-section-title">Disbursing agent</div>
+    <select class="filter-select" id="refund-agent-select" style="width:100%;margin-bottom:8px;" ${r.walletCredited ? 'disabled' : ''}>${agentOptions}</select>
+    ${r.walletCredited
+      ? `<div style="font-size:12px;color:var(--green);margin-bottom:12px;">✓ Wallet credited to ${r.disbursingAgent} on ${r.walletCreditedAt} by ${r.walletCreditedBy}. Agent notified to expect ${r.customer}.</div>`
+      : `<button class="btn btn-primary" style="font-size:12px;margin-bottom:12px;" onclick="creditRefundAgentWallet('${ref}')">Credit agent wallet &amp; notify</button>`
+    }
+    ${r.walletCredited ? `
+    <div class="detail-section-title" style="margin-top:0;">Confirmation (required to complete)</div>
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Confirm with the agent that the customer picked up the cash, then note it below.</div>
+    <input class="mm-ref-input" id="refund-confirmation-note" placeholder="e.g. Confirmed by ${r.disbursingAgent}, customer picked up in person">` : ''}
+    <div style="margin-top:8px;"><button class="btn btn-secondary" style="font-size:12px;" onclick="setRefundChannel('${ref}',null)">← Change channel</button></div>
+  </div>`;
+}
+function refundCompleteButtonHtml(ref, r) {
+  if (!r.channel) return `<button class="btn btn-secondary" disabled>Mark Refund as Completed</button>`;
+  if (r.channel === 'MOBILE_MONEY') return `<button class="btn btn-primary" onclick="completeRefund('${ref}')">Mark Refund as Completed</button>`;
+  return r.walletCredited
+    ? `<button class="btn btn-primary" onclick="completeRefund('${ref}')">Mark Refund as Completed</button>`
+    : `<button class="btn btn-secondary" disabled>Mark Refund as Completed</button>`;
+}
+function setRefundChannel(ref, channel) {
+  CC_REFUNDS[ref].channel = channel;
+  if (!channel) {
+    CC_REFUNDS[ref].disbursingAgent = null;
+    CC_REFUNDS[ref].walletCredited = false;
+    CC_REFUNDS[ref].walletCreditedBy = null;
+    CC_REFUNDS[ref].walletCreditedAt = null;
+  }
+  openRefundDetail(ref);
+}
+function creditRefundAgentWallet(ref) {
+  const sel = document.getElementById('refund-agent-select');
+  const agent = sel.value;
+  CC_REFUNDS[ref].disbursingAgent = agent;
+  CC_REFUNDS[ref].walletCredited = true;
+  CC_REFUNDS[ref].walletCreditedBy = 'recit' + currentUser.name;
+  CC_REFUNDS[ref].walletCreditedAt = 'Just now';
+  showToast('✅','Agent wallet credited', agent + ' credited XAF ' + CC_REFUNDS[ref].amount + ' and notified to expect the customer.');
+  openRefundDetail(ref);
+}
 function completeRefund(ref) {
-  const el = document.getElementById('mm-ref');
-  if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Mobile money reference is required'; return; }
-  CC_REFUNDS[ref].status = 'COMPLETED';
-  CC_REFUNDS[ref].mmRef = el.value.trim();
-  CC_REFUNDS[ref].completedBy = 'recit' + currentUser.name;
+  const r = CC_REFUNDS[ref];
+  if (r.channel === 'MOBILE_MONEY') {
+    const el = document.getElementById('mm-ref');
+    if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Mobile money reference is required'; return; }
+    r.mmRef = el.value.trim();
+  } else {
+    const el = document.getElementById('refund-confirmation-note');
+    if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Confirmation note is required'; return; }
+    r.confirmationNote = el.value.trim();
+  }
+  r.status = 'COMPLETED';
+  r.completedBy = 'recit' + currentUser.name;
   renderCCRefundsTable();
   closeDetail(); decBadge('badge-cc-refund');
-  showToast('✅','Refund Completed','Customer notified by SMS. Ref: ' + el.value.trim());
+  showToast('✅','Refund Completed','Customer notified by SMS.');
 }
 
 // ─── FX Transactions ──────────────────────────────────────────────────────────

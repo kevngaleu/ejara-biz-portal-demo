@@ -2038,7 +2038,6 @@ function markOnsite(id) {
 }
 
 // ─── Refunds — Cash Co ────────────────────────────────────────────────────────
-const CC_REFUND_AGENTS = ['@agentEssama', '@agentFouda', '@agentKamga', '@agentNdongo'];
 const CC_REFUNDS = {
   'TXN4DF7GH2NL8P': { customer:'Carine Mbida', phone:'+237 6XX XXX XXX', agent:'@agentEssama', amount:'1,200,000', reason:'Suspicious documents', status:'REQUESTED', requestedAt:'Today, 08:30', channel:null, disbursingAgent:null, mmRef:null, completedBy:null },
   'TXN1AB2CD3EF4G': { customer:'Jean-Pierre Ondoua', phone:'+237 6XX XXX XXX', agent:'@agentFouda', amount:'2,700,000', reason:'Duplicate submission', status:'COMPLETED', requestedAt:'Yesterday', channel:'MOBILE_MONEY', disbursingAgent:null, mmRef:'MTN-2026062900891', completedBy:'recitKevin' },
@@ -2116,11 +2115,10 @@ function refundActionSectionHtml(ref, r) {
       <div style="margin-top:8px;"><button class="btn btn-secondary" style="font-size:12px;" onclick="setRefundChannel('${ref}',null)">← Change channel</button></div>
     </div>`;
   }
-  const agentOptions = CC_REFUND_AGENTS.map(a => `<option value="${a}" ${a === (r.disbursingAgent || r.agent) ? 'selected' : ''}>${a}</option>`).join('');
   return `<div class="detail-section">
     <div class="detail-section-title">Disbursing agent</div>
     <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">For your records, this panel doesn't credit the agent's wallet. Arrange liquidity and handoff with them directly.</div>
-    <select class="filter-select" id="refund-agent-select" style="width:100%;">${agentOptions}</select>
+    <input class="mm-ref-input" id="refund-agent-input" placeholder="e.g. @agentEssama" value="${r.disbursingAgent || r.agent}">
     <div style="margin-top:8px;"><button class="btn btn-secondary" style="font-size:12px;" onclick="setRefundChannel('${ref}',null)">← Change channel</button></div>
   </div>`;
 }
@@ -2141,7 +2139,9 @@ function completeRefund(ref) {
     if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Mobile money reference is required'; return; }
     r.mmRef = el.value.trim();
   } else {
-    r.disbursingAgent = document.getElementById('refund-agent-select').value;
+    const el = document.getElementById('refund-agent-input');
+    if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Agent username is required'; return; }
+    r.disbursingAgent = el.value.trim();
   }
   r.status = 'COMPLETED';
   r.completedBy = 'recit' + currentUser.name;

@@ -2040,8 +2040,8 @@ function markOnsite(id) {
 // ─── Refunds — Cash Co ────────────────────────────────────────────────────────
 const CC_REFUND_AGENTS = ['@agentEssama', '@agentFouda', '@agentKamga', '@agentNdongo'];
 const CC_REFUNDS = {
-  'TXN4DF7GH2NL8P': { customer:'Carine Mbida', phone:'+237 6XX XXX XXX', agent:'@agentEssama', amount:'1,200,000', reason:'Suspicious documents', status:'REQUESTED', requestedAt:'Today, 08:30', channel:null, disbursingAgent:null, walletCredited:false, walletCreditedBy:null, walletCreditedAt:null, mmRef:null, confirmationNote:null, completedBy:null },
-  'TXN1AB2CD3EF4G': { customer:'Jean-Pierre Ondoua', phone:'+237 6XX XXX XXX', agent:'@agentFouda', amount:'2,700,000', reason:'Duplicate submission', status:'COMPLETED', requestedAt:'Yesterday', channel:'MOBILE_MONEY', disbursingAgent:null, walletCredited:false, walletCreditedBy:null, walletCreditedAt:null, mmRef:'MTN-2026062900891', confirmationNote:null, completedBy:'recitKevin' },
+  'TXN4DF7GH2NL8P': { customer:'Carine Mbida', phone:'+237 6XX XXX XXX', agent:'@agentEssama', amount:'1,200,000', reason:'Suspicious documents', status:'REQUESTED', requestedAt:'Today, 08:30', channel:null, disbursingAgent:null, mmRef:null, completedBy:null },
+  'TXN1AB2CD3EF4G': { customer:'Jean-Pierre Ondoua', phone:'+237 6XX XXX XXX', agent:'@agentFouda', amount:'2,700,000', reason:'Duplicate submission', status:'COMPLETED', requestedAt:'Yesterday', channel:'MOBILE_MONEY', disbursingAgent:null, mmRef:'MTN-2026062900891', completedBy:'recitKevin' },
 };
 const CC_REFUND_STATUS_BADGE = {
   REQUESTED: '<span class="bp bp-refund">Refund Requested</span>',
@@ -2056,7 +2056,7 @@ function renderCCRefundsTable() {
     </tr>
   `).join('');
 }
-const REFUND_CHANNEL_LABEL = { MOBILE_MONEY: 'Mobile money', CASH: 'Cash (via agent)', POS: 'POS (via agent)' };
+const REFUND_CHANNEL_LABEL = { MOBILE_MONEY: 'Mobile money', CASH: 'Cash (via agent)' };
 function openRefundDetail(ref) {
   const r = CC_REFUNDS[ref];
   const isPending = r.status === 'REQUESTED';
@@ -2084,18 +2084,15 @@ function openRefundDetail(ref) {
 }
 function refundBannerText(r) {
   if (r.status !== 'REQUESTED') return 'Refund completed.';
-  if (!r.channel) return 'Call the customer and agree a refund channel first, no agent wallet action needed yet.';
+  if (!r.channel) return 'Call the customer and agree a refund channel first.';
   if (r.channel === 'MOBILE_MONEY') return 'No agent wallet action needed for a Mobile Money refund.';
-  return r.walletCredited
-    ? `<strong>${r.disbursingAgent}'s wallet credited</strong> for this refund. Confirm the handoff with the customer, then mark as completed.`
-    : 'Sync with the disbursing agent on their liquidity, then credit their wallet before they hand out cash.';
+  return 'Coordinate cash and liquidity directly with the disbursing agent, outside this panel. Crediting the agent\'s wallet isn\'t done here.';
 }
 function refundActionSectionHtml(ref, r) {
   if (r.status !== 'REQUESTED') {
     const channelDetail = r.channel === 'MOBILE_MONEY'
       ? `<div class="detail-row"><span class="detail-label">MM Reference</span><span class="detail-value" style="color:var(--green);">${r.mmRef}</span></div>`
-      : `<div class="detail-row"><span class="detail-label">Disbursing agent</span><span class="detail-value">${r.disbursingAgent}</span></div>
-         <div class="detail-row"><span class="detail-label">Confirmation</span><span class="detail-value" style="color:var(--green);">${r.confirmationNote}</span></div>`;
+      : `<div class="detail-row"><span class="detail-label">Disbursing agent</span><span class="detail-value">${r.disbursingAgent}</span></div>`;
     return `<div class="detail-section">
       <div class="detail-section-title">Completed</div>
       ${channelDetail}
@@ -2108,7 +2105,6 @@ function refundActionSectionHtml(ref, r) {
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="btn btn-secondary" onclick="setRefundChannel('${ref}','MOBILE_MONEY')">Mobile money</button>
         <button class="btn btn-secondary" onclick="setRefundChannel('${ref}','CASH')">Cash (via agent)</button>
-        <button class="btn btn-secondary" onclick="setRefundChannel('${ref}','POS')">POS (via agent)</button>
       </div>
     </div>`;
   }
@@ -2123,43 +2119,19 @@ function refundActionSectionHtml(ref, r) {
   const agentOptions = CC_REFUND_AGENTS.map(a => `<option value="${a}" ${a === (r.disbursingAgent || r.agent) ? 'selected' : ''}>${a}</option>`).join('');
   return `<div class="detail-section">
     <div class="detail-section-title">Disbursing agent</div>
-    <select class="filter-select" id="refund-agent-select" style="width:100%;margin-bottom:8px;" ${r.walletCredited ? 'disabled' : ''}>${agentOptions}</select>
-    ${r.walletCredited
-      ? `<div style="font-size:12px;color:var(--green);margin-bottom:12px;">✓ Wallet credited to ${r.disbursingAgent} on ${r.walletCreditedAt} by ${r.walletCreditedBy}. Agent notified to expect ${r.customer}.</div>`
-      : `<button class="btn btn-primary" style="font-size:12px;margin-bottom:12px;" onclick="creditRefundAgentWallet('${ref}')">Credit agent wallet &amp; notify</button>`
-    }
-    ${r.walletCredited ? `
-    <div class="detail-section-title" style="margin-top:0;">Confirmation (required to complete)</div>
-    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">Confirm with the agent that the customer picked up the cash, then note it below.</div>
-    <input class="mm-ref-input" id="refund-confirmation-note" placeholder="e.g. Confirmed by ${r.disbursingAgent}, customer picked up in person">` : ''}
+    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;">For your records, this panel doesn't credit the agent's wallet. Arrange liquidity and handoff with them directly.</div>
+    <select class="filter-select" id="refund-agent-select" style="width:100%;">${agentOptions}</select>
     <div style="margin-top:8px;"><button class="btn btn-secondary" style="font-size:12px;" onclick="setRefundChannel('${ref}',null)">← Change channel</button></div>
   </div>`;
 }
 function refundCompleteButtonHtml(ref, r) {
-  if (!r.channel) return `<button class="btn btn-secondary" disabled>Mark Refund as Completed</button>`;
-  if (r.channel === 'MOBILE_MONEY') return `<button class="btn btn-primary" onclick="completeRefund('${ref}')">Mark Refund as Completed</button>`;
-  return r.walletCredited
+  return r.channel
     ? `<button class="btn btn-primary" onclick="completeRefund('${ref}')">Mark Refund as Completed</button>`
     : `<button class="btn btn-secondary" disabled>Mark Refund as Completed</button>`;
 }
 function setRefundChannel(ref, channel) {
   CC_REFUNDS[ref].channel = channel;
-  if (!channel) {
-    CC_REFUNDS[ref].disbursingAgent = null;
-    CC_REFUNDS[ref].walletCredited = false;
-    CC_REFUNDS[ref].walletCreditedBy = null;
-    CC_REFUNDS[ref].walletCreditedAt = null;
-  }
-  openRefundDetail(ref);
-}
-function creditRefundAgentWallet(ref) {
-  const sel = document.getElementById('refund-agent-select');
-  const agent = sel.value;
-  CC_REFUNDS[ref].disbursingAgent = agent;
-  CC_REFUNDS[ref].walletCredited = true;
-  CC_REFUNDS[ref].walletCreditedBy = 'recit' + currentUser.name;
-  CC_REFUNDS[ref].walletCreditedAt = 'Just now';
-  showToast('✅','Agent wallet credited', agent + ' credited XAF ' + CC_REFUNDS[ref].amount + ' and notified to expect the customer.');
+  if (!channel) CC_REFUNDS[ref].disbursingAgent = null;
   openRefundDetail(ref);
 }
 function completeRefund(ref) {
@@ -2169,9 +2141,7 @@ function completeRefund(ref) {
     if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Mobile money reference is required'; return; }
     r.mmRef = el.value.trim();
   } else {
-    const el = document.getElementById('refund-confirmation-note');
-    if (!el.value.trim()) { el.classList.add('error'); el.placeholder = 'Confirmation note is required'; return; }
-    r.confirmationNote = el.value.trim();
+    r.disbursingAgent = document.getElementById('refund-agent-select').value;
   }
   r.status = 'COMPLETED';
   r.completedBy = 'recit' + currentUser.name;
